@@ -50,6 +50,9 @@
      <Compile Include="Assets\Script\Map\GraphNode.cs" />
      <Compile Include="Assets\Script\Map\MapManager.cs" />
      <Compile Include="Assets\Script\Map\NavGraphNode.cs" />
+     <Compile Include="Assets\Script\Map\PathFinder.cs" />
+     <Compile Include="Assets\Script\Map\PriorityQueue.cs" />
+     <Compile Include="Assets\Script\Map\SearchAStar.cs" />
      <Compile Include="Assets\Script\Map\SparseGraph.cs" />
      <Compile Include="Assets\Script\Utility\FPSDisplay.cs" />
  <Reference Include="UnityEngine.UI">
