@@ -2,30 +2,111 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PriorityQueue {
-
-}
-
-public class Heap
+public class PriorityQueue<T1,T2>
 {
-	private List<KeyValuePair<int, float>> mList;
-	
-	public Heap(List<KeyValuePair<int,float>> list)
+	public PriorityQueue()
 	{
-		mList = list;
-		
-		HeapSort();
+		mHeap = new Heap<T1,T2>();
+	}
+	
+	public PriorityQueue(Heap<T1,T2> heap)
+	{
+		mHeap = heap;
+	}
+	
+	public bool Empty()
+	{
+		return (mHeap.Size() == 0);
+	}
+	
+	public void Push(KeyValuePair<T1, T2> kvp)
+	{
+		mHeap.Insert(kvp);
+	}
+	
+	public void Pop()
+	{
+		mHeap.RemoveTop();
+	}
+	
+	public int Size()
+	{
+		return mHeap.Size();
+	}
+	
+	public KeyValuePair<T1,T2> Top()
+	{
+		return mHeap.Top(); ;
 	}
 	
 	public void PrintOutAllMember()
 	{
-		foreach (KeyValuePair<int,float> valuepair in mList)
+		mHeap.PrintOutAllMember();
+	}
+	
+	private Heap<T1,T2> mHeap;
+}
+
+public class Heap<T1,T2>
+{
+	private List<KeyValuePair<T1, T2>> mList;
+	private IComparer<T2> mComparer;
+	
+	public Heap()
+	{
+		mList = new List<KeyValuePair<T1, T2>>();
+		mComparer = Comparer<T2>.Default;
+	}
+	
+	public Heap(List<KeyValuePair<T1, T2>> list)
+	{
+		mList = list;
+		mComparer = Comparer<T2>.Default;
+		HeapSort();
+	}
+	
+	public int Size()
+	{
+		if (mList != null)
 		{
-			Console.WriteLine(valuepair.ToString());
+			return mList.Count;
+		}
+		else
+		{
+			return 0;
 		}
 	}
 	
-	public void Insert(KeyValuePair<int,float> valuepair)
+	public void RemoveTop()
+	{
+		if (mList != null)
+		{
+			mList.RemoveAt(0);
+		}
+	}
+	
+	public KeyValuePair<T1, T2> Top()
+	{
+		if(mList != null)
+		{
+			return mList[0];
+		}
+		else
+		{
+			//Note no member exist, so return default KeyValuePair
+			return new KeyValuePair<T1, T2>();
+		}
+	}
+	
+	public void PrintOutAllMember()
+	{
+		foreach (KeyValuePair<T1, T2> valuepair in mList)
+		{
+			Debug.Log(valuepair.ToString());
+		}
+	}
+	
+	public void Insert(KeyValuePair<T1, T2> valuepair)
 	{
 		mList.Add(valuepair);
 		HeapSort();
@@ -39,12 +120,12 @@ public class Heap
 		int right_child_index = parentindex * 2 + 2;
 		
 		//Chose biggest one between parent and left&right child
-		if (left_child_index < length && mList[left_child_index].Value > mList[max_index].Value)
+		if (left_child_index < length && mComparer.Compare(mList[left_child_index].Value, mList[max_index].Value) > 0)
 		{
 			max_index = left_child_index;
 		}
 		
-		if (right_child_index < length && mList[right_child_index].Value > mList[max_index].Value)
+		if (right_child_index < length && mComparer.Compare(mList[right_child_index].Value, mList[max_index].Value) > 0)
 		{
 			max_index = right_child_index;
 		}
@@ -54,7 +135,7 @@ public class Heap
 		if (max_index != parentindex)
 		{
 			//swap_time++;
-			Swap(mList[max_index], mList[parentindex]);
+			Swap(max_index,parentindex/*mList[max_index], mList[parentindex]*/);
 			HeapAdjust(max_index, length);
 		}
 	}
@@ -62,7 +143,7 @@ public class Heap
 	//通过初试数据构建最大堆
 	private void BuildingHeap()
 	{
-		for( int i = mList.Count/2 - 1; i >= 0; i--)
+		for (int i = mList.Count / 2 - 1; i >= 0; i--)
 		{
 			//1.2 Adjust heap
 			//Make sure meet max heap definition
@@ -92,7 +173,7 @@ public class Heap
 			{
 				//swap first element and last element
 				//do adjust heap process again to make sure the new array are still max heap
-				Swap(mList[i], mList[0]);
+				Swap(i,0/*mList[i], mList[0]*/);
 				//Due to we already building max heap before,
 				//so  we just need to adjust for index 0 after we swap first and last element
 				HeapAdjust(0, i);
@@ -100,15 +181,15 @@ public class Heap
 		}
 		else
 		{
-			Console.WriteLine("mList == null");
+			Debug.Log("mList == null");
 		}
 	}
 	
-	private void Swap(KeyValuePair<int,float> kvp1,KeyValuePair<int,float> kvp2)
+	private void Swap(int id1, int id2)
 	{
-		KeyValuePair<int,float> temp;
-		temp = kvp1;
-		kvp1 = kvp2;
-		kvp2 = temp;
+		KeyValuePair<T1, T2> temp;
+		temp = mList[id1];
+		mList[id1] = mList[id2];
+		mList[id2] = temp;
 	}
 }
