@@ -3,18 +3,38 @@ using System.Collections;
 
 public class MapManager : MonoBehaviour {
 
+	public static MapManager MMInstance = null;
+
 	public int mRow = 2;
 
 	public int mColumn = 2;
 
-	// Use this for initialization
-	void Start () {
-	
+	private PathFinder mPathFinder;
+
+	void Awake()
+	{
+		if (MMInstance == null) {
+			MMInstance = this;
+		} else if (MMInstance != this) {
+			Destroy (gameObject);
+		}
+
+		mPathFinder = gameObject.GetComponent<PathFinder> ();
 	}
-	
+
+	void Start()
+	{
+		LoadMap ();
+	}
+
+	void LoadMap()
+	{
+		mPathFinder.CreteGraph (mRow, mColumn);
+	}
+
 	// Update is called once per frame
 	void Update () {
-		DrawMap ();
+		//DrawMap ();
 	}
 
 	void DrawMap()

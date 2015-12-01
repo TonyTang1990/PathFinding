@@ -1,13 +1,20 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\SearchAStar.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\PathFinder.cs">
     <Files>
-      <File FileName="Assets\Script\Map\PriorityQueue.cs" Line="186" Column="3" />
-      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="5" Column="27" />
+      <File FileName="Assets\Script\Map\PriorityQueue.cs" Line="10" Column="18" />
+      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="93" Column="27" />
+      <File FileName="Assets\Script\Map\PathFinder.cs" Line="69" Column="104" />
+      <File FileName="Assets\Script\Map\SparseGraph.cs" Line="29" Column="1" />
+      <File FileName="Assets\Script\Map\MapManager.cs" Line="32" Column="42" />
+      <File FileName="Assets\Script\Map\NavGraphNode.cs" Line="14" Column="19" />
+      <File FileName="Assets\Script\Map\GraphNode.cs" Line="17" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\PathFinder.cs" line="43" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

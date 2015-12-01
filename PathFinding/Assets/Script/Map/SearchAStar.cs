@@ -14,9 +14,11 @@ public class SearchAStar {
 	                   ,int target)
 	{
 		mGraph = graph;
-		mShortestPathTree = new List<GraphEdge> (graph.NumNodes);
-		mSearchFrontier = new List<GraphEdge> (graph.NumEdges);
-		CostToTargetNode = new List<float> (graph.NumNodes);
+		mFCosts = new List<float> (graph.NumNodes ());
+		mGCosts = new List<float> (graph.NumNodes ());
+		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
+		mSearchFrontier = new List<GraphEdge> (graph.NumEdges());
+		CostToTargetNode = new List<float> (graph.NumNodes());
 		mISource = source;
 		mITarget = target;
 
@@ -25,7 +27,7 @@ public class SearchAStar {
 
 	public List<int> GetPathToTarget()
 	{
-		List<int> path;
+		List<int> path = new List<int>();
 
 		if (mITarget < 0) {
 			return path;
@@ -35,7 +37,7 @@ public class SearchAStar {
 
 		path.Add (nd);
 
-		while ((nd != mISource) && (mShortestPathTree[nd] != 0)) 
+		while ((nd != mISource) && (mShortestPathTree[nd] != null)) 
 		{
 			nd = mShortestPathTree[nd].From;
 
@@ -75,6 +77,10 @@ public class SearchAStar {
 		get {
 			return mCostToTargetNode;
 		}
+		set
+		{
+			mCostToTargetNode = value;
+		}
 	}
 	private List<float> mCostToTargetNode;
 
@@ -87,7 +93,7 @@ public class SearchAStar {
 	//The A* search algorithm
 	private void Search()
 	{
-
+		//PriorityQueue<int,float> pq(
 	}
 }
 

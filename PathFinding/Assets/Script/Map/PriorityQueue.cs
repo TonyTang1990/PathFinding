@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PriorityQueue<T1,T2>
+public class PriorityQueue<T1, T2>
 {
 	public PriorityQueue()
 	{
-		mHeap = new Heap<T1,T2>();
+		mHeap = new Heap<T1, T2>();
 	}
 	
-	public PriorityQueue(Heap<T1,T2> heap)
+	public PriorityQueue(Heap<T1, T2> heap)
 	{
 		mHeap = heap;
 	}
@@ -24,9 +25,11 @@ public class PriorityQueue<T1,T2>
 		mHeap.Insert(kvp);
 	}
 	
-	public void Pop()
+	public KeyValuePair<T1, T2> Pop()
 	{
+		KeyValuePair<T1,T2> result = mHeap.Top();
 		mHeap.RemoveTop();
+		return result;
 	}
 	
 	public int Size()
@@ -34,7 +37,7 @@ public class PriorityQueue<T1,T2>
 		return mHeap.Size();
 	}
 	
-	public KeyValuePair<T1,T2> Top()
+	public KeyValuePair<T1, T2> Top()
 	{
 		return mHeap.Top(); ;
 	}
@@ -44,32 +47,35 @@ public class PriorityQueue<T1,T2>
 		mHeap.PrintOutAllMember();
 	}
 	
-	private Heap<T1,T2> mHeap;
+	private Heap<T1, T2> mHeap;
 }
 
-public class Heap<T1,T2>
+public class Heap<T1, T2>
 {
 	private List<KeyValuePair<T1, T2>> mList;
 	private IComparer<T2> mComparer;
+	private int mCount;
 	
 	public Heap()
 	{
 		mList = new List<KeyValuePair<T1, T2>>();
 		mComparer = Comparer<T2>.Default;
+		mCount = 0;
 	}
 	
 	public Heap(List<KeyValuePair<T1, T2>> list)
 	{
 		mList = list;
+		mCount = list.Count;
 		mComparer = Comparer<T2>.Default;
-		HeapSort();
+		BuildingHeap();
 	}
 	
 	public int Size()
 	{
 		if (mList != null)
 		{
-			return mList.Count;
+			return mCount;
 		}
 		else
 		{
@@ -77,24 +83,28 @@ public class Heap<T1,T2>
 		}
 	}
 	
+	//O(Log(N))
 	public void RemoveTop()
 	{
 		if (mList != null)
 		{
-			mList.RemoveAt(0);
+			mList[0] = mList[mCount - 1];
+			mList.RemoveAt(mCount-1);
+			mCount--;
+			HeapifyFromBeginningToEnd(0,mCount - 1);
 		}
 	}
 	
 	public KeyValuePair<T1, T2> Top()
 	{
-		if(mList != null)
+		if (mList != null)
 		{
 			return mList[0];
 		}
 		else
 		{
-			//Note no member exist, so return default KeyValuePair
-			return new KeyValuePair<T1, T2>();
+			//No more member
+			throw new InvalidOperationException("Empty heap.");
 		}
 	}
 	
@@ -106,26 +116,28 @@ public class Heap<T1,T2>
 		}
 	}
 	
+	//O(Log(N))
 	public void Insert(KeyValuePair<T1, T2> valuepair)
 	{
 		mList.Add(valuepair);
-		HeapSort();
+		mCount++;
+		HeapifyFromEndToBeginning(mCount - 1);
 	}
 	
 	//调整堆确保堆是最大堆，这里花O(log(n))，跟堆的深度有关
-	private void HeapAdjust(int parentindex, int length)
+	private void HeapifyFromBeginningToEnd(int parentindex, int length)
 	{
 		int max_index = parentindex;
 		int left_child_index = parentindex * 2 + 1;
 		int right_child_index = parentindex * 2 + 2;
 		
 		//Chose biggest one between parent and left&right child
-		if (left_child_index < length && mComparer.Compare(mList[left_child_index].Value, mList[max_index].Value) > 0)
+		if (left_child_index < length && mComparer.Compare(mList[left_child_index].Value, mList[max_index].Value) < 0)
 		{
 			max_index = left_child_index;
 		}
 		
-		if (right_child_index < length && mComparer.Compare(mList[right_child_index].Value, mList[max_index].Value) > 0)
+		if (right_child_index < length && mComparer.Compare(mList[right_child_index].Value, mList[max_index].Value) < 0)
 		{
 			max_index = right_child_index;
 		}
@@ -134,25 +146,51 @@ public class Heap<T1,T2>
 		//then we swap it and do adjust for child again to make sure meet max heap definition
 		if (max_index != parentindex)
 		{
-			//swap_time++;
-			Swap(max_index,parentindex/*mList[max_index], mList[parentindex]*/);
-			HeapAdjust(max_index, length);
+			Swap(max_index, parentindex);
+			HeapifyFromBeginningToEnd(max_index, length);
+		}
+	}
+	
+	//O(log(N))
+	private void HeapifyFromEndToBeginning(int index)
+	{
+		if(index >= mCount)
+		{
+			return;
+		}
+		while (index > 0)
+		{
+			int parentindex = (index - 1) / 2;
+			if(mComparer.Compare(mList[parentindex].Value,mList[index].Value) > 0)
+			{
+				Swap(parentindex, index);
+				index = parentindex;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 	
 	//通过初试数据构建最大堆
+	////O(N*Log(N))
 	private void BuildingHeap()
 	{
-		for (int i = mList.Count / 2 - 1; i >= 0; i--)
+		if (mList != null)
 		{
-			//1.2 Adjust heap
-			//Make sure meet max heap definition
-			//Max Heap definition:
-			// (k(i) >= k(2i) && k(i) >= k(2i+1))   (1 <= i <= n/2)
-			HeapAdjust(i, mList.Count);
+			for (int i = mList.Count / 2 - 1; i >= 0; i--)
+			{
+				//1.2 Adjust heap
+				//Make sure meet max heap definition
+				//Max Heap definition:
+				// (k(i) >= k(2i) && k(i) >= k(2i+1))   (1 <= i <= n/2)
+				HeapifyFromBeginningToEnd(i, mList.Count);
+			}
 		}
 	}
 	
+	////O(N*log(N))
 	private void HeapSort()
 	{
 		if (mList != null)
@@ -173,11 +211,11 @@ public class Heap<T1,T2>
 			{
 				//swap first element and last element
 				//do adjust heap process again to make sure the new array are still max heap
-				Swap(i,0/*mList[i], mList[0]*/);
+				Swap(i, 0);
 				//Due to we already building max heap before,
 				//so  we just need to adjust for index 0 after we swap first and last element
-				HeapAdjust(0, i);
-			}
+				HeapifyFromBeginningToEnd(0, i);
+			}            
 		}
 		else
 		{

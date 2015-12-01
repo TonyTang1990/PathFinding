@@ -7,6 +7,8 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 	public SparseGraph()
 	{
 		mNextNodeIndex = 0;
+		mNodes = new List<T1> ();
+		mEdges = new List<T2> ();
 	}
 
 	public int AddNode(T1 node)

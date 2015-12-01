@@ -11,11 +11,71 @@ public class PathFinder : MonoBehaviour {
 		mColumnNum = 0;
 		mCostToTarget = 0;
 		mTimeTaken = 0;
+		mNavGraph = null;
+		mPath = new List<int> ();
+		mSubTree = new List<GraphEdge> ();
 	}
 
-	public void CreteGraph(int cow, int column)
+	public void CreteGraph(int row, int column)
 	{
+		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> ();
+		mPath.Clear ();
+		mSubTree.Clear ();
+		mTimeTaken = 0;
 
+		//SparseGraph nodes data
+		for (int rw = 0; rw < row; rw++)
+		{
+			for(int col = 0; col < column; col++)
+			{
+				mNavGraph.AddNode(new NavGraphNode(mNavGraph.GetnextFreeNodeIndex,new Vector3(rw,0.0f,col)));
+			}
+		}
+
+		//SparseGraph edges data
+		for (int rw = 0; rw < row; rw++) 
+		{
+			for (int col = 0; col < column; col++) 
+			{
+				CreateAllNeighboursToGridNode(rw, col, row, column);
+			}
+		}
+	}
+
+	private void CreateAllNeighboursToGridNode(int row, int col, int totalrow, int totalcolumn)
+	{
+		int noderow = 0;
+		int nodecol = 0;
+		for (int i=-1; i<2; ++i) 
+		{
+			for (int j=-1; j<2; ++j) 
+			{
+				noderow =  row + i;
+				nodecol = col + j;
+				//Skip if equal to this node
+				if((i == 0) && (j == 0))
+				{
+					continue;
+				}
+
+				//Check to see if this is a valid neighbour
+				if(ValidNeighbour(noderow, nodecol, totalrow, totalcolumn))
+				{
+					Vector3 posnode = mNavGraph.Nodes[row * totalcolumn + col].Position;
+					Vector3 posneighbour = mNavGraph.Nodes[noderow * totalcolumn + nodecol].Position;
+
+					float dist = Vector3.Distance(posnode, posneighbour);
+
+					GraphEdge newedge = new GraphEdge(row * totalcolumn + col, noderow * totalcolumn + nodecol, dist);
+					mNavGraph.AddEdge(newedge);
+				}
+			}
+		}
+	}
+
+	private bool ValidNeighbour(int x, int y, int row, int col)
+	{
+		return !(x < 0 || y < 0 || x >= row || y >= col);
 	}
 
 	public void CreatePathAStar()
