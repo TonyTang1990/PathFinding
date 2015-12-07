@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class MapManager : MonoBehaviour {
 
@@ -9,6 +10,13 @@ public class MapManager : MonoBehaviour {
 
 	public int mColumn = 2;
 
+	public PathFinder PathFinder
+	{
+		get
+		{
+			return mPathFinder;
+		}
+	}
 	private PathFinder mPathFinder;
 
 	void Awake()
@@ -25,6 +33,8 @@ public class MapManager : MonoBehaviour {
 	void Start()
 	{
 		LoadMap ();
+
+		UIManager.UIMInstance.UpdateAstarInfo ();
 	}
 
 	void LoadMap()
@@ -41,6 +51,28 @@ public class MapManager : MonoBehaviour {
 	{
 		//Debug.DrawLine (new Vector3 (0.0f, 0.0f, 0.0f), new Vector3 (mRow, 0.0f, mColumn), Color.red);
 
+	}
+
+	public void Search()
+	{
+		mPathFinder.CreatePathAStar ();
+
+		UIManager.UIMInstance.UpdateAstarInfo();
+	}
+	
+	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn)
+	{
+		Debug.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
+
+        Debug.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
+
+		mPathFinder.SourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
+
+		mPathFinder.TargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
+
+		Debug.Log ("mPathFinder.SourceCellIndex = " + mPathFinder.SourceCellIndex);
+
+		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
 	}
 
 	void OnDrawGizmosSelected()

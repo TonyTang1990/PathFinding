@@ -14,6 +14,13 @@ public class PathFinder : MonoBehaviour {
 		mNavGraph = null;
 		mPath = new List<int> ();
 		mSubTree = new List<GraphEdge> ();
+
+		//A Star Info
+		mTotalNodes = 0;
+		mTotalEdges = 0;
+		mTimeTaken = 0;
+		mNodesSearched = 0;
+		mEdgesSearched = 0;
 	}
 
 	public void CreteGraph(int row, int column)
@@ -40,6 +47,9 @@ public class PathFinder : MonoBehaviour {
 				CreateAllNeighboursToGridNode(rw, col, row, column);
 			}
 		}
+
+		mTotalNodes = mNavGraph.NumNodes();
+		mTotalEdges = mNavGraph.NumEdges ();
 	}
 
 	private void CreateAllNeighboursToGridNode(int row, int col, int totalrow, int totalcolumn)
@@ -82,7 +92,7 @@ public class PathFinder : MonoBehaviour {
 	{
 		float time_start = Time.realtimeSinceStartup;
 
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mCowNum, mColumnNum);
+		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex);
 
 		float time_end = Time.realtimeSinceStartup;
 
@@ -117,7 +127,76 @@ public class PathFinder : MonoBehaviour {
 	private bool mFinish;
 
 	//Holds the time taken for the currently used algorithm to complete
+	public float TimeTaken {
+		get {
+			return mTimeTaken;
+		}
+		set {
+			mTimeTaken = value;
+		}
+	}
 	private float mTimeTaken;
+
+	//A Star Info
+	public int TotalNodes {
+		get {
+			return mTotalNodes;
+		}
+		set {
+			mTotalNodes = value;
+		}
+	}
+	private int mTotalNodes;
+
+	public int TotalEdges {
+		get {
+			return mTotalEdges;
+		}
+		set {
+			mTotalEdges = value;
+		}
+	}
+	private int mTotalEdges;
+
+	public int NodesSearched {
+		get {
+			return mNodesSearched;
+		}
+		set {
+			mNodesSearched = value;
+		}
+	}
+	private int mNodesSearched;
+
+	public int EdgesSearched {
+		get {
+			return mEdgesSearched;
+		}
+		set {
+			mEdgesSearched = value;
+		}
+	}
+	private int mEdgesSearched;
+
+	public int SourceCellIndex {
+		get {
+			return mSourceCellIndex;
+		}
+		set {
+			mSourceCellIndex = value;
+		}
+	}
+	private int mSourceCellIndex;
+
+	public int TargetCellIndex {
+		get {
+			return mTargetCellIndex;
+		}
+		set {
+			mTargetCellIndex = value;
+		}
+	}
+	private int mTargetCellIndex;
 
 	private void UpdateAlgorithm()
 	{
