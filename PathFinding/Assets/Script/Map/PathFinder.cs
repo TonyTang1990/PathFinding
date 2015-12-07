@@ -26,6 +26,9 @@ public class PathFinder : MonoBehaviour {
 	public void CreteGraph(int row, int column)
 	{
 		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> ();
+		
+		mNavGraph.BDrawMap = mBDrawMap;
+
 		mPath.Clear ();
 		mSubTree.Clear ();
 		mTimeTaken = 0;
@@ -115,6 +118,11 @@ public class PathFinder : MonoBehaviour {
 	//this list of edges is used to store any subtree returned from any of the graph algorithms
 	private List<GraphEdge> mSubTree;
 
+	public float CostToTarget {
+		get {
+			return mCostToTarget;
+		}
+	}
 	private float mCostToTarget;
 
 	private int mCowNum;
@@ -197,6 +205,8 @@ public class PathFinder : MonoBehaviour {
 		}
 	}
 	private int mTargetCellIndex;
+
+	public bool mBDrawMap = true;
 
 	private void UpdateAlgorithm()
 	{

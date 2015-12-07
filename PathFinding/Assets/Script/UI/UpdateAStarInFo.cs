@@ -13,6 +13,8 @@ public class UpdateAStarInFo : MonoBehaviour {
 
 	public Text mEdgesSearchedText;
 
+	public Text mDistance;
+
 	public void UpdateToalNodesAndEdges()
 	{
 		mTotalNodesText.text = MapManager.MMInstance.PathFinder.TotalNodes.ToString();
@@ -24,5 +26,6 @@ public class UpdateAStarInFo : MonoBehaviour {
 		mSearchTimeText.text = MapManager.MMInstance.PathFinder.TimeTaken.ToString();
 		mNodesSearchedText.text = MapManager.MMInstance.PathFinder.NodesSearched.ToString();
 		mEdgesSearchedText.text = MapManager.MMInstance.PathFinder.EdgesSearched.ToString();
+		mDistance.text = MapManager.MMInstance.PathFinder.CostToTarget.ToString();
 	}
 }

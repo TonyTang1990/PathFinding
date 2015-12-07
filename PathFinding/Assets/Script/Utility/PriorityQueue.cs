@@ -14,6 +14,11 @@ public class PriorityQueue<T1, T2>
 	{
 		mHeap = heap;
 	}
+
+	public PriorityQueue(KeyValuePair<T1,T2> key, int maxsize)
+	{
+
+	}
 	
 	public bool Empty()
 	{

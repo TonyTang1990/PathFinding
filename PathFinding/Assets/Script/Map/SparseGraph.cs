@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
-public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
+public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 {
 	public SparseGraph()
 	{
 		mNextNodeIndex = 0;
 		mNodes = new List<T1> ();
-		mEdges = new List<T2> ();
+		mEdgesList = new List<List<T2>> ();
+		mBDrawMap = true;
 	}
 
 	public int AddNode(T1 node)
 	{
 		mNodes.Add(node);
+		mEdgesList.Add (new List<T2> ());
 		mNextNodeIndex++;
 		return mNextNodeIndex;
 	}
@@ -25,7 +28,26 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 
 	public void AddEdge(T2 edge)
 	{
-		mEdges.Add (edge);
+		Assert.IsTrue (edge.From < mNextNodeIndex && edge.To < mNextNodeIndex);
+		if (UniqueEdge (edge.From, edge.To)) {
+			mEdgesList[edge.From].Add (edge);
+			if(mBDrawMap == true)
+			{
+				Debug.DrawLine(mNodes[edge.From].Position, mNodes[edge.To].Position, Color.red, Mathf.Infinity);
+			}
+		}
+	}
+
+	private bool UniqueEdge(int from, int to)
+	{
+		foreach(T2 t in mEdgesList[from])
+		{
+			if(t.To == to)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void RemmoveEdge(int from, int to)
@@ -35,7 +57,15 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 
 	public T2 GetEdge(int from, int to)
 	{
-		return mEdges[0];
+		Assert.IsTrue (from < mNextNodeIndex && to < mNextNodeIndex);
+		foreach (T2 t in mEdgesList[from]) {
+			if(t.To == to)
+			{
+				return t;
+			}
+		}
+		Assert.IsTrue (false);
+		return null;
 	}
 
 	public int NumNodes()
@@ -45,7 +75,11 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 
 	public int NumEdges()
 	{
-		return mEdges.Count;
+		int total = 0;
+		foreach (List<T2> t in mEdgesList) {
+			total += t.Count;
+		}
+		return total;
 	}
 
 	public bool IsEmpty()
@@ -61,7 +95,6 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 	public void Clear()
 	{
 		mNodes.Clear ();
-		mEdges.Clear ();
 		mEdgesList.Clear ();
 	}
 
@@ -87,16 +120,6 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 	}
 	private List<T1> mNodes;
 
-	public List<T2> Edges {
-		get {
-			return mEdges;
-		}
-		set {
-			mEdges = value;
-		}
-	}
-	private List<T2> mEdges;
-
 	public List<List<T2>> EdgesList
 	{
 		get
@@ -110,5 +133,13 @@ public class SparseGraph<T1,T2> where T1 : GraphNode where T2 : GraphEdge
 	}
 	public List<List<T2>> mEdgesList;
 
-
+	public bool BDrawMap {
+		get {
+			return mBDrawMap;
+		}
+		set {
+			mBDrawMap = value;
+		}
+	}
+	private bool mBDrawMap;
 }

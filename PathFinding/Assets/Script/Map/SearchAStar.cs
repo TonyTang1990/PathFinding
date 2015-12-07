@@ -93,7 +93,7 @@ public class SearchAStar {
 	//The A* search algorithm
 	private void Search()
 	{
-		//PriorityQueue<int,float> pq(
+		//PriorityQueue<int,float> pq(mFCosts,);
 	}
 }
 

@@ -50,7 +50,6 @@ public class MapManager : MonoBehaviour {
 	void DrawMap()
 	{
 		//Debug.DrawLine (new Vector3 (0.0f, 0.0f, 0.0f), new Vector3 (mRow, 0.0f, mColumn), Color.red);
-
 	}
 
 	public void Search()
@@ -75,15 +74,17 @@ public class MapManager : MonoBehaviour {
 		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
 	}
 
-	void OnDrawGizmosSelected()
+	void OnDrawGizmos()
 	{
-		for (int i = 0; i <= mRow; i++) 
+		/*
+		for (int i = 0; i < mRow; i++) 
 		{
-			for(int j = 0; j <= mColumn; j++)
+			for(int j = 0; j < mColumn; j++)
 			{
 				Gizmos.color = Color.red;
 				Gizmos.DrawSphere(new Vector3(i,0.0f,j),0.05f);
 			}
 		}
+		*/
 	}
 }
