@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public class PriorityQueue<T1, T2>
 {
@@ -15,7 +16,7 @@ public class PriorityQueue<T1, T2>
 		mHeap = heap;
 	}
 
-	public PriorityQueue(List<KeyValuePair<T1,T2>> key)
+	public PriorityQueue(List<Pair<T1,T2>> key)
 	{
 		mHeap = new Heap<T1, T2> (key);
 	}
@@ -25,14 +26,14 @@ public class PriorityQueue<T1, T2>
 		return (mHeap.Size() == 0);
 	}
 	
-	public void Push(KeyValuePair<T1, T2> kvp)
+	public void Push(Pair<T1, T2> kvp)
 	{
 		mHeap.Insert(kvp);
 	}
 	
-	public KeyValuePair<T1, T2> Pop()
+	public Pair<T1, T2> Pop()
 	{
-		KeyValuePair<T1,T2> result = mHeap.Top();
+		Pair<T1,T2> result = mHeap.Top();
 		mHeap.RemoveTop();
 		return result;
 	}
@@ -42,9 +43,15 @@ public class PriorityQueue<T1, T2>
 		return mHeap.Size();
 	}
 	
-	public KeyValuePair<T1, T2> Top()
+	public Pair<T1, T2> Top()
 	{
 		return mHeap.Top(); ;
+	}
+
+	public void ChangePriority(int index)
+	{
+		Assert.IsTrue (index >= 0 && index < mHeap.Size ());
+		mHeap.HeapifyFromEndToBeginning (index);
 	}
 	
 	public void PrintOutAllMember()
@@ -57,18 +64,18 @@ public class PriorityQueue<T1, T2>
 
 public class Heap<T1, T2>
 {
-	private List<KeyValuePair<T1, T2>> mList;
+	private List<Pair<T1, T2>> mList;
 	private IComparer<T2> mComparer;
 	private int mCount;
 	
 	public Heap()
 	{
-		mList = new List<KeyValuePair<T1, T2>>();
+		mList = new List<Pair<T1, T2>>();
 		mComparer = Comparer<T2>.Default;
 		mCount = 0;
 	}
 	
-	public Heap(List<KeyValuePair<T1, T2>> list)
+	public Heap(List<Pair<T1, T2>> list)
 	{
 		mList = list;
 		mCount = list.Count;
@@ -100,7 +107,7 @@ public class Heap<T1, T2>
 		}
 	}
 	
-	public KeyValuePair<T1, T2> Top()
+	public Pair<T1, T2> Top()
 	{
 		if (mList != null)
 		{
@@ -115,14 +122,14 @@ public class Heap<T1, T2>
 	
 	public void PrintOutAllMember()
 	{
-		foreach (KeyValuePair<T1, T2> valuepair in mList)
+		foreach (Pair<T1, T2> valuepair in mList)
 		{
 			Debug.Log(valuepair.ToString());
 		}
 	}
 	
 	//O(Log(N))
-	public void Insert(KeyValuePair<T1, T2> valuepair)
+	public void Insert(Pair<T1, T2> valuepair)
 	{
 		mList.Add(valuepair);
 		mCount++;
@@ -130,7 +137,7 @@ public class Heap<T1, T2>
 	}
 	
 	//调整堆确保堆是最大堆，这里花O(log(n))，跟堆的深度有关
-	private void HeapifyFromBeginningToEnd(int parentindex, int length)
+	public void HeapifyFromBeginningToEnd(int parentindex, int length)
 	{
 		int max_index = parentindex;
 		int left_child_index = parentindex * 2 + 1;
@@ -157,7 +164,7 @@ public class Heap<T1, T2>
 	}
 	
 	//O(log(N))
-	private void HeapifyFromEndToBeginning(int index)
+	public void HeapifyFromEndToBeginning(int index)
 	{
 		if(index >= mCount)
 		{
@@ -230,9 +237,40 @@ public class Heap<T1, T2>
 	
 	private void Swap(int id1, int id2)
 	{
-		KeyValuePair<T1, T2> temp;
+		Pair<T1, T2> temp;
 		temp = mList[id1];
 		mList[id1] = mList[id2];
 		mList[id2] = temp;
+	}
+}
+
+public class Pair<T1, T2>
+{
+	public Pair()
+	{
+		
+	}
+	
+	public Pair(T1 k, T2 v)
+	{
+		Key = k;
+		Value = v;
+	}
+	
+	public override string ToString()
+	{
+		return String.Format("[{0},{1}]",Key,Value);
+	}
+	
+	public T1 Key
+	{
+		get;
+		set;
+	}
+	
+	public T2 Value
+	{
+		get;
+		set;
 	}
 }

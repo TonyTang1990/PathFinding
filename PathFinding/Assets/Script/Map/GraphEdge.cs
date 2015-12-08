@@ -1,12 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+enum E_NODE_INDEX
+{
+	INVALID_NODE = -1
+}
+
 public class GraphEdge {
+	public GraphEdge()
+	{
+		mFrom = (int)E_NODE_INDEX.INVALID_NODE;
+		mTo = (int)E_NODE_INDEX.INVALID_NODE;
+		mCost = 0.0f;
+	}
+
 	public GraphEdge(int from, int to, float cost)
 	{
 		mFrom = from;
 		mTo = to;
 		mCost = cost;
+	}
+
+	public bool IsValidEdge()
+	{
+		return (mFrom != (int)E_NODE_INDEX.INVALID_NODE || mTo != (int)E_NODE_INDEX.INVALID_NODE);
 	}
 
 	public int From {

@@ -4,29 +4,30 @@ using System.Collections.Generic;
 
 public class SearchAStar {
 
-	public static float Calculate(SparseGraph<NavGraphNode,GraphEdge> g,  int nd1, int nd2)
-	{
-		return 0.0f;
-	}
-
 	public SearchAStar(SparseGraph<NavGraphNode,GraphEdge> graph
 	                   ,int source
 	                   ,int target)
 	{
 		mGraph = graph;
 		mGCosts = new List<float> (graph.NumNodes ());
-		mFCosts = new List<float> (graph.NumNodes ());
+		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
 		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
 		mSearchFrontier = new List<GraphEdge> (graph.NumEdges());
 		CostToTargetNode = new List<float> (graph.NumNodes());
 		//Init G cost and F cost and Cost value
 		for (int i = 0; i < graph.NumNodes(); i++) {
 			mGCosts.Add (0.0f);
-			mFCosts.Add(0.0f);
+			mFCosts.Add(new Pair<int,float>(i,0.0f));
+			mShortestPathTree.Add(new GraphEdge());
+			mSearchFrontier.Add(new GraphEdge());
 			CostToTargetNode.Add(0.0f);
 		}
 		mISource = source;
 		mITarget = target;
+
+		mNodesSearched = 0;
+
+		mEdgesSearched = 0;
 
 		Search ();
 	}
@@ -43,13 +44,14 @@ public class SearchAStar {
 
 		path.Add (nd);
 
-		while ((nd != mISource) && (mShortestPathTree[nd] != null)) 
+		while ((nd != mISource) && (mShortestPathTree[nd] != null) && mShortestPathTree[nd].IsValidEdge()) 
 		{
+			Debug.DrawLine(mGraph.Nodes[mShortestPathTree[nd].From].Position,mGraph.Nodes[nd].Position,Color.green, Mathf.Infinity);
+
 			nd = mShortestPathTree[nd].From;
 
 			path.Add(nd);
 		}
-
 		return path;
 	}
 
@@ -67,7 +69,7 @@ public class SearchAStar {
 
 	private List<float> mGCosts;
 
-	private List<float> mFCosts;
+	private List<Pair<int,float>> mFCosts;
 
 	public List<GraphEdge> SPT
 	{
@@ -96,20 +98,42 @@ public class SearchAStar {
 
 	private int mITarget;
 
+	public int NodesSearched
+	{
+		get
+		{
+			return mNodesSearched;
+		}
+	}
+	private int mNodesSearched;
+
+	public int EdgesSearched
+	{
+		get
+		{
+			return mEdgesSearched;
+		}
+	}
+	private int mEdgesSearched;
+
 	//The A* search algorithm
 	private void Search()
 	{
 		PriorityQueue<int,float> pq = new PriorityQueue<int, float>();
 
-		pq.Push (new KeyValuePair<int, float> (mISource, mFCosts [mISource]));
+		pq.Push (mFCosts [mISource]);
 
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
 			int nextclosestnode = pq.Pop().Key;
 
-			//move this node from the frontier to the spanning tree
-			mShortestPathTree[nextclosestnode] = mSearchFrontier[nextclosestnode];
+			mNodesSearched++;
 
+			//move this node from the frontier to the spanning tree
+			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
+			{
+				mShortestPathTree[nextclosestnode] = mSearchFrontier[nextclosestnode];
+			}
 			//If the target has been found exit
 			if(nextclosestnode == mITarget)
 			{
@@ -129,14 +153,18 @@ public class SearchAStar {
 				float gcost = mGCosts[nextclosestnode] + edge.Cost;
 
 				//if the node has not been added to the frontier, add it and update the G and F costs
-				if(mSearchFrontier[edge.To] == null)
+				if(mSearchFrontier[edge.To] != null && !mSearchFrontier[edge.To].IsValidEdge())
 				{
-					mFCosts[edge.To] = gcost + hcost;
+					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
-					pq.Push(new KeyValuePair<int, float>(edge.To,mFCosts[edge.To]));
+					pq.Push(mFCosts[edge.To]);
 
 					mSearchFrontier[edge.To] = edge;
+
+					mEdgesSearched++;
+
+					Debug.DrawLine(mGraph.Nodes[edge.From].Position,mGraph.Nodes[edge.To].Position,Color.yellow, Mathf.Infinity);
 				}
 
 				//if this node is already on the frontier but the cost to get here
@@ -144,10 +172,18 @@ public class SearchAStar {
 				//cost and frontier accordingly
 				else if((gcost < mGCosts[edge.To]) && (mShortestPathTree[edge.To] == null))
 				{
-					mFCosts[edge.To] = gcost + hcost;
+					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
-					//pq.
+					//Due to some node's f cost has been changed
+					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
+					//compare the fcost will make sure we search the path in the right direction
+					//h cost is the key to search in the right direction
+					pq.ChangePriority(edge.To);
+
+					mSearchFrontier[edge.To] = edge;
+
+					mEdgesSearched++;
 				}
 			}
 		}

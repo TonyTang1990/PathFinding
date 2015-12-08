@@ -106,6 +106,10 @@ public class PathFinder : MonoBehaviour {
 		mSubTree = astarsearch.GetSPT ();
 
 		mCostToTarget = astarsearch.GetCostToTarget ();
+
+		mNodesSearched = astarsearch.NodesSearched;
+
+		mEdgesSearched = astarsearch.EdgesSearched;
 	}
 
 	private List<int> mTerrainType;
