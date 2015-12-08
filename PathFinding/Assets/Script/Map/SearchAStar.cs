@@ -142,12 +142,13 @@ public class SearchAStar {
 
 			//Now to test all the edges attached to this node
 			List<GraphEdge> edgelist = mGraph.EdgesList[nextclosestnode];
+
 			foreach(GraphEdge edge in edgelist)
 			{
+				TimerCounter.CreateInstance().Start("Calculation");
 				//calculate the heuristic cost from this node to the target (H)
 				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To);
-
-				Debug.Log("hcost = " + hcost);
+				TimerCounter.CreateInstance().End();
 
 				//calculate the 'real' cost to this node from the source (G)
 				float gcost = mGCosts[nextclosestnode] + edge.Cost;
@@ -158,7 +159,9 @@ public class SearchAStar {
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
+					TimerCounter.CreateInstance().Start("Push");
 					pq.Push(mFCosts[edge.To]);
+					TimerCounter.CreateInstance().End();
 
 					mSearchFrontier[edge.To] = edge;
 
@@ -175,11 +178,13 @@ public class SearchAStar {
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
+					TimerCounter.CreateInstance().Start("ChangePriority");
 					//Due to some node's f cost has been changed
 					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
 					//compare the fcost will make sure we search the path in the right direction
 					//h cost is the key to search in the right direction
 					pq.ChangePriority(edge.To);
+					TimerCounter.CreateInstance().End();
 
 					mSearchFrontier[edge.To] = edge;
 
@@ -194,6 +199,13 @@ class Heuristic_Euclid
 {
 	public static float Calculate(SparseGraph<NavGraphNode,GraphEdge> g, int nd1, int nd2)
 	{
+		//Manhattan distance heuritic
+		//Vector2 v1 = Utility.ConvertIndexToRC (nd1);
+		//Vector2 v2 = Utility.ConvertIndexToRC (nd2);
+		//float dis = v1.x - v2.x + v1.y - v2.y;
+		//Debug.Log("dis = " + dis);
+		//return dis;
+		//Caculation distance takes too much time
 		return Vector3.Distance(g.Nodes[nd1].Position, g.Nodes[nd2].Position);
 	}
 }

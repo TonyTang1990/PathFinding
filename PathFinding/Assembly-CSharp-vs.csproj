@@ -58,6 +58,7 @@
      <Compile Include="Assets\Script\UI\UpdateAStarInFo.cs" />
      <Compile Include="Assets\Script\Utility\FPSDisplay.cs" />
      <Compile Include="Assets\Script\Utility\PriorityQueue.cs" />
+     <Compile Include="Assets\Script\Utility\TimerCounter.cs" />
      <Compile Include="Assets\Script\Utility\Utility.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Software/Unity5/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

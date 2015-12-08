@@ -25,4 +25,11 @@ public class Utility {
 
 		return ((row -1 ) * totalcolumn + (column - 1));
 	}
+
+	public static Vector2 ConvertIndexToRC(int index)
+	{
+		int row = index / MapManager.MMInstance.mColumn + 1;
+		int column = index % MapManager.MMInstance.mColumn + 1;
+		return new Vector2 (row, column);
+	}
 }
