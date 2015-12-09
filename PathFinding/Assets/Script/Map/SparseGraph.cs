@@ -13,6 +13,14 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 		mBDrawMap = true;
 	}
 
+	public SparseGraph(int nodesize)
+	{
+		mNextNodeIndex = 0;
+		mNodes = new List<T1> (nodesize);
+		mEdgesList = new List<List<T2>> (nodesize);
+    	mBDrawMap = true;
+    }
+
 	public int AddNode(T1 node)
 	{
 		mNodes.Add(node);
@@ -23,7 +31,8 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 
 	public void RemoveNode(int node)
 	{
-
+		Assert.IsTrue (node >= 0 && node < mNextNodeIndex);
+		mNodes.RemoveAt (node);
 	}
 
 	public void AddEdge(T2 edge)

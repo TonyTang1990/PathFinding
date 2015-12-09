@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using UnityEngine.Assertions;
 
 public class SearchAStar {
 
 	public SearchAStar(SparseGraph<NavGraphNode,GraphEdge> graph
 	                   ,int source
-	                   ,int target)
+	                   ,int target
+	                   ,float hcostpercentage
+	                   ,bool drawexplorepath
+	                   ,float explorepathremaintime)
 	{
 		mGraph = graph;
 		mGCosts = new List<float> (graph.NumNodes ());
@@ -29,15 +34,14 @@ public class SearchAStar {
 
 		mEdgesSearched = 0;
 
-		float starttime = Time.realtimeSinceStartup;
+		Assert.IsTrue (hcostpercentage >= 0);
+		mHCostPercentage = hcostpercentage;
+
+		mBDrawExplorePath = drawexplorepath;
+
+		mExplorePathRemainTime = explorepathremaintime;
 
 		Search ();
-
-		float endtime = Time.realtimeSinceStartup;
-
-		float timespend = endtime - starttime;
-
-		Debug.Log ("Search takes: " + timespend);
 	}
 
 	public List<int> GetPathToTarget()
@@ -54,7 +58,7 @@ public class SearchAStar {
 
 		while ((nd != mISource) && (mShortestPathTree[nd] != null) && mShortestPathTree[nd].IsValidEdge()) 
 		{
-			Debug.DrawLine(mGraph.Nodes[mShortestPathTree[nd].From].Position,mGraph.Nodes[nd].Position,Color.green, Mathf.Infinity);
+			//Debug.DrawLine(mGraph.Nodes[mShortestPathTree[nd].From].Position,mGraph.Nodes[nd].Position,Color.green, Mathf.Infinity);
 
 			nd = mShortestPathTree[nd].From;
 
@@ -124,31 +128,29 @@ public class SearchAStar {
 	}
 	private int mEdgesSearched;
 
+	private float mHCostPercentage;
+
+	private bool mBDrawExplorePath;
+
+	private float mExplorePathRemainTime;
+
 	//The A* search algorithm
 	private void Search()
 	{
-		TimerCounter.CreateInstance ().Start ("PriorityQueue");
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>(mGraph.NumNodes() / 20);
-		TimerCounter.CreateInstance ().End ();
+		PriorityQueue<int,float> pq = new PriorityQueue<int, float>(MapManager.MMInstance.mRow);
 
-		TimerCounter.CreateInstance ().Start ("Push FCosts");
 		pq.Push (mFCosts [mISource]);
-		TimerCounter.CreateInstance ().End ();
 
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
-			TimerCounter.CreateInstance().Start("Pop");
 			int nextclosestnode = pq.Pop().Key;
-			TimerCounter.CreateInstance().End();
 
 			mNodesSearched++;
 
 			//move this node from the frontier to the spanning tree
 			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
 			{
-				TimerCounter.CreateInstance().Start("Assignment");
 				mShortestPathTree[nextclosestnode] = mSearchFrontier[nextclosestnode];
-				TimerCounter.CreateInstance().End();
 			}
 			//If the target has been found exit
 			if(nextclosestnode == mITarget)
@@ -161,10 +163,8 @@ public class SearchAStar {
 
 			foreach(GraphEdge edge in edgelist)
 			{
-				TimerCounter.CreateInstance().Start("Calculation");
 				//calculate the heuristic cost from this node to the target (H)
-				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To);
-				TimerCounter.CreateInstance().End();
+				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To) * mHCostPercentage;
 
 				//calculate the 'real' cost to this node from the source (G)
 				float gcost = mGCosts[nextclosestnode] + edge.Cost;
@@ -175,17 +175,16 @@ public class SearchAStar {
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
-					TimerCounter.CreateInstance().Start("Push");
 					pq.Push(mFCosts[edge.To]);
-					TimerCounter.CreateInstance().End();
 
-					TimerCounter.CreateInstance().Start("SearchFrontierEqual");
 					mSearchFrontier[edge.To] = edge;
-					TimerCounter.CreateInstance().End();
 
 					mEdgesSearched++;
 
-					Debug.DrawLine(mGraph.Nodes[edge.From].Position,mGraph.Nodes[edge.To].Position,Color.yellow, Mathf.Infinity);
+					if(mBDrawExplorePath)
+					{
+						Debug.DrawLine(mGraph.Nodes[edge.From].Position,mGraph.Nodes[edge.To].Position,Color.yellow, mExplorePathRemainTime);
+					}
 				}
 
 				//if this node is already on the frontier but the cost to get here
@@ -196,14 +195,12 @@ public class SearchAStar {
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
-					TimerCounter.CreateInstance().Start("ChangePriority");
 					//Due to some node's f cost has been changed
 					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
 					//compare the fcost will make sure we search the path in the right direction
 					//h cost is the key to search in the right direction
 					pq.ChangePriority(edge.To);
-					TimerCounter.CreateInstance().End();
-
+				
 					mSearchFrontier[edge.To] = edge;
 
 					mEdgesSearched++;
@@ -223,7 +220,7 @@ class Heuristic_Euclid
 		//float dis = v1.x - v2.x + v1.y - v2.y;
 		//Debug.Log("dis = " + dis);
 		//return dis;
-		//Caculation distance takes too much time
+		//Caculation distance takes much time
 		return Vector3.Distance(g.Nodes[nd1].Position, g.Nodes[nd2].Position);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class PathFinder : MonoBehaviour {
 	public PathFinder()
@@ -21,11 +22,15 @@ public class PathFinder : MonoBehaviour {
 		mTimeTaken = 0;
 		mNodesSearched = 0;
 		mEdgesSearched = 0;
+
+		mHCostPercentage = 1.0f;
+		mBDrawExplorePath = true;
+		mExplorePathRemainTime = 10.0f;
 	}
 
 	public void CreteGraph(int row, int column)
 	{
-		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> ();
+		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> (row * column);
 		
 		mNavGraph.BDrawMap = mBDrawMap;
 
@@ -93,13 +98,13 @@ public class PathFinder : MonoBehaviour {
 
 	public void CreatePathAStar()
 	{
-		float time_start = Time.realtimeSinceStartup;
+		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex);
+		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
 
-		float time_end = Time.realtimeSinceStartup;
+		TimerCounter.CreateInstance ().End ();
 
-		mTimeTaken = time_end - time_start;
+		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
 
 		mPath = astarsearch.GetPathToTarget ();
 
@@ -110,6 +115,20 @@ public class PathFinder : MonoBehaviour {
 		mNodesSearched = astarsearch.NodesSearched;
 
 		mEdgesSearched = astarsearch.EdgesSearched;
+	}
+
+	void OnDrawGizmos()
+	{
+		if (mSubTree != null) {
+			Gizmos.color = Color.green;
+			int nd = mTargetCellIndex;
+	
+			while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) 
+			{
+				Gizmos.DrawLine(mNavGraph.Nodes[mSubTree[nd].From].Position,mNavGraph.Nodes[nd].Position);
+				nd = mSubTree[nd].From;
+			}
+		}
 	}
 
 	private List<int> mTerrainType;
@@ -211,6 +230,12 @@ public class PathFinder : MonoBehaviour {
 	private int mTargetCellIndex;
 
 	public bool mBDrawMap = true;
+
+	public float mHCostPercentage;
+
+	public bool mBDrawExplorePath;
+
+	public float mExplorePathRemainTime;
 
 	private void UpdateAlgorithm()
 	{

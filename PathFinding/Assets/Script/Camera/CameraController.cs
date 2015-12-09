@@ -19,9 +19,7 @@ public class CameraController : MonoBehaviour {
 
     void Start()
     {
-		Debug.Log ("Camera transform.position.x = " + transform.position.x);
-		Debug.Log ("Camera transform.position.y = " + transform.position.y);
-		Debug.Log ("Camera transform.position.z = " + transform.position.z);
+
     }
 
 	void Update()

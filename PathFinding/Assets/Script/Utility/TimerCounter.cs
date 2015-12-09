@@ -1,16 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Diagnostics;
 
 public class TimerCounter{
 
 	private static TimerCounter TCInstance = null;
 
+	private Stopwatch mTimer;
+
 	private string mName;
 
-	private float mStartTime;
-
-	private float mEndTime;
-
+	public float TimeSpend
+	{
+		get
+		{
+			return mTimer.ElapsedMilliseconds;
+		}
+	}
 	private float mTimeSpend;
 
 	public static TimerCounter CreateInstance()
@@ -30,22 +36,29 @@ public class TimerCounter{
 
 	private TimerCounter()
 	{
-
+		mTimer = new Stopwatch ();
+		mName = "Default";
 	}
 
 	public void Start(string name)
 	{
 		mName = name;
-		mStartTime = Time.realtimeSinceStartup;
+		mTimer.Start ();
+	}
 
+	public void Restart(string name)
+	{
+		mTimer.Reset ();
+		mTimer.Start ();
+		mName = name;
 	}
 
 	public void End()
 	{
-		mEndTime = Time.realtimeSinceStartup;
+		mTimer.Stop ();
 
-		mTimeSpend = mEndTime - mStartTime;
+		mTimeSpend = mTimer.ElapsedMilliseconds;
 
-		Debug.Log (mName + " takes: " + mTimeSpend);
+		UnityEngine.Debug.Log (mName + " takes: " + mTimeSpend);
 	}
 }

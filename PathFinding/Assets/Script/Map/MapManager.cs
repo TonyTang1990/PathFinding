@@ -39,7 +39,9 @@ public class MapManager : MonoBehaviour {
 
 	void LoadMap()
 	{
+		TimerCounter.CreateInstance().Restart("CreateGraph");
 		mPathFinder.CreteGraph (mRow, mColumn);
+		TimerCounter.CreateInstance ().End ();
 	}
 
 	// Update is called once per frame
