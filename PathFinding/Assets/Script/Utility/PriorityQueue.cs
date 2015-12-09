@@ -10,7 +10,12 @@ public class PriorityQueue<T1, T2>
 	{
 		mHeap = new Heap<T1, T2>();
 	}
-	
+
+	public PriorityQueue(int size)
+	{
+		mHeap = new Heap<T1, T2> (size);
+	}
+
 	public PriorityQueue(Heap<T1, T2> heap)
 	{
 		mHeap = heap;
@@ -71,6 +76,13 @@ public class Heap<T1, T2>
 	public Heap()
 	{
 		mList = new List<Pair<T1, T2>>();
+		mComparer = Comparer<T2>.Default;
+		mCount = 0;
+	}
+
+	public Heap(int size)
+	{
+		mList = new List<Pair<T1, T2>>(size);
 		mComparer = Comparer<T2>.Default;
 		mCount = 0;
 	}

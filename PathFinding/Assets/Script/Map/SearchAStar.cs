@@ -12,7 +12,7 @@ public class SearchAStar {
 		mGCosts = new List<float> (graph.NumNodes ());
 		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
 		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
-		mSearchFrontier = new List<GraphEdge> (graph.NumEdges());
+		mSearchFrontier = new List<GraphEdge> (graph.NumNodes());
 		CostToTargetNode = new List<float> (graph.NumNodes());
 		//Init G cost and F cost and Cost value
 		for (int i = 0; i < graph.NumNodes(); i++) {
@@ -29,7 +29,15 @@ public class SearchAStar {
 
 		mEdgesSearched = 0;
 
+		float starttime = Time.realtimeSinceStartup;
+
 		Search ();
+
+		float endtime = Time.realtimeSinceStartup;
+
+		float timespend = endtime - starttime;
+
+		Debug.Log ("Search takes: " + timespend);
 	}
 
 	public List<int> GetPathToTarget()
@@ -119,20 +127,28 @@ public class SearchAStar {
 	//The A* search algorithm
 	private void Search()
 	{
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>();
+		TimerCounter.CreateInstance ().Start ("PriorityQueue");
+		PriorityQueue<int,float> pq = new PriorityQueue<int, float>(mGraph.NumNodes() / 20);
+		TimerCounter.CreateInstance ().End ();
 
+		TimerCounter.CreateInstance ().Start ("Push FCosts");
 		pq.Push (mFCosts [mISource]);
+		TimerCounter.CreateInstance ().End ();
 
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
+			TimerCounter.CreateInstance().Start("Pop");
 			int nextclosestnode = pq.Pop().Key;
+			TimerCounter.CreateInstance().End();
 
 			mNodesSearched++;
 
 			//move this node from the frontier to the spanning tree
 			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
 			{
+				TimerCounter.CreateInstance().Start("Assignment");
 				mShortestPathTree[nextclosestnode] = mSearchFrontier[nextclosestnode];
+				TimerCounter.CreateInstance().End();
 			}
 			//If the target has been found exit
 			if(nextclosestnode == mITarget)
@@ -163,7 +179,9 @@ public class SearchAStar {
 					pq.Push(mFCosts[edge.To]);
 					TimerCounter.CreateInstance().End();
 
+					TimerCounter.CreateInstance().Start("SearchFrontierEqual");
 					mSearchFrontier[edge.To] = edge;
+					TimerCounter.CreateInstance().End();
 
 					mEdgesSearched++;
 
