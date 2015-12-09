@@ -38,12 +38,16 @@ public class PathFinder : MonoBehaviour {
 		mSubTree.Clear ();
 		mTimeTaken = 0;
 
+		Vector3 nodeposition = new Vector3 ();
+		int nextindex = 0;
 		//SparseGraph nodes data
 		for (int rw = 0; rw < row; rw++)
 		{
 			for(int col = 0; col < column; col++)
 			{
-				mNavGraph.AddNode(new NavGraphNode(mNavGraph.GetnextFreeNodeIndex,new Vector3(rw,0.0f,col)));
+				nodeposition = new Vector3(rw,0.0f,col);
+				nextindex = mNavGraph.GetnextFreeNodeIndex;
+				mNavGraph.AddNode(new NavGraphNode(nextindex,nodeposition,0.0f));
 			}
 		}
 

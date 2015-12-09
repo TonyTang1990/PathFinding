@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 
 public class UIManager : MonoBehaviour {
 
@@ -19,6 +20,16 @@ public class UIManager : MonoBehaviour {
 	public InputField mTargetColumnField;
 
 	public Button mSearchButton;
+	
+	public GameObject mNWAdjustPanel;
+
+	public Text mWeightText;
+
+	public Button mIncreaseButton;
+
+	public Button mDecreaseButton;
+
+	private bool mBIsNWAdjustPanelShow;
 
 	void Awake()
 	{
@@ -28,6 +39,10 @@ public class UIManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 		mUpdateAStarInfo = mAStarPanel.GetComponent<UpdateAStarInFo> ();
+
+		mNWAdjustPanel.SetActive (false);
+
+		mBIsNWAdjustPanelShow = false;
 	}
 
 	void Start()
@@ -56,5 +71,41 @@ public class UIManager : MonoBehaviour {
 		MapManager.MMInstance.UpdateSearchInfo (sourcerow, sourcecolumn, targetrow, targetcolumn);
 	
 		MapManager.MMInstance.Search ();
+	}
+
+	
+	public void ShowNWAdjustPanel()
+	{
+		if (!mBIsNWAdjustPanelShow) {
+			mNWAdjustPanel.SetActive (true);
+			mBIsNWAdjustPanelShow = true;
+		}
+		mWeightText.text = MapManager.MMInstance.CurrentSelectedNode.Weight.ToString();
+	}
+	
+	public void HideNWAdustPanel()
+	{
+		if (mBIsNWAdjustPanelShow) {
+			mNWAdjustPanel.SetActive (false);
+			mBIsNWAdjustPanelShow = false;
+		}
+	}
+
+	public void IncreaseWeight()
+	{
+		float weight = ++MapManager.MMInstance.CurrentSelectedNode.Weight;
+		mWeightText.text = weight.ToString ();
+		MapManager.MMInstance.UpdateNodeWeight ();
+	}
+
+	public void DecreaseWeight()
+	{
+		float weight = --MapManager.MMInstance.CurrentSelectedNode.Weight;
+		if (MapManager.MMInstance.CurrentSelectedNode.Weight <= 0) {
+			MapManager.MMInstance.CurrentSelectedNode.Weight = 0;
+			weight = 0.0f;
+		}
+		mWeightText.text = weight.ToString();
+		MapManager.MMInstance.UpdateNodeWeight ();
 	}
 }

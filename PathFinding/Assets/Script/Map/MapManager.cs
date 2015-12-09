@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour {
 
@@ -10,6 +11,16 @@ public class MapManager : MonoBehaviour {
 
 	public int mColumn = 2;
 
+	public NavGraphNode CurrentSelectedNode {
+		get {
+			return mCurrentSelectedNode;
+		}
+		set {
+			mCurrentSelectedNode = value;
+		}
+	}
+	private NavGraphNode mCurrentSelectedNode;
+
 	public PathFinder PathFinder
 	{
 		get
@@ -18,6 +29,15 @@ public class MapManager : MonoBehaviour {
 		}
 	}
 	private PathFinder mPathFinder;
+
+	public List<GameObject> NodeWeightList {
+		get {
+			return mNodeWeightList;
+		}
+	}
+	private List<GameObject> mNodeWeightList;
+	
+	public GameObject mNodeWeight;
 
 	void Awake()
 	{
@@ -42,6 +62,30 @@ public class MapManager : MonoBehaviour {
 		TimerCounter.CreateInstance().Restart("CreateGraph");
 		mPathFinder.CreteGraph (mRow, mColumn);
 		TimerCounter.CreateInstance ().End ();
+
+		LoadNodeWeights ();
+	}
+
+	private void LoadNodeWeights()
+	{
+		GameObject temp = new GameObject ();
+		mNodeWeightList = new List<GameObject> (mRow * mColumn);
+		
+		Vector3 nodeposition = new Vector3 ();
+		int nextindex = 0;
+		//SparseGraph nodes data
+		for (int rw = 0; rw < mRow; rw++) {
+			for (int col = 0; col < mColumn; col++) {
+				nodeposition = new Vector3 (rw, 0.0f, col);
+				temp = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
+				temp.name = nextindex.ToString();
+				temp.GetComponent<NavGraphNode> ().Weight = 0.0f;
+				temp.GetComponent<NavGraphNode> ().Index = nextindex;
+				temp.GetComponent<NavGraphNode> ().Position = nodeposition;
+				mNodeWeightList.Add (temp);
+				nextindex++;
+			}
+		}
 	}
 
 	// Update is called once per frame
@@ -76,17 +120,12 @@ public class MapManager : MonoBehaviour {
 		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
 	}
 
-	void OnDrawGizmos()
+	public void UpdateNodeWeight()
 	{
-		/*
-		for (int i = 0; i < mRow; i++) 
-		{
-			for(int j = 0; j < mColumn; j++)
-			{
-				Gizmos.color = Color.red;
-				Gizmos.DrawSphere(new Vector3(i,0.0f,j),0.05f);
-			}
+		if (CurrentSelectedNode != null) {
+			int index = mCurrentSelectedNode.Index;
+			mNodeWeightList [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
 		}
-		*/
 	}
+
 }

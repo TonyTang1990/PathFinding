@@ -1,18 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GraphNode {
+public interface GraphNode {
 
-	public int Index
-	{
-		get
-		{
-			return mIndex;
-		}
-		set
-		{
-			mIndex = value;
-		}
+	int Index {
+		get;
+		set;
 	}
-	private int mIndex;
 }
