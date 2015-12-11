@@ -107,7 +107,7 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 		mEdgesList.Clear ();
 	}
 
-	public int GetnextFreeNodeIndex
+	public int NextFreeNodeIndex
 	{
 		get
 		{
@@ -125,6 +125,11 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 		set
 		{
 			mNodes = value;
+			mNextNodeIndex = mNodes.Count;
+			for(int i = 0; i < mNextNodeIndex; i++)
+			{
+				mEdgesList.Add(new List<T2>());
+			}
 		}
 	}
 	private List<T1> mNodes;

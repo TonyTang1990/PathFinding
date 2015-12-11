@@ -30,13 +30,20 @@ public class MapManager : MonoBehaviour {
 	}
 	private PathFinder mPathFinder;
 
-	public List<GameObject> NodeWeightList {
+	public List<GameObject> NodeWeightListObject {
+		get {
+			return mNodeWeightListObject;
+		}
+	}
+	private List<GameObject> mNodeWeightListObject;
+
+	public List<NavGraphNode> NodeWeightList {
 		get {
 			return mNodeWeightList;
 		}
 	}
-	private List<GameObject> mNodeWeightList;
-	
+	private List<NavGraphNode> mNodeWeightList;
+
 	public GameObject mNodeWeight;
 
 	void Awake()
@@ -59,30 +66,35 @@ public class MapManager : MonoBehaviour {
 
 	void LoadMap()
 	{
-		TimerCounter.CreateInstance().Restart("CreateGraph");
-		mPathFinder.CreteGraph (mRow, mColumn);
-		TimerCounter.CreateInstance ().End ();
-
 		LoadNodeWeights ();
+
+		TimerCounter.CreateInstance().Restart("CreateGraph");
+		mPathFinder.CreteGraph (mRow, mColumn, mNodeWeightList);
+		TimerCounter.CreateInstance ().End ();
 	}
 
 	private void LoadNodeWeights()
 	{
-		GameObject temp = new GameObject ();
-		mNodeWeightList = new List<GameObject> (mRow * mColumn);
-		
+		mNodeWeightListObject = new List<GameObject> (mRow * mColumn);
+		mNodeWeightList = new List<NavGraphNode> (mRow * mColumn);
+
+		GameObject tempobject = new GameObject ();
+		NavGraphNode tempnode = new NavGraphNode ();
+
 		Vector3 nodeposition = new Vector3 ();
 		int nextindex = 0;
 		//SparseGraph nodes data
 		for (int rw = 0; rw < mRow; rw++) {
 			for (int col = 0; col < mColumn; col++) {
 				nodeposition = new Vector3 (rw, 0.0f, col);
-				temp = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
-				temp.name = nextindex.ToString();
-				temp.GetComponent<NavGraphNode> ().Weight = 0.0f;
-				temp.GetComponent<NavGraphNode> ().Index = nextindex;
-				temp.GetComponent<NavGraphNode> ().Position = nodeposition;
-				mNodeWeightList.Add (temp);
+				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
+				tempobject.name = nextindex.ToString();
+				tempnode = tempobject.GetComponent<NavGraphNode>();
+				tempnode.Weight = 0.0f;
+				tempnode.Index = nextindex;
+				tempnode.Position = nodeposition;
+				mNodeWeightListObject.Add (tempobject);
+				mNodeWeightList.Add(tempnode);
 				nextindex++;
 			}
 		}
@@ -120,11 +132,13 @@ public class MapManager : MonoBehaviour {
 		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
 	}
 
-	public void UpdateNodeWeight()
+	public void UpdateNodeWeight(float value)
 	{
 		if (CurrentSelectedNode != null) {
 			int index = mCurrentSelectedNode.Index;
-			mNodeWeightList [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
+			mNodeWeightListObject [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
+			//Update Edge info
+			mPathFinder.UpdateNodeEdgesInfo(index, value);
 		}
 	}
 

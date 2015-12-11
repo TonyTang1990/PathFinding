@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using UnityEngine.Assertions;
 
 public class PathFinder : MonoBehaviour {
 	public PathFinder()
 	{
 		mStart = false;
 		mFinish = false;
-		mCowNum = 0;
+		mRowNum = 0;
 		mColumnNum = 0;
 		mCostToTarget = 0;
 		mTimeTaken = 0;
@@ -28,8 +29,17 @@ public class PathFinder : MonoBehaviour {
 		mExplorePathRemainTime = 10.0f;
 	}
 
-	public void CreteGraph(int row, int column)
+	public void CreteGraph(int row, int column, List<NavGraphNode> nodelist)
 	{
+		//Make sure we pass the same size of node list
+		if(nodelist != null)
+		{
+			Assert.IsTrue( nodelist.Count == (row * column));
+        }
+
+		mRowNum = row;
+		mColumnNum = column;
+
 		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> (row * column);
 		
 		mNavGraph.BDrawMap = mBDrawMap;
@@ -38,16 +48,18 @@ public class PathFinder : MonoBehaviour {
 		mSubTree.Clear ();
 		mTimeTaken = 0;
 
-		Vector3 nodeposition = new Vector3 ();
-		int nextindex = 0;
-		//SparseGraph nodes data
-		for (int rw = 0; rw < row; rw++)
-		{
-			for(int col = 0; col < column; col++)
-			{
-				nodeposition = new Vector3(rw,0.0f,col);
-				nextindex = mNavGraph.GetnextFreeNodeIndex;
-				mNavGraph.AddNode(new NavGraphNode(nextindex,nodeposition,0.0f));
+		if (nodelist != null) {
+			mNavGraph.Nodes = nodelist;
+		} else {
+			Vector3 nodeposition = new Vector3 ();
+			int nextindex = 0;
+			//SparseGraph nodes data
+			for (int rw = 0; rw < row; rw++) {
+				for (int col = 0; col < column; col++) {
+					nodeposition = new Vector3 (rw, 0.0f, col);
+					nextindex = mNavGraph.NextFreeNodeIndex;
+					mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f));
+				}
 			}
 		}
 
@@ -87,6 +99,9 @@ public class PathFinder : MonoBehaviour {
 					Vector3 posneighbour = mNavGraph.Nodes[noderow * totalcolumn + nodecol].Position;
 
 					float dist = Vector3.Distance(posnode, posneighbour);
+					float fromnodeweight = mNavGraph.Nodes[row * totalcolumn + col].Weight;
+					float tonodeweight = mNavGraph.Nodes[noderow * totalcolumn + nodecol].Weight;
+					dist = dist + fromnodeweight + tonodeweight;
 
 					GraphEdge newedge = new GraphEdge(row * totalcolumn + col, noderow * totalcolumn + nodecol, dist);
 					mNavGraph.AddEdge(newedge);
@@ -121,6 +136,36 @@ public class PathFinder : MonoBehaviour {
 		mEdgesSearched = astarsearch.EdgesSearched;
 	}
 
+	private bool IsValidIndex(int index)
+	{
+		if (index >= 0 && index < mTotalNodes) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void UpdateNodeEdgesInfo(int index,float value)
+	{
+		Assert.IsTrue (index >= 0 && index < mNavGraph.NextFreeNodeIndex);
+		//Update edge info that starts from Node[index]
+		foreach (GraphEdge e in mNavGraph.mEdgesList[index]) {
+			e.Cost += value;
+		}
+		//Update edge info that ends with Node[index]
+		int fromindex = 0;
+		for (int i = -1; i <= 1; i++) {
+			for(int j = -1; j <= 1; j++)
+			{
+				fromindex = index + j + i * mColumnNum;
+				if(IsValidIndex(fromindex) && fromindex != index)
+				{
+					mNavGraph.mEdgesList[fromindex].Find( x => x.To == index).Cost += value;
+				}
+			}
+		}
+	}
+
 	void OnDrawGizmos()
 	{
 		if (mSubTree != null) {
@@ -152,7 +197,7 @@ public class PathFinder : MonoBehaviour {
 	}
 	private float mCostToTarget;
 
-	private int mCowNum;
+	private int mRowNum;
 
 	private int mColumnNum;
 

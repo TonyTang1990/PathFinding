@@ -95,7 +95,9 @@ public class UIManager : MonoBehaviour {
 	{
 		float weight = ++MapManager.MMInstance.CurrentSelectedNode.Weight;
 		mWeightText.text = weight.ToString ();
-		MapManager.MMInstance.UpdateNodeWeight ();
+		TimerCounter.CreateInstance ().Restart ("UpdateNodeWeightIncrease");
+		MapManager.MMInstance.UpdateNodeWeight (1.0f);
+		TimerCounter.CreateInstance ().End ();
 	}
 
 	public void DecreaseWeight()
@@ -104,8 +106,9 @@ public class UIManager : MonoBehaviour {
 		if (MapManager.MMInstance.CurrentSelectedNode.Weight <= 0) {
 			MapManager.MMInstance.CurrentSelectedNode.Weight = 0;
 			weight = 0.0f;
+		} else {
+			MapManager.MMInstance.UpdateNodeWeight (-1.0f);
 		}
-		mWeightText.text = weight.ToString();
-		MapManager.MMInstance.UpdateNodeWeight ();
+		mWeightText.text = weight.ToString ();
 	}
 }
