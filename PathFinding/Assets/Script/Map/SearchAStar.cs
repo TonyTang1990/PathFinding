@@ -141,6 +141,8 @@ public class SearchAStar {
 
 		pq.Push (mFCosts [mISource]);
 
+		mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
+
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
 			int nextclosestnode = pq.Pop().Key;
@@ -190,7 +192,7 @@ public class SearchAStar {
 				//if this node is already on the frontier but the cost to get here
 				//is cheaper than has been found previously, update the node
 				//cost and frontier accordingly
-				else if((gcost < mGCosts[edge.To]) && (mShortestPathTree[edge.To] == null))
+				else if(gcost < mGCosts[edge.To])
 				{
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;

@@ -154,13 +154,18 @@ public class PathFinder : MonoBehaviour {
 		}
 		//Update edge info that ends with Node[index]
 		int fromindex = 0;
+		GraphEdge edge = new GraphEdge ();
 		for (int i = -1; i <= 1; i++) {
 			for(int j = -1; j <= 1; j++)
 			{
 				fromindex = index + j + i * mColumnNum;
 				if(IsValidIndex(fromindex) && fromindex != index)
 				{
-					mNavGraph.mEdgesList[fromindex].Find( x => x.To == index).Cost += value;
+					edge = mNavGraph.mEdgesList[fromindex].Find( x => x.To == index);
+					if(edge != null)
+					{
+						edge.Cost += value;
+					}
 				}
 			}
 		}

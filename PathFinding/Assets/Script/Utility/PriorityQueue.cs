@@ -53,10 +53,12 @@ public class PriorityQueue<T1, T2>
 		return mHeap.Top(); ;
 	}
 
-	public void ChangePriority(int index)
+	public void ChangePriority(T1 index)
 	{
-		Assert.IsTrue (index >= 0 && index < mHeap.Size ());
-		mHeap.HeapifyFromEndToBeginning (index);
+		//Assert.IsTrue (index >= 0 && index < mHeap.Size ());
+		int i = 0;
+		i  = mHeap.FindSpecificKeyIndex(index);
+		mHeap.HeapifyFromEndToBeginning (i);
 	}
 	
 	public void PrintOutAllMember()
@@ -71,12 +73,14 @@ public class Heap<T1, T2>
 {
 	private List<Pair<T1, T2>> mList;
 	private IComparer<T2> mComparer;
+	private IComparer<T1> mCompareKey;
 	private int mCount;
 	
 	public Heap()
 	{
 		mList = new List<Pair<T1, T2>>();
 		mComparer = Comparer<T2>.Default;
+		mCompareKey = Comparer<T1>.Default;
 		mCount = 0;
 	}
 
@@ -84,6 +88,7 @@ public class Heap<T1, T2>
 	{
 		mList = new List<Pair<T1, T2>>(size);
 		mComparer = Comparer<T2>.Default;
+		mCompareKey = Comparer<T1>.Default;
 		mCount = 0;
 	}
 	
@@ -92,6 +97,7 @@ public class Heap<T1, T2>
 		mList = list;
 		mCount = list.Count;
 		mComparer = Comparer<T2>.Default;
+		mCompareKey = Comparer<T1>.Default;
 		BuildingHeap();
 	}
 	
@@ -130,6 +136,11 @@ public class Heap<T1, T2>
 			//No more member
 			throw new InvalidOperationException("Empty heap.");
 		}
+	}
+
+	public int FindSpecificKeyIndex(T1 key)
+	{
+		return mList.FindIndex (x => mCompareKey.Compare (x.Key, key) == 0);
 	}
 	
 	public void PrintOutAllMember()
