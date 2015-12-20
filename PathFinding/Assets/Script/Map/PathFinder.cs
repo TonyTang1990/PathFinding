@@ -5,72 +5,79 @@ using System.Diagnostics;
 using UnityEngine.Assertions;
 
 public class PathFinder : MonoBehaviour {
-	public PathFinder()
-	{
-		mStart = false;
-		mFinish = false;
-		mRowNum = 0;
-		mColumnNum = 0;
-		mCostToTarget = 0;
-		mTimeTaken = 0;
-		mNavGraph = null;
-		mPath = new List<int> ();
-		mMovementPath = new List<Vector3> ();
-		mSubTree = new List<GraphEdge> ();
+	
+	public int mRow = 2;
+	
+	public int mColumn = 2;
+	
+	public float mNodeDistance = 1.0f;
+	
+	private List<int> mTerrainType;
 
-		//A Star Info
+	public SparseGraph<NavGraphNode, GraphEdge> NavGraph {
+		get {
+			return mNavGraph;
+		}
+	}
+	private SparseGraph<NavGraphNode, GraphEdge> mNavGraph;
+
+	public bool mBDrawMap = true;
+
+	//A Star Info
+	public int TotalNodes {
+		get {
+			return mTotalNodes;
+		}
+		set {
+			mTotalNodes = value;
+		}
+	}
+	private int mTotalNodes;
+	
+	public int TotalEdges {
+		get {
+			return mTotalEdges;
+		}
+		set {
+			mTotalEdges = value;
+		}
+	}
+	private int mTotalEdges;
+
+	void Awake()
+	{
+		mNavGraph = null;
 		mTotalNodes = 0;
 		mTotalEdges = 0;
-		mTimeTaken = 0;
-		mNodesSearched = 0;
-		mEdgesSearched = 0;
 
-		mHCostPercentage = 1.0f;
-		mBDrawExplorePath = true;
-		mExplorePathRemainTime = 10.0f;
+		TimerCounter.CreateInstance().Restart("CreateGraph");
+		CreateGraph ();
+		TimerCounter.CreateInstance ().End ();
 	}
 
-	public void CreteGraph(int row, int column, float nodedistance, List<NavGraphNode> nodelist)
+	public void CreateGraph(/*int row, int column, float nodedistance, List<NavGraphNode> nodelist*/)
 	{
-		//Make sure we pass the same size of node list
-		if(nodelist != null)
-		{
-			Assert.IsTrue( nodelist.Count == (row * column));
-        }
-
-		mRowNum = row;
-		mColumnNum = column;
-
-		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> (row * column);
+		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> (mRow * mColumn);
 		
 		mNavGraph.BDrawMap = mBDrawMap;
 
-		mPath.Clear ();
-		mMovementPath.Clear ();
-		mSubTree.Clear ();
-		mTimeTaken = 0;
-
-		if (nodelist != null) {
-			mNavGraph.Nodes = nodelist;
-		} else {
-			Vector3 nodeposition = new Vector3 ();
-			int nextindex = 0;
-			//SparseGraph nodes data
-			for (int rw = 0; rw < row; rw++) {
-				for (int col = 0; col < column; col++) {
-					nodeposition = new Vector3 (rw * nodedistance, 0.0f, col * nodedistance);
-					nextindex = mNavGraph.NextFreeNodeIndex;
-					mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f));
-				}
+		Vector3 nodeposition = new Vector3 ();
+		int nextindex = 0;
+		//SparseGraph nodes data
+		for (int rw = 0; rw < mRow; rw++) {
+			for (int col = 0; col < mColumn; col++) {
+				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
+				nextindex = mNavGraph.NextFreeNodeIndex;
+				mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f));
 			}
 		}
 
 		//SparseGraph edges data
-		for (int rw = 0; rw < row; rw++) 
+		for (int rw = 0; rw < mRow; rw++) 
 		{
-			for (int col = 0; col < column; col++) 
+			for (int col = 0; col < mColumn; col++) 
 			{
-				CreateAllNeighboursToGridNode(rw, col, row, column);
+				CreateAllNeighboursToGridNode(rw, col, mRow, mColumn);
 			}
 		}
 
@@ -117,28 +124,7 @@ public class PathFinder : MonoBehaviour {
 		return !(x < 0 || y < 0 || x >= row || y >= col);
 	}
 
-	public void CreatePathAStar()
-	{
-		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
-
-		TimerCounter.CreateInstance ().End ();
-
-		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
-
-		mPath = astarsearch.GetPathToTarget ();
-
-		mMovementPath = astarsearch.GetMovementPathToTarget ();
-
-		mSubTree = astarsearch.GetSPT ();
-
-		mCostToTarget = astarsearch.GetCostToTarget ();
-
-		mNodesSearched = astarsearch.NodesSearched;
-
-		mEdgesSearched = astarsearch.EdgesSearched;
-	}
 
 	private bool IsValidIndex(int index)
 	{
@@ -162,7 +148,7 @@ public class PathFinder : MonoBehaviour {
 		for (int i = -1; i <= 1; i++) {
 			for(int j = -1; j <= 1; j++)
 			{
-				fromindex = index + j + i * mColumnNum;
+				fromindex = index + j + i * mColumn;
 				if(IsValidIndex(fromindex) && fromindex != index)
 				{
 					edge = mNavGraph.mEdgesList[fromindex].Find( x => x.To == index);
@@ -174,148 +160,6 @@ public class PathFinder : MonoBehaviour {
 			}
 		}
 	}
-
-	void OnDrawGizmos()
-	{
-		if (mSubTree != null && mPath.Count != 0) {
-			Gizmos.color = Color.green;
-			int nd = mPath[0];
-	
-			while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) 
-			{
-				Gizmos.DrawLine(mNavGraph.Nodes[mSubTree[nd].From].Position,mNavGraph.Nodes[nd].Position);
-				nd = mSubTree[nd].From;
-			}
-		}
-	}
-
-	private List<int> mTerrainType;
-
-	//this list will store any path returned from a graph search
-	private List<int> mPath;
-
-	public List<Vector3> MovementPath {
-		get {
-			return mMovementPath;
-		}
-	}
-	private List<Vector3> mMovementPath;
-
-	public SparseGraph<NavGraphNode, GraphEdge> NavGraph {
-		get {
-			return mNavGraph;
-		}
-	}
-	private SparseGraph<NavGraphNode, GraphEdge> mNavGraph;
-
-	//this list of edges is used to store any subtree returned from any of the graph algorithms
-	private List<GraphEdge> mSubTree;
-
-	public float CostToTarget {
-		get {
-			return mCostToTarget;
-		}
-	}
-	private float mCostToTarget;
-
-	private int mRowNum;
-
-	private int mColumnNum;
-
-	//Flags to indicate if the start and finish points has been added
-	private bool mStart;
-
-	private bool mFinish;
-
-	//Holds the time taken for the currently used algorithm to complete
-	public float TimeTaken {
-		get {
-			return mTimeTaken;
-		}
-		set {
-			mTimeTaken = value;
-		}
-	}
-	private float mTimeTaken;
-
-	//A Star Info
-	public int TotalNodes {
-		get {
-			return mTotalNodes;
-		}
-		set {
-			mTotalNodes = value;
-		}
-	}
-	private int mTotalNodes;
-
-	public int TotalEdges {
-		get {
-			return mTotalEdges;
-		}
-		set {
-			mTotalEdges = value;
-		}
-	}
-	private int mTotalEdges;
-
-	public int NodesSearched {
-		get {
-			return mNodesSearched;
-		}
-		set {
-			mNodesSearched = value;
-		}
-	}
-	private int mNodesSearched;
-
-	public int EdgesSearched {
-		get {
-			return mEdgesSearched;
-		}
-		set {
-			mEdgesSearched = value;
-		}
-	}
-	private int mEdgesSearched;
-
-	public int SourceCellIndex {
-		get {
-			return mSourceCellIndex;
-		}
-		set {
-			mSourceCellIndex = value;
-		}
-	}
-	private int mSourceCellIndex;
-
-	public int TargetCellIndex {
-		get {
-			return mTargetCellIndex;
-		}
-		set {
-			mTargetCellIndex = value;
-		}
-	}
-	private int mTargetCellIndex;
-
-	public float StrickDistance {
-		get {
-			return mStrickDistance;
-		}
-		set {
-			mStrickDistance = value;
-		}
-	}
-	private float mStrickDistance;
-
-	public bool mBDrawMap = true;
-
-	public float mHCostPercentage;
-
-	public bool mBDrawExplorePath;
-
-	public float mExplorePathRemainTime;
 
 	private void UpdateAlgorithm()
 	{

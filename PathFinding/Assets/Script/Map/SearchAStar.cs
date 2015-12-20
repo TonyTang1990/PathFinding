@@ -199,7 +199,8 @@ public class SearchAStar {
 	//The A* search algorithm
 	private void Search()
 	{
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>(MapManager.MMInstance.mRow);
+		float numbernodes = (float)mGraph.NumNodes();
+		PriorityQueue<int,float> pq = new PriorityQueue<int, float>((int)Mathf.Sqrt(numbernodes));
 
 		pq.Push (mFCosts [mISource]);
 
@@ -276,7 +277,8 @@ public class SearchAStar {
 	//The A* search algorithm with strickdistance
 	private void Search(float strickdistance)
 	{
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>(MapManager.MMInstance.mRow);
+		float numbernodes = (float)mGraph.NumNodes();
+		PriorityQueue<int,float> pq = new PriorityQueue<int, float>((int)Mathf.Sqrt(numbernodes));
 
 		float currentnodetotargetdistance = Mathf.Infinity;
 

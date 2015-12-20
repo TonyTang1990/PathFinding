@@ -9,6 +9,20 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject mAttackingSoldier;
 
+	public Seeker TargetSoldierSeeker {
+		get {
+			return mTargetSoldierSeeker;
+		}
+	}
+	private Seeker mTargetSoldierSeeker;
+
+	public Seeker AttackingSoldierSeeker {
+		get {
+			return mAttackingSoldierSeeker;
+		}
+	}
+	private Seeker mAttackingSoldierSeeker;
+
 	void Awake()
 	{
 		if (mGameInstance == null) {
@@ -16,6 +30,10 @@ public class GameManager : MonoBehaviour {
 		} else if (mGameInstance != this) {
 			Destroy(gameObject);
 		}
+
+		mTargetSoldierSeeker = mTargetSoldier.GetComponent<Seeker> ();
+
+		mAttackingSoldierSeeker = mAttackingSoldier.GetComponent<Seeker> ();
 	}
 
 	// Use this for initialization
@@ -32,14 +50,14 @@ public class GameManager : MonoBehaviour {
 	{
 		int attackingnodeindex = 0;
 		int targetnodeindex = 0;
-		attackingnodeindex = MapManager.MMInstance.PathFinder.SourceCellIndex;
-		targetnodeindex = MapManager.MMInstance.PathFinder.TargetCellIndex;
+		attackingnodeindex = GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex;
+		targetnodeindex = GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex;
 		mAttackingSoldier.transform.position = MapManager.MMInstance.PathFinder.NavGraph.Nodes [attackingnodeindex].Position;
 		mTargetSoldier.transform.position = MapManager.MMInstance.PathFinder.NavGraph.Nodes [targetnodeindex].Position;
 	}
 
 	public void MoveSoldier()
 	{
-		mAttackingSoldier.GetComponent<Seeker> ().Move (MapManager.MMInstance.PathFinder.MovementPath);
+		mAttackingSoldier.GetComponent<Seeker> ().Move ();
 	}
 }

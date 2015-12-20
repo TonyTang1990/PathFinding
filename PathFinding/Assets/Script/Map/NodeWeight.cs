@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NavGraphNode : GraphNode {
+public class NodeWeight : MonoBehaviour {
 
-	public NavGraphNode()
+	public NodeWeight()
 	{
-
+		
 	}
-
-	public NavGraphNode(int index,Vector3 pos, float weight)
+	
+	public NodeWeight(int index,Vector3 pos, float weight)
 	{
 		Index = index;
 		mPosition = pos;
@@ -27,7 +27,7 @@ public class NavGraphNode : GraphNode {
 		}
 	}
 	private int mIndex;
-
+	
 	public Vector3 Position
 	{
 		get
@@ -40,7 +40,7 @@ public class NavGraphNode : GraphNode {
 		}
 	}
 	private Vector3 mPosition;
-
+	
 	public float Weight
 	{
 		get

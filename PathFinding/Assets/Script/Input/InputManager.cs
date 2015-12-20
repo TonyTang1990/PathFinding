@@ -38,7 +38,7 @@ public class InputManager : MonoBehaviour {
 					if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("NodeWeight"))) {
 						if (hit.collider) {
 							Debug.Log("hit.collider.name = " + hit.collider.name);
-							MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<NavGraphNode>();
+							MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<NodeWeight>();
 							UIManager.UIMInstance.ShowNWAdjustPanel();
 						}
 					}

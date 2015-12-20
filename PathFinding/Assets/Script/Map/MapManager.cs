@@ -7,13 +7,7 @@ public class MapManager : MonoBehaviour {
 
 	public static MapManager MMInstance = null;
 
-	public int mRow = 2;
-
-	public int mColumn = 2;
-
-	public float mNodeDistance = 1.0f;
-
-	public NavGraphNode CurrentSelectedNode {
+	public NodeWeight CurrentSelectedNode {
 		get {
 			return mCurrentSelectedNode;
 		}
@@ -21,7 +15,7 @@ public class MapManager : MonoBehaviour {
 			mCurrentSelectedNode = value;
 		}
 	}
-	private NavGraphNode mCurrentSelectedNode;
+	private NodeWeight mCurrentSelectedNode;
 
 	public PathFinder PathFinder
 	{
@@ -39,14 +33,20 @@ public class MapManager : MonoBehaviour {
 	}
 	private List<GameObject> mNodeWeightListObject;
 
-	public List<NavGraphNode> NodeWeightList {
+	public List<NodeWeight> NodeWeightList {
 		get {
 			return mNodeWeightList;
 		}
 	}
-	private List<NavGraphNode> mNodeWeightList;
+	private List<NodeWeight> mNodeWeightList;
 
 	public GameObject mNodeWeight;
+
+	private int mRow = 1;
+	
+	private int mColumn = 1;
+
+	private float mNodeDistance = 1.0f;
 
 	void Awake()
 	{
@@ -68,20 +68,19 @@ public class MapManager : MonoBehaviour {
 
 	void LoadMap()
 	{
+		mRow = mPathFinder.mRow;
+		mColumn = mPathFinder.mColumn;
+		mNodeDistance = mPathFinder.mNodeDistance;
 		LoadNodeWeights ();
-
-		TimerCounter.CreateInstance().Restart("CreateGraph");
-		mPathFinder.CreteGraph (mRow, mColumn, mNodeDistance, mNodeWeightList);
-		TimerCounter.CreateInstance ().End ();
 	}
 
 	private void LoadNodeWeights()
 	{
-		mNodeWeightListObject = new List<GameObject> (mRow * mColumn);
-		mNodeWeightList = new List<NavGraphNode> (mRow * mColumn);
+		mNodeWeightListObject = new List<GameObject> ( mRow * mColumn);
+		mNodeWeightList = new List<NodeWeight> (mRow * mColumn);
 
 		GameObject tempobject = new GameObject ();
-		NavGraphNode tempnode = new NavGraphNode ();
+		NodeWeight tempnode;
 
 		Vector3 nodeposition = new Vector3 ();
 		int nextindex = 0;
@@ -91,7 +90,7 @@ public class MapManager : MonoBehaviour {
 				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
 				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
 				tempobject.name = nextindex.ToString();
-				tempnode = tempobject.GetComponent<NavGraphNode>();
+				tempnode = tempobject.GetComponent<NodeWeight>();
 				tempnode.Weight = 0.0f;
 				tempnode.Index = nextindex;
 				tempnode.Position = nodeposition;
@@ -114,7 +113,8 @@ public class MapManager : MonoBehaviour {
 
 	public void Search()
 	{
-		mPathFinder.CreatePathAStar ();
+		//mPathFinder.CreatePathAStar ();
+		GameManager.mGameInstance.AttackingSoldierSeeker.CreatePathAStar ();
 
 		UIManager.UIMInstance.UpdateAstarInfo();
 	}
@@ -125,17 +125,17 @@ public class MapManager : MonoBehaviour {
 
         Debug.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
 
-		mPathFinder.SourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
+		GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
 
-		mPathFinder.TargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
+		GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
 
-		mPathFinder.StrickDistance = strickdistance;
+		GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = strickdistance;
 
-		Debug.Log ("mPathFinder.SourceCellIndex = " + mPathFinder.SourceCellIndex);
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex);
 
-		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex);
 
-		Debug.Log ("mPathFinder.StrickDistance = " + mPathFinder.StrickDistance);
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
 	}
 
 	public void UpdateNodeWeight(float value)

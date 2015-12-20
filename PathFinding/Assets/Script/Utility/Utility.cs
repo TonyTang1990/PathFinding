@@ -27,8 +27,8 @@ public class Utility {
 
 	public static int ConvertRCToIndex(int row, int column)
 	{
-		int totalrow = MapManager.MMInstance.mRow;
-		int totalcolumn = MapManager.MMInstance.mColumn;
+		int totalrow = MapManager.MMInstance.PathFinder.mRow;
+		int totalcolumn = MapManager.MMInstance.PathFinder.mColumn;
 
 		Assert.IsTrue( (row > 0 && row <= totalrow) );
 		Assert.IsTrue( (column > 0 && column <= totalcolumn) );
@@ -38,8 +38,8 @@ public class Utility {
 
 	public static Vector2 ConvertIndexToRC(int index)
 	{
-		int row = index / MapManager.MMInstance.mColumn + 1;
-		int column = index % MapManager.MMInstance.mColumn + 1;
+		int row = index / MapManager.MMInstance.PathFinder.mColumn + 1;
+		int column = index % MapManager.MMInstance.PathFinder.mColumn + 1;
 		return new Vector2 (row, column);
 	}
 }
