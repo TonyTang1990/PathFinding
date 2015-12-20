@@ -9,10 +9,20 @@ public class Utility {
 	{
 
 		if (!Int32.TryParse (s,out result)) {
-			Debug.Log("----------------------------Parse Failed");
+			Debug.Log("----------------------------ParserStringToInt Failed");
 		}
 
-		Assert.IsTrue (result > 0);
+		Assert.IsTrue (result >= 0);
+	}
+
+	public static void ParserStringToFloat(string s, out float result)
+	{
+
+		if (!float.TryParse(s,out result)) {
+			Debug.Log("----------------------------ParserStringToFloat Failed");
+		}
+		
+		Assert.IsTrue (result >= 0.0f);
 	}
 
 	public static int ConvertRCToIndex(int row, int column)

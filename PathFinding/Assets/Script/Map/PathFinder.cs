@@ -15,6 +15,7 @@ public class PathFinder : MonoBehaviour {
 		mTimeTaken = 0;
 		mNavGraph = null;
 		mPath = new List<int> ();
+		mMovementPath = new List<Vector3> ();
 		mSubTree = new List<GraphEdge> ();
 
 		//A Star Info
@@ -29,7 +30,7 @@ public class PathFinder : MonoBehaviour {
 		mExplorePathRemainTime = 10.0f;
 	}
 
-	public void CreteGraph(int row, int column, List<NavGraphNode> nodelist)
+	public void CreteGraph(int row, int column, float nodedistance, List<NavGraphNode> nodelist)
 	{
 		//Make sure we pass the same size of node list
 		if(nodelist != null)
@@ -45,6 +46,7 @@ public class PathFinder : MonoBehaviour {
 		mNavGraph.BDrawMap = mBDrawMap;
 
 		mPath.Clear ();
+		mMovementPath.Clear ();
 		mSubTree.Clear ();
 		mTimeTaken = 0;
 
@@ -56,7 +58,7 @@ public class PathFinder : MonoBehaviour {
 			//SparseGraph nodes data
 			for (int rw = 0; rw < row; rw++) {
 				for (int col = 0; col < column; col++) {
-					nodeposition = new Vector3 (rw, 0.0f, col);
+					nodeposition = new Vector3 (rw * nodedistance, 0.0f, col * nodedistance);
 					nextindex = mNavGraph.NextFreeNodeIndex;
 					mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f));
 				}
@@ -119,13 +121,15 @@ public class PathFinder : MonoBehaviour {
 	{
 		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
 
 		TimerCounter.CreateInstance ().End ();
 
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
 
 		mPath = astarsearch.GetPathToTarget ();
+
+		mMovementPath = astarsearch.GetMovementPathToTarget ();
 
 		mSubTree = astarsearch.GetSPT ();
 
@@ -173,9 +177,9 @@ public class PathFinder : MonoBehaviour {
 
 	void OnDrawGizmos()
 	{
-		if (mSubTree != null) {
+		if (mSubTree != null && mPath.Count != 0) {
 			Gizmos.color = Color.green;
-			int nd = mTargetCellIndex;
+			int nd = mPath[0];
 	
 			while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) 
 			{
@@ -190,6 +194,18 @@ public class PathFinder : MonoBehaviour {
 	//this list will store any path returned from a graph search
 	private List<int> mPath;
 
+	public List<Vector3> MovementPath {
+		get {
+			return mMovementPath;
+		}
+	}
+	private List<Vector3> mMovementPath;
+
+	public SparseGraph<NavGraphNode, GraphEdge> NavGraph {
+		get {
+			return mNavGraph;
+		}
+	}
 	private SparseGraph<NavGraphNode, GraphEdge> mNavGraph;
 
 	//this list of edges is used to store any subtree returned from any of the graph algorithms
@@ -282,6 +298,16 @@ public class PathFinder : MonoBehaviour {
 		}
 	}
 	private int mTargetCellIndex;
+
+	public float StrickDistance {
+		get {
+			return mStrickDistance;
+		}
+		set {
+			mStrickDistance = value;
+		}
+	}
+	private float mStrickDistance;
 
 	public bool mBDrawMap = true;
 

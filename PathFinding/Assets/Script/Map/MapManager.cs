@@ -11,6 +11,8 @@ public class MapManager : MonoBehaviour {
 
 	public int mColumn = 2;
 
+	public float mNodeDistance = 1.0f;
+
 	public NavGraphNode CurrentSelectedNode {
 		get {
 			return mCurrentSelectedNode;
@@ -69,7 +71,7 @@ public class MapManager : MonoBehaviour {
 		LoadNodeWeights ();
 
 		TimerCounter.CreateInstance().Restart("CreateGraph");
-		mPathFinder.CreteGraph (mRow, mColumn, mNodeWeightList);
+		mPathFinder.CreteGraph (mRow, mColumn, mNodeDistance, mNodeWeightList);
 		TimerCounter.CreateInstance ().End ();
 	}
 
@@ -86,7 +88,7 @@ public class MapManager : MonoBehaviour {
 		//SparseGraph nodes data
 		for (int rw = 0; rw < mRow; rw++) {
 			for (int col = 0; col < mColumn; col++) {
-				nodeposition = new Vector3 (rw, 0.0f, col);
+				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
 				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
 				tempobject.name = nextindex.ToString();
 				tempnode = tempobject.GetComponent<NavGraphNode>();
@@ -117,7 +119,7 @@ public class MapManager : MonoBehaviour {
 		UIManager.UIMInstance.UpdateAstarInfo();
 	}
 	
-	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn)
+	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn, float strickdistance)
 	{
 		Debug.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
 
@@ -127,9 +129,13 @@ public class MapManager : MonoBehaviour {
 
 		mPathFinder.TargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
 
+		mPathFinder.StrickDistance = strickdistance;
+
 		Debug.Log ("mPathFinder.SourceCellIndex = " + mPathFinder.SourceCellIndex);
 
 		Debug.Log ("mPathFinder.TargetCellIndex = " + mPathFinder.TargetCellIndex);
+
+		Debug.Log ("mPathFinder.StrickDistance = " + mPathFinder.StrickDistance);
 	}
 
 	public void UpdateNodeWeight(float value)

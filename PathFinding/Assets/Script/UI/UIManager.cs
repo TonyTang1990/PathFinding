@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour {
 
 	public InputField mTargetColumnField;
 
+	public InputField mStrickDistanceField;
+
 	public Button mSearchButton;
 	
 	public GameObject mNWAdjustPanel;
@@ -62,15 +64,21 @@ public class UIManager : MonoBehaviour {
 		int sourcecolumn = 0;
 		int targetrow = 0;
 		int targetcolumn = 0;
+		float strickdistance = 0.0f;
 
 		Utility.ParserStringToInt (mSourceRowField.text, out sourcerow);
 		Utility.ParserStringToInt (mSourceColumnField.text, out sourcecolumn);
 		Utility.ParserStringToInt (mTargetRowField.text, out targetrow);
 		Utility.ParserStringToInt (mTargetColumnField.text, out targetcolumn);
+		Utility.ParserStringToFloat (mStrickDistanceField.text, out strickdistance);
 
-		MapManager.MMInstance.UpdateSearchInfo (sourcerow, sourcecolumn, targetrow, targetcolumn);
+		MapManager.MMInstance.UpdateSearchInfo (sourcerow, sourcecolumn, targetrow, targetcolumn, strickdistance);
 	
 		MapManager.MMInstance.Search ();
+
+		GameManager.mGameInstance.UpdateSoldierPosition ();
+
+		GameManager.mGameInstance.MoveSoldier ();
 	}
 
 	
