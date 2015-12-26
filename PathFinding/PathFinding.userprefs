@@ -1,22 +1,25 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\Seeker.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\SearchAStar.cs">
     <Files>
-      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="251" Column="13" />
-      <File FileName="Assets\Script\Map\PathFinder.cs" Line="85" Column="39" />
-      <File FileName="Assets\Script\Map\AStar\SparseGraph.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\AStar\NavGraphNode.cs" Line="7" Column="3" />
-      <File FileName="Assets\Script\Map\Seeker.cs" Line="199" Column="128" />
-      <File FileName="Assets\Script\Map\MapManager.cs" Line="10" Column="2" />
-      <File FileName="Assets\Script\Input\InputManager.cs" Line="47" Column="48" />
-      <File FileName="Assets\Script\UI\UIManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\NodeWeight.cs" Line="16" Column="3" />
+      <File FileName="PathFinding.sln" Line="41" Column="1" />
+      <File FileName="Assets\Script\Map\Seeker.cs" Line="156" Column="37" />
+      <File FileName="..\..\..\CSharpScriptStudy\Assets\Scripts\CoroutineStudy.cs" Line="1" Column="1" />
+      <File FileName="..\..\..\CSharpScriptStudy\Assets\Scripts\CoroutineTest.cs" Line="1" Column="1" />
+      <File FileName="..\..\..\CSharpScriptStudy\Assets\Scripts\CoroutineManager.cs" Line="39" Column="3" />
+      <File FileName="Assets\Script\Map\TerrainNode.cs" Line="21" Column="6" />
+      <File FileName="Assets\Script\Input\InputManager.cs" Line="42" Column="50" />
+      <File FileName="Assets\Script\Map\MapManager.cs" Line="163" Column="29" />
+      <File FileName="Assets\Script\Map\PathFinder.cs" Line="177" Column="3" />
+      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="452" Column="45" />
+      <File FileName="Assets\Script\Game\GameManager.cs" Line="19" Column="2" />
+      <File FileName="Assets\Script\UI\UIManager.cs" Line="155" Column="12" />
+      <File FileName="Assets\Script\Map\AStar\NavGraphNode.cs" Line="17" Column="23" />
+      <File FileName="Assets\Script\Map\AStar\SparseGraph.cs" Line="131" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="H:\Study tools\Unity\Unity_Project\PathFinding\PathFinding\PathFinding\Assets\Script\Map\SearchAStar.cs" line="251" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

@@ -68,7 +68,7 @@ public class PathFinder : MonoBehaviour {
 			for (int col = 0; col < mColumn; col++) {
 				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
 				nextindex = mNavGraph.NextFreeNodeIndex;
-				mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f));
+				mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f, false));
 			}
 		}
 
@@ -138,6 +138,9 @@ public class PathFinder : MonoBehaviour {
 	public void UpdateNodeEdgesInfo(int index,float value)
 	{
 		Assert.IsTrue (index >= 0 && index < mNavGraph.NextFreeNodeIndex);
+		//Update Nodes weight first
+		mNavGraph.Nodes [index].Weight += value;
+
 		//Update edge info that starts from Node[index]
 		foreach (GraphEdge e in mNavGraph.mEdgesList[index]) {
 			e.Cost += value;
@@ -159,6 +162,18 @@ public class PathFinder : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void UpdateNodeWallStatus(int index,bool iswall)
+	{
+		Assert.IsTrue (index >= 0 && index < mNavGraph.NextFreeNodeIndex);
+		mNavGraph.Nodes [index].IsWall = iswall;
+	}
+
+	public void UpdateNodeWallJumpableStatus(int index,bool iswalljumpable)
+	{
+		Assert.IsTrue (index >= 0 && index < mNavGraph.NextFreeNodeIndex);
+		mNavGraph.Nodes [index].IsJumpable = iswalljumpable;
 	}
 
 	private void UpdateAlgorithm()

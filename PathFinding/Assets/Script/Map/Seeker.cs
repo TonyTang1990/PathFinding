@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public class Seeker : MonoBehaviour {
 
@@ -8,7 +9,7 @@ public class Seeker : MonoBehaviour {
 
 	public float mNextWaypointDistance = 0.2f;
 
-	public GameObject mPathFinderGameObject;
+	private PathFinder mPathFinder;
 
 	//this list will store any path returned from a graph search
 	private List<int> mPath;
@@ -69,7 +70,7 @@ public class Seeker : MonoBehaviour {
 			mSourceCellIndex = value;
 		}
 	}
-	private int mSourceCellIndex;
+	private int mSourceCellIndex = 0;
 	
 	public int TargetCellIndex {
 		get {
@@ -79,7 +80,7 @@ public class Seeker : MonoBehaviour {
 			mTargetCellIndex = value;
 		}
 	}
-	private int mTargetCellIndex;
+	private int mTargetCellIndex = 0;
 	
 	public float StrickDistance {
 		get {
@@ -89,8 +90,10 @@ public class Seeker : MonoBehaviour {
 			mStrickDistance = value;
 		}
 	}
-	private float mStrickDistance;
-	
+	private float mStrickDistance = 0.0f;
+
+	public bool mIgnoreWall = false;
+
 	public float mHCostPercentage = 1.0f;
 	
 	public bool mBDrawExplorePath = true;
@@ -131,7 +134,10 @@ public class Seeker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mNavGraph = mPathFinderGameObject.GetComponent<PathFinder> ().NavGraph;
+		mPathFinder = FindObjectOfType (typeof(PathFinder)) as PathFinder;
+		Debug.Assert (mPathFinder != null);
+		mNavGraph = mPathFinder.NavGraph;
+		Debug.Assert (mNavGraph != null);
 	}
 	
 	// Update is called once per frame
@@ -146,8 +152,9 @@ public class Seeker : MonoBehaviour {
 	{
 		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 		
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
-		
+		//SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+
 		TimerCounter.CreateInstance ().End ();
 		
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;

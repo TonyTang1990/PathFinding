@@ -35,10 +35,10 @@ public class InputManager : MonoBehaviour {
 				mInputTimer = 0.0f;
 					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 					RaycastHit hit;
-					if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("NodeWeight"))) {
+				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
 						if (hit.collider) {
 							Debug.Log("hit.collider.name = " + hit.collider.name);
-							MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<NodeWeight>();
+						MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode>();
 							UIManager.UIMInstance.ShowNWAdjustPanel();
 						}
 					}

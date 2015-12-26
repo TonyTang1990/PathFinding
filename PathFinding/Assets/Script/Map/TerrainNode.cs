@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NodeWeight : MonoBehaviour {
+public class TerrainNode : MonoBehaviour {
 
-	public NodeWeight()
+	private TerrainNode()
 	{
 		
 	}
 	
-	public NodeWeight(int index,Vector3 pos, float weight)
+	public TerrainNode(int index,Vector3 pos, float weight)
 	{
 		Index = index;
 		mPosition = pos;
 		mWeight = weight;
+		mIsJumpable = false;
 	}
 	
 	public int Index
@@ -53,4 +54,30 @@ public class NodeWeight : MonoBehaviour {
 		}
 	}
 	private float mWeight;
+
+	public bool IsWall
+	{
+		get
+		{
+			return mIsWall;
+		}
+		set
+		{
+			mIsWall = value;
+		}
+	}
+	private bool mIsWall;
+
+	public bool IsJumpable
+	{
+		get
+		{
+			return mIsJumpable;
+		}
+		set
+		{
+			mIsJumpable = value;
+		}
+	}
+	private bool mIsJumpable;
 }

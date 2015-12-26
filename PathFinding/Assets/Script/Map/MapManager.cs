@@ -7,7 +7,7 @@ public class MapManager : MonoBehaviour {
 
 	public static MapManager MMInstance = null;
 
-	public NodeWeight CurrentSelectedNode {
+	public TerrainNode CurrentSelectedNode {
 		get {
 			return mCurrentSelectedNode;
 		}
@@ -15,7 +15,7 @@ public class MapManager : MonoBehaviour {
 			mCurrentSelectedNode = value;
 		}
 	}
-	private NodeWeight mCurrentSelectedNode;
+	private TerrainNode mCurrentSelectedNode;
 
 	public PathFinder PathFinder
 	{
@@ -26,19 +26,19 @@ public class MapManager : MonoBehaviour {
 	}
 	private PathFinder mPathFinder;
 
-	public List<GameObject> NodeWeightListObject {
+	public List<GameObject> NodeTerrainListObject {
 		get {
-			return mNodeWeightListObject;
+			return mNodeTerrainListObject;
 		}
 	}
-	private List<GameObject> mNodeWeightListObject;
+	private List<GameObject> mNodeTerrainListObject;
 
-	public List<NodeWeight> NodeWeightList {
+	public List<TerrainNode> NodeTerrainList {
 		get {
-			return mNodeWeightList;
+			return mNodeTerrainList;
 		}
 	}
-	private List<NodeWeight> mNodeWeightList;
+	private List<TerrainNode> mNodeTerrainList;
 
 	public GameObject mNodeWeight;
 
@@ -76,11 +76,11 @@ public class MapManager : MonoBehaviour {
 
 	private void LoadNodeWeights()
 	{
-		mNodeWeightListObject = new List<GameObject> ( mRow * mColumn);
-		mNodeWeightList = new List<NodeWeight> (mRow * mColumn);
+		mNodeTerrainListObject = new List<GameObject> ( mRow * mColumn);
+		mNodeTerrainList = new List<TerrainNode> (mRow * mColumn);
 
 		GameObject tempobject = new GameObject ();
-		NodeWeight tempnode;
+		TerrainNode tempnode;
 
 		Vector3 nodeposition = new Vector3 ();
 		int nextindex = 0;
@@ -90,12 +90,12 @@ public class MapManager : MonoBehaviour {
 				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
 				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
 				tempobject.name = nextindex.ToString();
-				tempnode = tempobject.GetComponent<NodeWeight>();
+				tempnode = tempobject.GetComponent<TerrainNode>();
 				tempnode.Weight = 0.0f;
 				tempnode.Index = nextindex;
 				tempnode.Position = nodeposition;
-				mNodeWeightListObject.Add (tempobject);
-				mNodeWeightList.Add(tempnode);
+				mNodeTerrainListObject.Add (tempobject);
+				mNodeTerrainList.Add(tempnode);
 				nextindex++;
 			}
 		}
@@ -142,10 +142,25 @@ public class MapManager : MonoBehaviour {
 	{
 		if (CurrentSelectedNode != null) {
 			int index = mCurrentSelectedNode.Index;
-			mNodeWeightListObject [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
+			mNodeTerrainListObject [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
 			//Update Edge info
 			mPathFinder.UpdateNodeEdgesInfo(index, value);
 		}
 	}
 
+	public void UpdateNodeWallStatus(bool iswall)
+	{
+		if (CurrentSelectedNode != null) {
+			int index = mCurrentSelectedNode.Index;
+			mPathFinder.UpdateNodeWallStatus(index, iswall);
+		}
+	}
+
+	public void UpdateNodeWallJumpableStatus(bool iswalljumpable)
+	{
+		if (CurrentSelectedNode != null) {
+			int index = mCurrentSelectedNode.Index;
+			mPathFinder.UpdateNodeWallJumpableStatus(index, iswalljumpable);
+		}
+	}
 }

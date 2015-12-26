@@ -3,16 +3,18 @@ using System.Collections;
 
 public class NavGraphNode : GraphNode {
 
-	public NavGraphNode()
+	private NavGraphNode()
 	{
 
 	}
 
-	public NavGraphNode(int index,Vector3 pos, float weight)
+	public NavGraphNode(int index,Vector3 pos, float weight, bool iswall)
 	{
 		Index = index;
 		mPosition = pos;
 		mWeight = weight;
+		mIsWall = iswall;
+		mIsJumpable = false;
 	}
 	
 	public int Index
@@ -53,4 +55,31 @@ public class NavGraphNode : GraphNode {
 		}
 	}
 	private float mWeight;
+
+	public bool IsWall
+	{
+		get
+		{
+			return mIsWall;
+		}
+		set
+		{
+			mIsWall = value;
+		}
+	}
+	private bool mIsWall;
+
+	public bool IsJumpable
+	{
+		get
+		{
+			return mIsJumpable;
+		}
+		set
+		{
+			mIsJumpable = value;
+		}
+	}
+	private bool mIsJumpable;
+
 }

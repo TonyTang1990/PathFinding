@@ -33,6 +33,14 @@ public class UIManager : MonoBehaviour {
 
 	private bool mBIsNWAdjustPanelShow;
 
+	public Text mIsWallStatusText;
+
+	public Button mChangeWallStatus;
+
+	public Text mIsWallJumpableStatusText;
+	
+	public Button mChangeWallJumpableStatus;
+
 	void Awake()
 	{
 		if (UIMInstance == null) {
@@ -89,6 +97,7 @@ public class UIManager : MonoBehaviour {
 			mBIsNWAdjustPanelShow = true;
 		}
 		mWeightText.text = MapManager.MMInstance.CurrentSelectedNode.Weight.ToString();
+		mIsWallStatusText.text = MapManager.MMInstance.CurrentSelectedNode.IsWall.ToString ();
 	}
 	
 	public void HideNWAdustPanel()
@@ -111,12 +120,42 @@ public class UIManager : MonoBehaviour {
 	public void DecreaseWeight()
 	{
 		float weight = --MapManager.MMInstance.CurrentSelectedNode.Weight;
-		if (MapManager.MMInstance.CurrentSelectedNode.Weight <= 0) {
+		if (MapManager.MMInstance.CurrentSelectedNode.Weight < 0) {
 			MapManager.MMInstance.CurrentSelectedNode.Weight = 0;
 			weight = 0.0f;
 		} else {
 			MapManager.MMInstance.UpdateNodeWeight (-1.0f);
 		}
 		mWeightText.text = weight.ToString ();
+	}
+
+	public void ChangeWallStatus()
+	{
+		bool iswall = MapManager.MMInstance.CurrentSelectedNode.IsWall;
+		MapManager.MMInstance.CurrentSelectedNode.IsWall = !iswall;
+		if (MapManager.MMInstance.CurrentSelectedNode.IsWall) {
+			mIsWallStatusText.text = "true";
+		}
+		else
+		{
+			mIsWallStatusText.text = "false";
+			mIsWallJumpableStatusText.text = "false";
+			MapManager.MMInstance.UpdateNodeWallJumpableStatus (false);
+		}
+		MapManager.MMInstance.UpdateNodeWallStatus (MapManager.MMInstance.CurrentSelectedNode.IsWall);
+	}
+
+	public void ChangeWallJumpableStatus()
+	{
+		if (MapManager.MMInstance.CurrentSelectedNode.IsWall) {
+			bool iswalljumpable = MapManager.MMInstance.CurrentSelectedNode.IsJumpable;
+			MapManager.MMInstance.CurrentSelectedNode.IsJumpable= !iswalljumpable;
+			if (MapManager.MMInstance.CurrentSelectedNode.IsJumpable) {
+				mIsWallJumpableStatusText.text = "true";
+			} else {
+				mIsWallJumpableStatusText.text = "false";
+			}
+			MapManager.MMInstance.UpdateNodeWallJumpableStatus (MapManager.MMInstance.CurrentSelectedNode.IsJumpable);
+		}
 	}
 }

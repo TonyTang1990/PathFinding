@@ -54,10 +54,10 @@
      <Compile Include="Assets\Script\Map\AStar\NavGraphNode.cs" />
      <Compile Include="Assets\Script\Map\AStar\SparseGraph.cs" />
      <Compile Include="Assets\Script\Map\MapManager.cs" />
-     <Compile Include="Assets\Script\Map\NodeWeight.cs" />
      <Compile Include="Assets\Script\Map\PathFinder.cs" />
      <Compile Include="Assets\Script\Map\SearchAStar.cs" />
      <Compile Include="Assets\Script\Map\Seeker.cs" />
+     <Compile Include="Assets\Script\Map\TerrainNode.cs" />
      <Compile Include="Assets\Script\UI\UIManager.cs" />
      <Compile Include="Assets\Script\UI\UpdateAStarInFo.cs" />
      <Compile Include="Assets\Script\Utility\FPSDisplay.cs" />
