@@ -156,12 +156,16 @@ public class Seeker : MonoBehaviour {
 		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
 
 		TimerCounter.CreateInstance ().End ();
-		
+
+		Debug.Log ("astarsearch.ITarget = " + astarsearch.ITarget);
+		Debug.Log ("astarsearch.IsWallInPathToTarget = " + astarsearch.IsWallInPathToTarget);
+		Debug.Log ("astarsearch.WallInPathToTargetIndex = " + astarsearch.WallInPathToTargetIndex);
+
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
 		
-		mPath = astarsearch.GetPathToTarget ();
+		mPath = astarsearch.PathToTarget;
 		
-		mMovementPath = astarsearch.GetMovementPathToTarget ();
+		mMovementPath = astarsearch.MovementPathToTarget;
 		
 		mSubTree = astarsearch.GetSPT ();
 		

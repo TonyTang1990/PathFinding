@@ -6,81 +6,9 @@ using UnityEngine.Assertions;
 
 public class SearchAStar {
 
-	public SearchAStar(SparseGraph<NavGraphNode,GraphEdge> graph
-	                   ,int source
-	                   ,int target
-	                   ,float hcostpercentage
-	                   ,bool drawexplorepath
-	                   ,float explorepathremaintime)
+	private SearchAStar()
 	{
-		mGraph = graph;
-		mGCosts = new List<float> (graph.NumNodes ());
-		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
-		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
-		mSearchFrontier = new List<GraphEdge> (graph.NumNodes());
-		CostToTargetNode = new List<float> (graph.NumNodes());
-		//Init G cost and F cost and Cost value
-		for (int i = 0; i < graph.NumNodes(); i++) {
-			mGCosts.Add (0.0f);
-			mFCosts.Add(new Pair<int,float>(i,0.0f));
-			mShortestPathTree.Add(new GraphEdge());
-			mSearchFrontier.Add(new GraphEdge());
-			CostToTargetNode.Add(0.0f);
-		}
-		mISource = source;
-		mITarget = target;
 
-		mNodesSearched = 0;
-
-		mEdgesSearched = 0;
-
-		Assert.IsTrue (hcostpercentage >= 0);
-		mHCostPercentage = hcostpercentage;
-
-		mBDrawExplorePath = drawexplorepath;
-
-		mExplorePathRemainTime = explorepathremaintime;
-
-		Search ();
-	}
-
-	public SearchAStar(SparseGraph<NavGraphNode,GraphEdge> graph
-	                   ,int source
-	                   ,int target
-	                   ,float strickdistance
-	                   ,float hcostpercentage
-	                   ,bool drawexplorepath
-	                   ,float explorepathremaintime)
-	{
-		mGraph = graph;
-		mGCosts = new List<float> (graph.NumNodes ());
-		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
-		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
-		mSearchFrontier = new List<GraphEdge> (graph.NumNodes());
-		CostToTargetNode = new List<float> (graph.NumNodes());
-		//Init G cost and F cost and Cost value
-		for (int i = 0; i < graph.NumNodes(); i++) {
-			mGCosts.Add (0.0f);
-			mFCosts.Add(new Pair<int,float>(i,0.0f));
-			mShortestPathTree.Add(new GraphEdge());
-			mSearchFrontier.Add(new GraphEdge());
-			CostToTargetNode.Add(0.0f);
-		}
-		mISource = source;
-		mITarget = target;
-		
-		mNodesSearched = 0;
-		
-		mEdgesSearched = 0;
-		
-		Assert.IsTrue (hcostpercentage >= 0);
-		mHCostPercentage = hcostpercentage;
-		
-		mBDrawExplorePath = drawexplorepath;
-		
-		mExplorePathRemainTime = explorepathremaintime;
-		
-		Search (strickdistance);
 	}
 
 	public SearchAStar(SparseGraph<NavGraphNode,GraphEdge> graph
@@ -120,58 +48,100 @@ public class SearchAStar {
 		
 		mExplorePathRemainTime = explorepathremaintime;
 		
+		mPathToTarget = new List<int> ();
+
+		mMovementPathToTarget = new List<Vector3> ();
+
+		mIsWallInPathToTarget = false;
+
+		mWallInPathToTargetIndex = -1;
+
+		mIsIgnoreWall = isignorewall;
+
 		Search (strickdistance,isignorewall);
+
+		GeneratePathToTargetInfo ();
 	}
 
-	public List<int> GetPathToTarget()
+	public List<int> PathToTarget {
+		get {
+			return mPathToTarget;
+		}
+	}
+	private List<int> mPathToTarget;
+
+	public List<Vector3> MovementPathToTarget {
+		get {
+			return mMovementPathToTarget;
+		}
+	}
+	private List<Vector3> mMovementPathToTarget;
+
+	public bool IsWallInPathToTarget {
+		get {
+			return mIsWallInPathToTarget;
+		}
+		set {
+			mIsWallInPathToTarget = value;
+		}
+	}
+	private bool mIsWallInPathToTarget;
+
+	public int WallInPathToTargetIndex
 	{
-		List<int> path = new List<int>();
+		get
+		{
+			return mWallInPathToTargetIndex;
+		}
+		set
+		{
+			mWallInPathToTargetIndex = value;
+		}
+	}
+	private int mWallInPathToTargetIndex;
+
+	private bool mIsIgnoreWall;
+
+	private void GeneratePathToTargetInfo()
+	{
+		mPathToTarget.Clear ();
+		mMovementPathToTarget.Clear ();
 
 		if (mITarget < 0) {
-			return path;
+			return;
 		}
 
 		int nd = mITarget;
 
-		path.Add (nd);
+		mPathToTarget.Add (nd);
+
+		mMovementPathToTarget.Add (mGraph.Nodes [nd].Position);
 
 		while ((nd != mISource) && (mShortestPathTree[nd] != null) && mShortestPathTree[nd].IsValidEdge()) 
 		{
 			//Debug.DrawLine(mGraph.Nodes[mShortestPathTree[nd].From].Position,mGraph.Nodes[nd].Position,Color.green, Mathf.Infinity);
 
+		    if(!mIsIgnoreWall)
+			{
+				if(mGraph.Nodes[nd].IsWall && !mGraph.Nodes[nd].IsJumpable)
+				{
+					mIsWallInPathToTarget = true;
+					mWallInPathToTargetIndex = nd;
+				}
+			}
+
 			nd = mShortestPathTree[nd].From;
 
-			path.Add(nd);
+			mPathToTarget.Add(nd);
+
+			mMovementPathToTarget.Add(mGraph.Nodes[nd].Position);
+
 		}
-		return path;
 	}
 
 	public List<GraphEdge> GetSPT()
 	{
 		return mShortestPathTree;
-	}
-
-	public List<Vector3> GetMovementPathToTarget()
-	{
-		List<Vector3> path = new List<Vector3>();
-		
-		if (mITarget < 0) {
-			return path;
-		}
-		
-		int nd = mITarget;
-		
-		path.Add (mGraph.Nodes[nd].Position);
-		
-		while ((nd != mISource) && (mShortestPathTree[nd] != null) && mShortestPathTree[nd].IsValidEdge()) 
-		{
-			//Debug.DrawLine(mGraph.Nodes[mShortestPathTree[nd].From].Position,mGraph.Nodes[nd].Position,Color.green, Mathf.Infinity);
-			
-			nd = mShortestPathTree[nd].From;
-			
-			path.Add(mGraph.Nodes[nd].Position);
-		}
-		return path;
 	}
 
 	public float GetCostToTarget()
@@ -210,6 +180,13 @@ public class SearchAStar {
 
 	private int mISource;
 
+	public int ITarget
+	{
+		get
+		{
+			return mITarget;
+		}
+	}
 	private int mITarget;
 
 	public int NodesSearched
@@ -423,7 +400,7 @@ public class SearchAStar {
 			
 			currentnodetotargetdistance = Heuristic_Euclid.Calculate(mGraph,mITarget,nextclosestnode);
 			
-			if(nextclosestnode == mITarget || currentnodetotargetdistance <= strickdistance)
+			if(nextclosestnode == mITarget || (currentnodetotargetdistance <= strickdistance && !mGraph.Nodes[nextclosestnode].IsWall))
 			{
 				mITarget = nextclosestnode;
 				return;
