@@ -144,14 +144,14 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		}
 	}
 	protected Seeker mSeeker;
-	/*
-	public Path AStarPath {
+
+	public List<Vector3> AStarPath {
 		get {
 			return mAStarPath;
 		}
 	}
-	protected Path mAStarPath;
-	*/
+	protected List<Vector3> mAStarPath;
+
 	public float ShortestTargetPathLength {
 		get {
 			return mShortestTargetPathLength;
@@ -439,6 +439,31 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	public void Move()
 	{
+		if (mAttackingObject != null) 
+		{
+			if (mAStarPath == null) {
+				//We have no path to move after yet
+				return;
+			}
+			if (mCurrentWayPoint < 0) {
+				Debug.Log ("End Of Path Reached");
+				return;
+			}
+			//Direction to the next waypoint
+			Vector3 dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
+			
+			transform.LookAt (mAStarPath [mCurrentWayPoint]);
+			
+			Vector3 newposition = transform.position + dir * mSpeed * Time.deltaTime;
+			transform.position = newposition;
+			
+			//Check if we are close enough to the next waypoint
+			//If we are, proceed to follow the next waypoint
+			if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
+				mCurrentWayPoint--;
+				return;
+			}
+		}
 		/*
 		if (mAttackingObject != null) {
 			if (mAStarPath == null) {
@@ -478,6 +503,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		if(mAttackingObject != null)
 		{
 			Debug.Log ("CalculatePath() called");
+			//mAStarPath = mSeeker();
 			//StartCoroutine(WaitForPathCalculation());
 		}
 	}

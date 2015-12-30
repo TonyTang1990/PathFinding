@@ -11,13 +11,13 @@ GameObject:
   - 23: {fileID: 2339962}
   - 102: {fileID: 10226738}
   - 114: {fileID: 11427668}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: HealthText
   m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &144526
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,7 +30,7 @@ GameObject:
   - 23: {fileID: 2345956}
   - 65: {fileID: 6578116}
   - 114: {fileID: 11435940}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: Wall
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -44,8 +44,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 144526}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -18.1000004, z: 0}
-  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_LocalPosition: {x: -4.52385712, y: 103.365517, z: 9.42843819}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 481166}
   m_Father: {fileID: 0}
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 117446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db956f93f6cc78b488eab02b9e2ba1a4, type: 3}
+  m_Script: {fileID: 11500000, guid: e53546526978fe049b8bb2e8fb2b4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11435940
@@ -178,6 +178,7 @@ MonoBehaviour:
       mRow: 1
       mColumn: 1
     mBHP: 100
+  mWeight: 3
   mAttackable: 0
 --- !u!1001 &100100000
 Prefab:
@@ -221,6 +222,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_ReflectionProbeUsage
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mWeight
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

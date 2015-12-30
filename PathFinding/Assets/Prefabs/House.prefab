@@ -26,7 +26,7 @@ GameObject:
   - 23: {fileID: 2351488}
   - 102: {fileID: 10217410}
   - 114: {fileID: 11438294}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: HealthText
   m_TagString: UI
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - 114: {fileID: 11416148}
   - 65: {fileID: 6564260}
   - 54: {fileID: 5458376}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: House
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   - 4: {fileID: 445696}
   - 135: {fileID: 13501776}
   - 114: {fileID: 11425026}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: AttackRangeCollider
   m_TagString: AttackRange
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 130422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.15999985, y: -13.8400002, z: -8.47999954}
-  m_LocalScale: {x: .449999988, y: .449999988, z: .449999988}
+  m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
   m_Children:
   - {fileID: 424190}
   - {fileID: 435790}
@@ -254,11 +254,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mBI:
-    mBT: 0
+    mBT: 1
     mSize:
-      mRow: 3
-      mColumn: 3
+      mRow: 2
+      mColumn: 2
     mBHP: 10
+  mWeight: 0
   mAttackable: 1
   mHouseBullet: {fileID: 136182, guid: 348493fd8e7a96440893eee3048727f7, type: 2}
   mAttackInterval: 1
@@ -271,7 +272,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 195858}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcf59418e0253504f82ae4f08c8b6dd6, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e3aa0ed1e2ea0b49bdd0a7932a36b8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11438294
@@ -282,7 +283,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 121816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db956f93f6cc78b488eab02b9e2ba1a4, type: 3}
+  m_Script: {fileID: 11500000, guid: e53546526978fe049b8bb2e8fb2b4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!135 &13501776
@@ -318,15 +319,39 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mBI.mSize.mColumn
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mBI.mSize.mRow
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mAttackInterval
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.x
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.y
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.z
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mBI.mBT
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mWeight
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

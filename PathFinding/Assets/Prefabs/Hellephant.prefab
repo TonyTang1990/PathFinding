@@ -28,9 +28,9 @@ GameObject:
   - 23: {fileID: 2389418}
   - 102: {fileID: 10297562}
   - 114: {fileID: 11406860}
-  m_Layer: 10
+  m_Layer: 5
   m_Name: HealthText
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -89,7 +89,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 197974}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.93500042, y: -20.7099991, z: 7.59000015}
+  m_LocalPosition: {x: 11.9499998, y: 0, z: 0}
   m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children:
   - {fileID: 456902}
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 157734}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db956f93f6cc78b488eab02b9e2ba1a4, type: 3}
+  m_Script: {fileID: 11500000, guid: e53546526978fe049b8bb2e8fb2b4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11443200
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 112310}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1b4b5671f8dd6b4f9fff35eaf6b84cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 17773ce296d98564baba31f16f89b35c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!135 &13580028
@@ -362,6 +362,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: mDetectionDistance
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 0e98b7611f4175146a0c596780f01e2c, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

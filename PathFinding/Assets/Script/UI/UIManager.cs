@@ -98,6 +98,11 @@ public class UIManager : MonoBehaviour {
 		}
 		mWeightText.text = MapManager.MMInstance.CurrentSelectedNode.Weight.ToString();
 		mIsWallStatusText.text = MapManager.MMInstance.CurrentSelectedNode.IsWall.ToString ();
+		if (MapManager.MMInstance.CurrentSelectedNode.IsWall) {
+			mIsWallJumpableStatusText.text = MapManager.MMInstance.CurrentSelectedNode.IsJumpable.ToString ();
+		} else {
+			mIsWallJumpableStatusText.text = "false";
+		}
 	}
 	
 	public void HideNWAdustPanel()
@@ -110,16 +115,14 @@ public class UIManager : MonoBehaviour {
 
 	public void IncreaseWeight()
 	{
-		float weight = ++MapManager.MMInstance.CurrentSelectedNode.Weight;
+		float weight = MapManager.MMInstance.CurrentSelectedNode.Weight + 1;
 		mWeightText.text = weight.ToString ();
-		TimerCounter.CreateInstance ().Restart ("UpdateNodeWeightIncrease");
 		MapManager.MMInstance.UpdateNodeWeight (1.0f);
-		TimerCounter.CreateInstance ().End ();
 	}
 
 	public void DecreaseWeight()
 	{
-		float weight = --MapManager.MMInstance.CurrentSelectedNode.Weight;
+		float weight = MapManager.MMInstance.CurrentSelectedNode.Weight - 1;
 		if (MapManager.MMInstance.CurrentSelectedNode.Weight < 0) {
 			MapManager.MMInstance.CurrentSelectedNode.Weight = 0;
 			weight = 0.0f;

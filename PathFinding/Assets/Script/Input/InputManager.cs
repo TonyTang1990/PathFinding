@@ -61,15 +61,15 @@ public class InputManager : MonoBehaviour {
 			if (Input.GetKey (KeyCode.O)) {
 				Debug.Log ("KeyCode.O Pressed");
 				mInputTimer = 0.0f;
-				//if (MapManager.mMapInstance.IsTerrainAvaibleToBuild ()) {
-					//GameManager.mGameInstance.BuildBuilding ();
-				//}
+				if (MapManager.MMInstance.IsTerrainAvaibleToBuild ()) {
+					MapManager.MMInstance.BuildBuilding ();
+				}
 			}
 			
 			if (Input.GetKey (KeyCode.F1)) {
 				Debug.Log ("KeyCode.F1 Pressed");
 				mInputTimer = 0.0f;
-				//GameManager.mGameInstance.DeselectChoosingStaff ();
+				//MapManager.MMInstance.DeselectChoosingStaff ();
 			}
 		}
 

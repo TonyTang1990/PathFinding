@@ -5,6 +5,6 @@ public class WallButton : MonoBehaviour{
 	public void onClick()
 	{
 		Debug.Log ("WallButton::onClick");
-		//GameManager.mGameInstance.setCurrenctSelectedBuilding ((int)BuildingType.E_WALL);
+		MapManager.MMInstance.setCurrenctSelectedBuilding ((int)BuildingType.E_WALL);
 	}
 }

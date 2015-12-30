@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - TerrainTile
+  - Bullet
+  - AttackRange
+  - UI
+  - Building
+  - Soldier
+  - Debug
+  - Map
   layers:
   - Default
   - TransparentFX
@@ -17,8 +25,8 @@ TagManager:
   - Shootable
   - LightMask
   - Invisible
-  - 
-  - 
+  - Terrain
+  - Clickable
   - 
   - 
   - 

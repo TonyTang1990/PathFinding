@@ -11,11 +11,15 @@ public class TerrainNode : MonoBehaviour {
 	public TerrainNode(int index,Vector3 pos, float weight)
 	{
 		Index = index;
+		mRowColumnInfo = Utility.ConvertIndexToRC (index);
+		Debug.Log("mRowColumnInfo.x = " + mRowColumnInfo.x);
+		Debug.Log("mRowColumnInfo.y = " + mRowColumnInfo.y);
+
 		mPosition = pos;
 		mWeight = weight;
 		mIsJumpable = false;
 	}
-	
+
 	public int Index
 	{
 		get
@@ -28,6 +32,16 @@ public class TerrainNode : MonoBehaviour {
 		}
 	}
 	private int mIndex;
+	
+	public Vector2 RowColumnInfo {
+		get {
+			return mRowColumnInfo;
+		}
+		set{
+			mRowColumnInfo = value;
+		}
+	}
+	private Vector2 mRowColumnInfo;
 	
 	public Vector3 Position
 	{

@@ -2,10 +2,68 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
+
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class MapManager : MonoBehaviour {
 
 	public static MapManager MMInstance = null;
+
+	//Old Begin
+	private Map mMap;
+	
+	public List<GameObject> mBuildings;
+	
+	public List<GameObject> mSoldiers;
+	
+	private List<GameObject> mBuldingsInGame;
+	
+	private List<Building> mBuldingsInfoInGame;
+	
+	private List<GameObject> mSoldiersInGame;
+	
+	private List<Soldier> mSoldiersScriptInGame;
+
+	private bool[,] mMapOccupied;
+	private GameObject mCurrentSelectedBuilding;
+
+	private Building mSelectedBuilding;
+
+	private SoldierType mCurrentSelectedSoldierType;
+	
+	public bool isBuildingSelected
+	{
+		get
+		{
+			return mIsBuildingSelected;
+		}
+		set
+		{
+			mIsBuildingSelected = value;
+		}
+	}
+	private bool mIsBuildingSelected = false;
+	
+	public bool isSoldierSelected
+	{
+		get
+		{
+			return mIsSoldierSelected;
+		}
+		set
+		{
+			mIsSoldierSelected = value;
+		}
+	}
+	private bool mIsSoldierSelected = false;
+	
+	private Vector2 mCurrentOccupiedIndex;
+	
+	private string mMapSavePath;
+	//Old End
 
 	public TerrainNode CurrentSelectedNode {
 		get {
@@ -46,6 +104,10 @@ public class MapManager : MonoBehaviour {
 	
 	private int mColumn = 1;
 
+	private int mRealRow = 1;
+
+	private int mRealColumn = 1;
+
 	private float mNodeDistance = 1.0f;
 
 	void Awake()
@@ -56,6 +118,14 @@ public class MapManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
+		mMapSavePath = Application.persistentDataPath + "/mapInfo.dat";
+		Debug.Log ("mMapSavePath = " + mMapSavePath);
+		
+		mBuldingsInGame = new List<GameObject>();
+		mBuldingsInfoInGame = new List<Building> ();
+		mSoldiersInGame = new List<GameObject> ();
+		mSoldiersScriptInGame = new List<Soldier>();
+
 		mPathFinder = gameObject.GetComponent<PathFinder> ();
 	}
 
@@ -64,14 +134,100 @@ public class MapManager : MonoBehaviour {
 		LoadMap ();
 
 		UIManager.UIMInstance.UpdateAstarInfo ();
+
+		MapSetup ();
 	}
 
 	void LoadMap()
 	{
+		Debug.Log("LoadMap()");
+		if (File.Exists (mMapSavePath)) {
+			BinaryFormatter bf = new BinaryFormatter ();
+			FileStream fs = File.Open (mMapSavePath, FileMode.Open);
+			mMap = (Map)bf.Deserialize (fs);
+			fs.Close ();
+		} else {
+			mMap = new Map ();
+			SaveMap();
+		}
+
 		mRow = mPathFinder.mRow;
 		mColumn = mPathFinder.mColumn;
+		mRealRow = mPathFinder.RealRow;
+		mRealColumn = mPathFinder.RealColumn;
+
 		mNodeDistance = mPathFinder.mNodeDistance;
 		LoadNodeWeights ();
+	}
+
+	void SaveMap()
+	{
+		Debug.Log("SaveMap()");
+		if (!File.Exists (mMapSavePath)) {
+			FileStream fsc = File.Create(mMapSavePath);
+			fsc.Close();
+		}
+		BinaryFormatter bf = new BinaryFormatter ();
+		FileStream fs = File.Open (mMapSavePath, FileMode.Open);
+		
+		bf.Serialize (fs, mMap);
+		fs.Close ();
+	}
+
+	void MapSetup()
+	{
+		mMapOccupied = new bool[mRealRow ,mRealColumn];
+
+		for (int i = -(mRealRow/2); i < mRealRow/2; i++) 
+		{
+			for(int j = -(mRealColumn/2); j < mRealColumn/2; j++)
+			{
+				mMapOccupied[i + mRealRow/2,j + mRealColumn/2] = false;
+				
+				if(mMap.getMapOccupiedInfo(i + mRealRow/2,j + mRealColumn/2) == true)
+				{
+					Debug.Log(string.Format("mMap.getMapOccupiedInfo[{0}][{1}] = {2}]",i + mRealRow/2,j + mRealColumn/2,mMap.getMapOccupiedInfo(i + mRealRow/2,j + mRealColumn/2)));
+				}
+				mMapOccupied[i + mRealRow/2,j + mRealColumn/2] = mMap.getMapOccupiedInfo(i + mRealRow/2,j + mRealColumn/2);
+			}
+		}
+
+		Debug.Log("mMap.getBuildings().Capacity = " + mMap.getBuildings().Capacity);
+		GameObject bd;
+		Building bding;
+		List<int> weightnodeindexs;
+		Vector3 position;
+		foreach( BuildingInfo bdi in mMap.getBuildings())
+		{
+			Debug.Log("bdi.getBuildingType() = " + bdi.getBuildingType());
+			Debug.Log(string.Format("bd.getPosition().x = {0} .y = {1} .z = {2}", bdi.Position.x, bdi.Position.y, bdi.Position.z));
+			position = new Vector3(bdi.Position.x,bdi.Position.y,bdi.Position.z);
+			bd = Instantiate(mBuildings[(int)bdi.getBuildingType()],position,Quaternion.identity) as GameObject;
+			bding = bd.GetComponent<Building>();
+			bding.mBI.Position = position;
+			mBuldingsInGame.Add(bd);
+			mBuldingsInfoInGame.Add(bding/*bd.GetComponent<Building>()*/);
+
+			weightnodeindexs = bding.GetWeightNodeIndex();
+
+			//Update Node weight
+			foreach(int index in weightnodeindexs)
+			{
+				Debug.Log("weightnodeindex = " + index);
+				UpdateSpecificNodeWeight(index, bding.mWeight);
+			}
+
+			//Update Node info
+			if(bding.mBI.getBuildingType() == BuildingType.E_WALL)
+			{
+				int index = Utility.ConvertRCToIndex((int)(bding.mBI.Position.x + 1),(int)(bding.mBI.Position.z + 1));
+				Debug.Log("WALL Index = " + index);
+				CurrentSelectedNode.IsWall = true;
+				UpdateSpecificNodeWallStatus(index,true);
+			}
+
+			Debug.Log("bdi.Position" + bdi.Position);
+		}
 	}
 
 	private void LoadNodeWeights()
@@ -93,6 +249,7 @@ public class MapManager : MonoBehaviour {
 				tempnode = tempobject.GetComponent<TerrainNode>();
 				tempnode.Weight = 0.0f;
 				tempnode.Index = nextindex;
+				tempnode.RowColumnInfo = Utility.ConvertIndexToRC(nextindex);
 				tempnode.Position = nodeposition;
 				mNodeTerrainListObject.Add (tempobject);
 				mNodeTerrainList.Add(tempnode);
@@ -100,15 +257,221 @@ public class MapManager : MonoBehaviour {
 			}
 		}
 	}
+	
+	public void setCurrenctSelectedBuilding(int index)
+	{
+		if (mCurrentSelectedBuilding) {
+			Destroy(mCurrentSelectedBuilding);
+		}
+		mCurrentSelectedBuilding = Instantiate(mBuildings [index],new Vector3(0.0f,100.0f,0.0f),Quaternion.identity) as GameObject;
+		mSelectedBuilding = mCurrentSelectedBuilding.GetComponent<Building> ();
+		mIsBuildingSelected = true;
+		mIsSoldierSelected = false;
+	}
 
 	// Update is called once per frame
 	void Update () {
 		//DrawMap ();
+		if (mIsBuildingSelected) {
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
+				if(hit.collider)
+				{
+					//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
+					Vector3 tempselectposition = hit.collider.transform.position;
+					TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode>();
+					switch(mSelectedBuilding.mBI.getBuildingType())
+					{
+					case BuildingType.E_WALL:
+						tempselectposition.y += 0.5f;
+						break;
+					case BuildingType.E_HOUSE:
+						tempselectposition.x += 0.5f;
+						tempselectposition.z += 0.5f;
+						break;
+					case BuildingType.E_DRAWER:
+						tempselectposition.x += 0.9f;
+						tempselectposition.z += 0.9f;
+						break;
+					}
+
+					mCurrentSelectedBuilding.transform.position = tempselectposition;
+					mSelectedBuilding.mBI.Position = tempselectposition;
+					mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
+					mCurrentSelectedNode = mNodeTerrainList[tempterrainnode.Index];
+				}
+			}
+		}
 	}
 
-	void DrawMap()
+	private bool isValideTerrainIndex(int row, int column)
 	{
-		//Debug.DrawLine (new Vector3 (0.0f, 0.0f, 0.0f), new Vector3 (mRow, 0.0f, mColumn), Color.red);
+		bool isrowindexvalide = !( row < 0 || row >= PathFinder.RealRow);
+		bool iscolumnindexvalide = !(column < 0 || column >= PathFinder.RealColumn);
+		bool isvalideindex = (isrowindexvalide && iscolumnindexvalide);
+		return isvalideindex;
+	}
+	
+	public bool IsTerrainAvaibleToBuild()
+	{
+		bool isavaliable = true;
+		if (mCurrentSelectedBuilding) {
+			Building buildinginfo = mCurrentSelectedBuilding.GetComponent<Building>();
+			for(int i = 0; i < buildinginfo.mBI.getSize().mRow; i++)
+			{
+				for(int j = 0; j < buildinginfo.mBI.getSize().mColumn; j++)
+				{
+					if( isValideTerrainIndex((int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j) )
+					{
+						if(mMapOccupied[(int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j])
+						{
+							Debug.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",(int)mCurrentOccupiedIndex.x + i,(int)mCurrentOccupiedIndex.y + j,mMapOccupied[(int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j]));
+							isavaliable = false;
+						}
+					}
+					else{
+						Debug.Log("Index invalide");
+						isavaliable = false;
+						break;
+					}
+				}
+			}
+		}
+		Debug.Log ("isavaliable = " + isavaliable);
+		return isavaliable;
+	}
+
+	public void BuildBuilding()
+	{
+		Debug.Log ("mCurrentOccupiedIndex.x = " + mCurrentOccupiedIndex.x);
+		Debug.Log ("mCurrentOccupiedIndex.y = " + mCurrentOccupiedIndex.y);
+		
+		if (mCurrentSelectedBuilding) {
+			Building buildinginfo = mCurrentSelectedBuilding.GetComponent<Building>() as Building;
+			
+			for( int i = 0 ; i < buildinginfo.mBI.getSize().mRow; i++ )
+			{
+				for( int j = 0; j < buildinginfo.mBI.getSize().mColumn; j++ )
+				{
+					mMapOccupied [(int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j] = true;
+					mMap.setMapOccupiedInfo((int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j, true);
+					//mTerrainTilesScript [(int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j].setOccupiedBuilding (mCurrentSelectedBuilding);
+				}
+			}
+			
+			mSelectedBuilding.UpdateChildPosition();
+			
+			mMap.addBuilding(mSelectedBuilding.mBI);
+			
+			mBuldingsInGame.Add(mCurrentSelectedBuilding);
+			
+			mBuldingsInfoInGame.Add(mSelectedBuilding);
+
+			//Update Node weight
+			List<int> weightnodeindexs = mSelectedBuilding.GetWeightNodeIndex();
+			
+			foreach(int index in weightnodeindexs)
+			{
+				Debug.Log("weightnodeindex = " + index);
+				UpdateSpecificNodeWeight(index, mSelectedBuilding.mWeight);
+			}
+
+			//Update Node Info
+			if(mSelectedBuilding.mBI.getBuildingType() == BuildingType.E_WALL)
+			{
+				int index = Utility.ConvertRCToIndex((int)(mSelectedBuilding.mBI.Position.x + 1),(int)(mSelectedBuilding.mBI.Position.z + 1));
+				Debug.Log("WALL Index = " + index);
+				CurrentSelectedNode.IsWall = true;
+				UpdateSpecificNodeWallStatus(index,true);
+			}
+
+			mCurrentSelectedBuilding = null;
+			mSelectedBuilding = null;
+			
+			mIsBuildingSelected = false;
+			
+			PrintAllOccupiedInfo ();
+			
+			SaveMap ();
+		}
+	}
+
+	
+	public void setCurrentSelectedSoldier(SoldierType stp)
+	{
+		mCurrentSelectedSoldierType = stp;
+		mIsSoldierSelected = true;
+		mIsBuildingSelected = false;
+	}
+	
+	public void DeploySoldier(Vector3 hitpoint)
+	{
+		GameObject go = SoldierFactory.SpawnSoldier(mCurrentSelectedSoldierType,hitpoint);
+		mSoldiersInGame.Add(go);
+		mSoldiersScriptInGame.Add(go.GetComponent<Soldier>());
+	}
+	
+	public Building ObtainAttackObject(Soldier sod)
+	{
+		Building targetbuilding = null;
+		float shortestdistance = Mathf.Infinity;
+		float currentdistance = 0.0f;
+		foreach (Building bd in mBuldingsInfoInGame) {
+			if( bd.mBI.IsDestroyed )
+			{
+				//Debug.Log("IsDestroyed = " + bdi.IsDestroyed);
+				continue;
+			}
+			else
+			{
+				currentdistance = Vector3.Distance(bd.mBI.Position, sod.gameObject.transform.position);
+				if( currentdistance < shortestdistance )
+				{
+					shortestdistance = currentdistance;
+					targetbuilding = bd;
+				}
+			}
+		}
+		return targetbuilding;
+	}
+	
+	public Soldier ObtainAttackSoldier(Building bd)
+	{
+		Soldier targetsoldier = null;
+		float shortestdistance = Mathf.Infinity;
+		float currentdistance = 0.0f;
+		foreach (Soldier so in mSoldiersScriptInGame) {
+			if( so.IsDead )
+			{
+				//Debug.Log("IsDestroyed = " + bdi.IsDestroyed);
+				continue;
+			}
+			else
+			{
+				currentdistance = Vector3.Distance(so.transform.position, bd.mBI.Position);
+				if( currentdistance < shortestdistance )
+				{
+					shortestdistance = currentdistance;
+					targetsoldier = so;
+				}
+			}
+		}
+		return targetsoldier;
+	}
+	
+	void PrintAllOccupiedInfo()
+	{
+		for(int i = 0; i < PathFinder.RealRow; i++ )
+		{
+			for(int j = 0; j < PathFinder.RealColumn; j++)
+			{
+				if(mMapOccupied[i,j])
+				{
+					Debug.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",i,j,mMapOccupied[i,j]));
+				}
+			}
+		}
 	}
 
 	public void Search()
@@ -138,15 +501,48 @@ public class MapManager : MonoBehaviour {
 		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
 	}
 
+	
+	public void UpdateSpecificNodeWeight(int index, float value)
+	{
+		Assert.IsTrue(index >= 0 && index < mRow * mColumn);
+		Assert.IsTrue(value >= 0.0f);
+
+		mNodeTerrainList[index].Weight += value;
+	
+		Transform nodeweight = mNodeTerrainListObject [index].transform.FindChild("Node_Weight"); 
+		nodeweight.gameObject.GetComponent<TextMesh> ().text = mNodeTerrainList[index].Weight.ToString ();
+		
+		//Update Edge info
+		mPathFinder.UpdateNodeEdgesInfo(index, value);
+	}
+
 	public void UpdateNodeWeight(float value)
 	{
 		if (CurrentSelectedNode != null) {
 			int index = mCurrentSelectedNode.Index;
+			Debug.Log("CurrrentSelectedNode.Index = " + CurrentSelectedNode.Index);
+
+			float weight = MapManager.MMInstance.CurrentSelectedNode.Weight + value;
+
+			if (weight < 0) {
+				MapManager.MMInstance.CurrentSelectedNode.Weight = 0;
+				weight = 0.0f;
+			}
+
 			Transform nodeweight = mNodeTerrainListObject [index].transform.FindChild("Node_Weight"); 
-			nodeweight.gameObject.GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
+			nodeweight.gameObject.GetComponent<TextMesh> ().text = weight.ToString ();
+
+			MapManager.MMInstance.CurrentSelectedNode.Weight = weight;
+
 			//Update Edge info
 			mPathFinder.UpdateNodeEdgesInfo(index, value);
 		}
+	}
+
+	public void UpdateSpecificNodeWallStatus(int index, bool iswall)
+	{
+		Assert.IsTrue(index >= 0 && index < mRow * mColumn);
+		mPathFinder.UpdateNodeWallStatus(index, iswall);
 	}
 
 	public void UpdateNodeWallStatus(bool iswall)

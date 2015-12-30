@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 [Serializable]
 public enum BuildingType
@@ -79,7 +81,9 @@ public class BuildingInfo
 public class Building : MonoBehaviour, GameObjectType {
 
 	public BuildingInfo mBI;
-	
+
+	public float mWeight = 0.0f;
+
 	public bool mAttackable = true;
 
 	private TextMesh mHPText;
@@ -116,6 +120,8 @@ public class Building : MonoBehaviour, GameObjectType {
 		
 		mGameType = ObjectType.EOT_BUILDING;
 		Debug.Log ("Building::Awake() mGameType = " + mGameType);
+
+		Assert.IsTrue (mWeight >= 0);
 	}
 
 	public virtual void Start()
@@ -166,6 +172,38 @@ public class Building : MonoBehaviour, GameObjectType {
 	public virtual bool IsTargetAvalibleToAttack()
 	{
 		return false;
+	}
+
+	public List<int> GetWeightNodeIndex()
+	{
+		//We assume all building occupied size mRow = mColumn
+		List<int> weightNodeList = new List<int> ();
+		int buildingpositionnodeindex = 0;
+		switch (mBI.getSize ().mRow) {
+		case 1:
+			buildingpositionnodeindex = Utility.ConvertRCToIndex ((int)(mBI.Position.x + 1), (int)(mBI.Position.z + 1));
+			weightNodeList.Add(buildingpositionnodeindex);
+			break;
+		case 2:
+			break;
+		case 3:
+			buildingpositionnodeindex = Utility.ConvertRCToIndex ((int)(mBI.Position.x + 2), (int)(mBI.Position.z + 2));
+			weightNodeList.Add(buildingpositionnodeindex);
+			break;
+		case 4:
+			for(int i = 2; i <= 3; i++)
+			{
+				for(int j = 2; j <=3; j++)
+				{
+					buildingpositionnodeindex = Utility.ConvertRCToIndex ((int)(mBI.Position.x + i), (int)(mBI.Position.z + j));
+					weightNodeList.Add(buildingpositionnodeindex);
+				}
+			}
+            break;
+         default:
+            break;
+		}
+		return weightNodeList;
 	}
 	/*
 	void OnTriggerEnter(Collider other) {

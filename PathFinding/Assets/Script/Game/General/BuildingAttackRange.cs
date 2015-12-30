@@ -26,6 +26,8 @@ public class BuildingAttackRange: MonoBehaviour{
 		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
 			return;
 		} else {
+			Debug.Log ("other.tag = " + other.tag);
+			Debug.Log("other.name = " + other.name);
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 				if(objtype == ObjectType.EOT_SOLDIER)
 				{

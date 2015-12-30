@@ -142,9 +142,11 @@ public class Seeker : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		/*
 		if (mIsMoving) {
 			RealMove();
 		}
+		*/
 		//Vector3 newposition = 
 	}
 
@@ -194,7 +196,7 @@ public class Seeker : MonoBehaviour {
 
 	public void Move()
 	{
-		mIsMoving = true;
+		//mIsMoving = true;
 		mCurrentWayPoint = mMovementPath.Count - 1;
 
 		DrawMovementPath ();
