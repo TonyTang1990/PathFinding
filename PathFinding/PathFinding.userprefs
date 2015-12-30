@@ -1,13 +1,24 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\SearchAStar.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\UI\ZomBunnyButton.cs">
     <Files>
       <File FileName="PathFinding.sln" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\Seeker.cs" Line="165" Column="3" />
-      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="131" Column="5" />
-      <File FileName="Assets\Script\UI\UIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\GameManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Map\Seeker.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\UI\UIManager.cs" Line="160" Column="3" />
       <File FileName="Assets\Script\Map\MapManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Map\PathFinder.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Input\InputManager.cs" Line="65" Column="34" />
+      <File FileName="Assets\Script\Game\Building\Building.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\Soldier.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Building\House.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierFactory.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\UI\DrawerButton.cs" Line="9" Column="3" />
+      <File FileName="Assets\Script\UI\HellephantButton.cs" Line="8" Column="5" />
+      <File FileName="Assets\Script\UI\HouseButton.cs" Line="8" Column="5" />
+      <File FileName="Assets\Script\UI\WallButton.cs" Line="8" Column="5" />
+      <File FileName="Assets\Script\UI\ZomBunnyButton.cs" Line="9" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -135,7 +135,6 @@ public class SearchAStar {
 			mPathToTarget.Add(nd);
 
 			mMovementPathToTarget.Add(mGraph.Nodes[nd].Position);
-
 		}
 	}
 

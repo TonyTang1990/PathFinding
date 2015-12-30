@@ -33,20 +33,43 @@ public class InputManager : MonoBehaviour {
 
 			if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject ()) {
 				mInputTimer = 0.0f;
-					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-					RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit hit;
 				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
-						if (hit.collider) {
+					if (hit.collider) {
+						if (false/*GameManager.mGameInstance.isSoldierSelected*/) {
+							Debug.Log ("hit.point = " + hit.point);
+							//GameManager.mGameInstance.DeploySoldier (hit.point);
+						}
+						else{
 							Debug.Log("hit.collider.name = " + hit.collider.name);
-						MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode>();
+							MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode>();
 							UIManager.UIMInstance.ShowNWAdjustPanel();
 						}
 					}
-					else
-					{
-						MapManager.MMInstance.CurrentSelectedNode = null;
-						UIManager.UIMInstance.HideNWAdustPanel();
-					}
+				}
+				else
+				{
+					MapManager.MMInstance.CurrentSelectedNode = null;
+					UIManager.UIMInstance.HideNWAdustPanel();
+				}
+			}
+		}
+
+		
+		if (mInputTimer > mValidInputDeltaTime) {
+			if (Input.GetKey (KeyCode.O)) {
+				Debug.Log ("KeyCode.O Pressed");
+				mInputTimer = 0.0f;
+				//if (MapManager.mMapInstance.IsTerrainAvaibleToBuild ()) {
+					//GameManager.mGameInstance.BuildBuilding ();
+				//}
+			}
+			
+			if (Input.GetKey (KeyCode.F1)) {
+				Debug.Log ("KeyCode.F1 Pressed");
+				mInputTimer = 0.0f;
+				//GameManager.mGameInstance.DeselectChoosingStaff ();
 			}
 		}
 

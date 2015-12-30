@@ -53,7 +53,14 @@ public class GameManager : MonoBehaviour {
 		attackingnodeindex = GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex;
 		targetnodeindex = GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex;
 		mAttackingSoldier.transform.position = MapManager.MMInstance.PathFinder.NavGraph.Nodes [attackingnodeindex].Position;
+		Vector3 newposition = mAttackingSoldier.transform.position;
+		newposition.y += 0.2f;
+		mAttackingSoldier.transform.position = newposition;
+
 		mTargetSoldier.transform.position = MapManager.MMInstance.PathFinder.NavGraph.Nodes [targetnodeindex].Position;
+		newposition = mTargetSoldier.transform.position;
+		newposition.y += 0.2f;
+		mTargetSoldier.transform.position = newposition;
 	}
 
 	public void MoveSoldier()

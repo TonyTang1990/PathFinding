@@ -88,7 +88,7 @@ public class MapManager : MonoBehaviour {
 		for (int rw = 0; rw < mRow; rw++) {
 			for (int col = 0; col < mColumn; col++) {
 				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
-				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 45.0f, 0.0f))) as GameObject;
+				tempobject = Instantiate (mNodeWeight, nodeposition, Quaternion.Euler (new Vector3 (90.0f, 0.0f, 0.0f))) as GameObject;
 				tempobject.name = nextindex.ToString();
 				tempnode = tempobject.GetComponent<TerrainNode>();
 				tempnode.Weight = 0.0f;
@@ -142,7 +142,8 @@ public class MapManager : MonoBehaviour {
 	{
 		if (CurrentSelectedNode != null) {
 			int index = mCurrentSelectedNode.Index;
-			mNodeTerrainListObject [index].GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
+			Transform nodeweight = mNodeTerrainListObject [index].transform.FindChild("Node_Weight"); 
+			nodeweight.gameObject.GetComponent<TextMesh> ().text = CurrentSelectedNode.Weight.ToString ();
 			//Update Edge info
 			mPathFinder.UpdateNodeEdgesInfo(index, value);
 		}
