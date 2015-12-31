@@ -44,4 +44,27 @@ public class Utility {
 		int column = index % MapManager.MMInstance.PathFinder.RealRow + 1;
 		return new Vector2 (row, column);
 	}
+
+	public static int ConvertFloatPositionToIndex(Vector3 pos)
+	{
+		int index = 0;
+
+		int row = (int)(pos.x);
+		int column = (int)(pos.z);
+		index = ConvertRCToIndex(row, column);
+
+		return index;
+	}
+
+	public static Vector2 ConvertFloatPositionToRC(Vector3 pos)
+	{
+		Vector2 rc;
+		
+		int row = (int)(pos.x + 0.5f);
+		int column = (int)(pos.z + 0.5f);
+		rc.x = row;
+		rc.y = column;
+		
+		return rc;
+	}
 }

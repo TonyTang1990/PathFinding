@@ -183,6 +183,16 @@ public class Soldier : MonoBehaviour, GameObjectType {
 */
 	//private Path[] mLastPaths;
 
+	//A Star Search Info
+	public SearchAStar ShortestPath {
+		get {
+			return mShortestPath;
+		}
+	}
+	private SearchAStar mShortestPath;
+
+	private SearchAStar[] mPathsInfo;
+
 	/* Number of paths completed so far */
 	private int mNumCompleted = 0;
 
@@ -332,6 +342,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mCurrentCalculatingPaths = mDetectionRange.RangeTargetList;
 		CalculateAllPathsInfo(mDetectionRange.RangeTargetList);
 
+		mShortestPath = null;
+		mShortestPathObject = FindShortestPathTarget (mDetectionRange.RangeTargetList);
+
 		return mShortestPathObject;
 	}
 
@@ -350,12 +363,13 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				if(mAttackingObject == null)
 				{
 					Debug.Log("Chose Target From Whole Map");
+					return;
 				    //mAttackingObject= GameManager.mGameInstance.ObtainAttackObject (this);
 				}
 
 				if(mAttackingObject != mOldAttackingObject && mAttackingObject!=null)
 				{
-					CalculatePath();
+					mAStarPath = mShortestPath.MovementPathToTarget;
 				}
 			}
 		}
@@ -363,12 +377,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	private void CalculateAllPathsInfo(List<Building> bds)
 	{
-		//If any paths are currently being calculated, cancel them to avoid wasting processing power
-		//if (mLastPaths != null)
-			//mLastPaths = null;
-			//for (int i=0; i<mLastPaths.Length; i++) {
-				//mLastPaths [i].Error ();
-			//}
+		//Reset mpathsInfo to null before we caculate for all paths again
+		if (mPathsInfo != null)
+		{
+			mPathsInfo = null;
+		}
 
 		//Create a new lastPaths array if necessary (can reuse the old one?)
 		int validbuildingnumbers = 0; //= MapManager.mMapInstance.NullWallBuildingNumber;
@@ -379,50 +392,85 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				validbuildingnumbers++;
 			}
 		}
-		//if (mLastPaths == null || mLastPaths.Length != validbuildingnumbers) {
-			//mLastPaths = new Path[validbuildingnumbers];
-		//}
+		if (mPathsInfo == null || mPathsInfo.Length != validbuildingnumbers) {
+			mPathsInfo = new SearchAStar[validbuildingnumbers];
+		}
 
-		Building bd = null;
+		Building tempbd = null;
 		int pathindex = 0;
+		Vector2 soldierindex;
+		Vector2 bdindex;
 		for(int i = 0; i < nullwallbuildingnumbers; i++)
 		{
-		//foreach (Building bd in MapManager.mMapInstance.BuildingsInfoInGame) {
-			//bd = MapManager.mMapInstance.BuildingsInfoInGame[i];
-			/*
-			if( bd.mBI.IsDestroyed || bd.mBI.mBT == BuildingType.E_WALL)
-			{
-				//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
-				continue;
-			}
-			else
-			{
-			*/
-				Debug.Log ("CalculateAllPathsInfo() called");
-				bd = bds[i];
-				if(bd.mBI.IsDestroyed!=true)
+			foreach (Building bd in MapManager.MMInstance.BuildingsInfoInGame) {
+			
+				if( bd.mBI.IsDestroyed || bd.mBI.mBT == BuildingType.E_WALL)
 				{
-					Debug.Log ("transform.position = " + transform.position);
-					Debug.Log ("bd.transform.position = " + bd.transform.position);
-					//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
-					//mLastPaths[pathindex] = p;
-					//AstarPath.StartPath (p);
-					//pathindex++;
+					//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
+					continue;
 				}
-			//}
+				else
+				{
+					Debug.Log ("CalculateAllPathsInfo() called");
+					tempbd = bds[i];
+					if(tempbd.mBI.IsDestroyed!=true)
+					{
+						Debug.Log ("transform.position = " + transform.position);
+						Debug.Log ("bd.transform.position = " + tempbd.transform.position);
+						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
+						bdindex = Utility.ConvertFloatPositionToRC(tempbd.transform.position);
+						mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
+						mSeeker.CreatePathAStar();
+						SearchAStar path = mSeeker.mAstarSearch;
+						mPathsInfo[pathindex] = path;
+						//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
+						//mLastPaths[pathindex] = p;
+						//AstarPath.StartPath (p);
+						pathindex++;
+					}
+				}
+			}
 		}
+	}
+
+	private Building FindShortestPathTarget(List<Building> bds)
+	{
+		int index = -1;
+		float distance = Mathf.Infinity;
+		foreach (SearchAStar sas in mPathsInfo) {
+			if(sas.GetCostToTarget() < distance)
+			{
+				index++;
+				distance = sas.GetCostToTarget();
+				mShortestPath = sas;
+			}
+		}
+
+		if (index == -1) {
+			mShortestPathObject = null;
+		} else {
+			mShortestPathObject = bds[index];
+		}
+
+		return mShortestPathObject;
 	}
 	
 	public bool IsTargetInAttackRange()
 	{
-		if (mAttackingObject != null) {
+		if (mAttackingObject != null) 
+		{
 			mDistanceToTarget = Vector3.Distance (transform.position, mAttackingObject.mBI.Position);
-			if (mDistanceToTarget > mAttackDistance) {
+			if (mDistanceToTarget > mAttackDistance) 
+			{
 				return false;
-			} else {
+			}
+			else
+			{
 				return true;
 			}
-		} else {
+		} 
+		else
+		{
 			return false;
 		}
 	}

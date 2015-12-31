@@ -20,7 +20,12 @@ public class MapManager : MonoBehaviour {
 	public List<GameObject> mSoldiers;
 	
 	private List<GameObject> mBuldingsInGame;
-	
+
+	public List<Building> BuildingsInfoInGame {
+		get {
+			return mBuldingsInfoInGame;
+		}
+	}
 	private List<Building> mBuldingsInfoInGame;
 	
 	private List<GameObject> mSoldiersInGame;
@@ -222,7 +227,7 @@ public class MapManager : MonoBehaviour {
 			{
 				int index = Utility.ConvertRCToIndex((int)(bding.mBI.Position.x + 1),(int)(bding.mBI.Position.z + 1));
 				Debug.Log("WALL Index = " + index);
-				CurrentSelectedNode.IsWall = true;
+				mNodeTerrainList[index].IsWall = true;
 				UpdateSpecificNodeWallStatus(index,true);
 			}
 
@@ -477,7 +482,7 @@ public class MapManager : MonoBehaviour {
 	public void Search()
 	{
 		//mPathFinder.CreatePathAStar ();
-		GameManager.mGameInstance.AttackingSoldierSeeker.CreatePathAStar ();
+		//GameManager.mGameInstance.AttackingSoldierSeeker.CreatePathAStar ();
 
 		UIManager.UIMInstance.UpdateAstarInfo();
 	}

@@ -37,9 +37,9 @@ public class InputManager : MonoBehaviour {
 				RaycastHit hit;
 				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
 					if (hit.collider) {
-						if (false/*GameManager.mGameInstance.isSoldierSelected*/) {
+						if (MapManager.MMInstance.isSoldierSelected) {
 							Debug.Log ("hit.point = " + hit.point);
-							//GameManager.mGameInstance.DeploySoldier (hit.point);
+							MapManager.MMInstance.DeploySoldier (hit.point);
 						}
 						else{
 							Debug.Log("hit.collider.name = " + hit.collider.name);

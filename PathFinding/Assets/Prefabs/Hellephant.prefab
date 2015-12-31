@@ -63,6 +63,7 @@ GameObject:
   - 114: {fileID: 11443200}
   - 136: {fileID: 13684918}
   - 54: {fileID: 5454080}
+  - 114: {fileID: 11420156}
   m_Layer: 0
   m_Name: Hellephant
   m_TagString: Soldier
@@ -209,6 +210,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53546526978fe049b8bb2e8fb2b4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11420156
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 197974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 996b1180fad215d408919d5b58ba7100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mSpeed: 1
+  mNextWaypointDistance: .100000001
+  mIgnoreWall: 0
+  mHCostPercentage: 1
+  mBDrawExplorePath: 1
+  mExplorePathRemainTime: 2
 --- !u!114 &11443200
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -374,6 +392,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Layer
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mNextWaypointDistance
+      value: .100000001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

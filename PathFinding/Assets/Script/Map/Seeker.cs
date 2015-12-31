@@ -111,6 +111,8 @@ public class Seeker : MonoBehaviour {
 
 	private SparseGraph<NavGraphNode, GraphEdge> mNavGraph;
 
+	public SearchAStar mAstarSearch;
+
 	void Awake()
 	{
 		mIsMoving = false;
@@ -130,6 +132,8 @@ public class Seeker : MonoBehaviour {
 		mMovementPath.Clear ();
 		mSubTree.Clear ();
 		mTimeTaken = 0;
+
+		mAstarSearch = null;
 	}
 
 	// Use this for initialization
@@ -155,27 +159,27 @@ public class Seeker : MonoBehaviour {
 		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 		
 		//SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
-		SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+		mAstarSearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
 
 		TimerCounter.CreateInstance ().End ();
 
-		Debug.Log ("astarsearch.ITarget = " + astarsearch.ITarget);
-		Debug.Log ("astarsearch.IsWallInPathToTarget = " + astarsearch.IsWallInPathToTarget);
-		Debug.Log ("astarsearch.WallInPathToTargetIndex = " + astarsearch.WallInPathToTargetIndex);
+		Debug.Log ("mAstarSearch.ITarget = " + mAstarSearch.ITarget);
+		Debug.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.IsWallInPathToTarget);
+		Debug.Log ("mAstarSearch.WallInPathToTargetIndex = " + mAstarSearch.WallInPathToTargetIndex);
 
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
 		
-		mPath = astarsearch.PathToTarget;
+		mPath = mAstarSearch.PathToTarget;
 		
-		mMovementPath = astarsearch.MovementPathToTarget;
+		mMovementPath = mAstarSearch.MovementPathToTarget;
 		
-		mSubTree = astarsearch.GetSPT ();
+		mSubTree = mAstarSearch.GetSPT ();
 		
-		mCostToTarget = astarsearch.GetCostToTarget ();
+		mCostToTarget = mAstarSearch.GetCostToTarget ();
 		
-		mNodesSearched = astarsearch.NodesSearched;
+		mNodesSearched = mAstarSearch.NodesSearched;
 		
-		mEdgesSearched = astarsearch.EdgesSearched;
+		mEdgesSearched = mAstarSearch.EdgesSearched;
 	}
 
 	void OnDrawGizmos()
@@ -240,5 +244,24 @@ public class Seeker : MonoBehaviour {
 			mCurrentWayPoint--;
 			return;
 		}
+	}
+
+	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn, float strickdistance)
+	{
+		Debug.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
+		
+		Debug.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
+		
+		mSourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
+		
+		mTargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
+		
+		mStrickDistance = strickdistance;
+		
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex);
+		
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex);
+		
+		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
 	}
 }
