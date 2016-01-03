@@ -180,6 +180,8 @@ public class Seeker : MonoBehaviour {
 		mNodesSearched = mAstarSearch.NodesSearched;
 		
 		mEdgesSearched = mAstarSearch.EdgesSearched;
+
+		DrawMovementPath ();
 	}
 
 	void OnDrawGizmos()
@@ -258,10 +260,10 @@ public class Seeker : MonoBehaviour {
 		
 		mStrickDistance = strickdistance;
 		
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex);
+		Debug.Log ("mSourceCellIndex = " + mSourceCellIndex);
 		
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex);
+		Debug.Log ("mTargetCellIndex = " + mTargetCellIndex);
 		
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
+		Debug.Log ("mStrickDistance = " + mStrickDistance);
 	}
 }

@@ -11,7 +11,7 @@ public class Map {
 
 	public List<BuildingInfo> mBuildings = new List<BuildingInfo>();
 
-	public bool[,] mMapOccupied = new bool[MapManager.MMInstance.PathFinder.RealRow, MapManager.MMInstance.PathFinder.RealColumn];
+	public bool[,] mMapOccupied = new bool[MapManager.MMInstance.PathFinder.mRow, MapManager.MMInstance.PathFinder.mColumn];
 
 	public void addBuilding(BuildingInfo building)
 	{

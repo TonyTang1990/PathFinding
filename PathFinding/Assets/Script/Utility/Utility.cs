@@ -40,8 +40,8 @@ public class Utility {
 	{
 		//int row = index / MapManager.MMInstance.PathFinder.mColumn + 1;
 		//int column = index % MapManager.MMInstance.PathFinder.mColumn + 1;
-		int row = index / MapManager.MMInstance.PathFinder.RealColumn + 1;
-		int column = index % MapManager.MMInstance.PathFinder.RealRow + 1;
+		int row = index / MapManager.MMInstance.PathFinder.mColumn + 1;
+		int column = index % MapManager.MMInstance.PathFinder.mRow + 1;
 		return new Vector2 (row, column);
 	}
 
@@ -49,8 +49,8 @@ public class Utility {
 	{
 		int index = 0;
 
-		int row = (int)(pos.x);
-		int column = (int)(pos.z);
+		int row = (int)(pos.x) + 1;
+		int column = (int)(pos.z) + 1;
 		index = ConvertRCToIndex(row, column);
 
 		return index;
@@ -60,8 +60,8 @@ public class Utility {
 	{
 		Vector2 rc;
 		
-		int row = (int)(pos.x + 0.5f);
-		int column = (int)(pos.z + 0.5f);
+		int row = (int)(pos.x) + 1;
+		int column = (int)(pos.z) + 1;
 		rc.x = row;
 		rc.y = column;
 		

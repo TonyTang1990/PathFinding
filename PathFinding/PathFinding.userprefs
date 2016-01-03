@@ -1,48 +1,25 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Game\Soldier\Soldier.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\MapManager.cs">
     <Files>
-      <File FileName="Assets\Script\Game\Soldier\Soldier.cs" Line="463" Column="1" />
-      <File FileName="Assets\Script\Map\MapManager.cs" Line="500" Column="26" />
-      <File FileName="Assets\Script\Map\Map.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\GameManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Input\InputManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\PathFinder.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\Seeker.cs" Line="249" Column="34" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierMoveState.cs" Line="21" Column="26" />
-      <File FileName="Assets\Script\Map\TerrainNode.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Utility\Utility.cs" Line="66" Column="17" />
-      <File FileName="Assets\Script\Game\Building\House.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\WallButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\ZomBunnyButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\HouseButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\DrawerButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\HellephantButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\UI\UIManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Building\Wall.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\AStar\GraphNode.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\AStar\NavGraphNode.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\General\BuildingAttackRange.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Building\Building.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\AStar\GraphEdge.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\AStar\SparseGraph.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\Hellephant.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\SearchAStar.cs" Line="146" Column="22" />
-      <File FileName="Assets\Script\UI\UpdateAStarInFo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierDeadState.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierAttackState.cs" Line="26" Column="6" />
+      <File FileName="Assets\Script\Map\Seeker.cs" Line="18" Column="8" />
+      <File FileName="Assets\Script\Game\Soldier\Soldier.cs" Line="8" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierAttackState.cs" Line="15" Column="23" />
+      <File FileName="Assets\Script\Map\MapManager.cs" Line="525" Column="43" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierMoveState.cs" Line="32" Column="5" />
+      <File FileName="Assets\Script\Game\Building\Wall.cs" Line="48" Column="4" />
+      <File FileName="Assets\Script\Game\Building\Building.cs" Line="155" Column="27" />
+      <File FileName="Assets\Script\Input\InputManager.cs" Line="47" Column="38" />
+      <File FileName="Assets\Script\UI\HellephantButton.cs" Line="8" Column="33" />
+      <File FileName="Assets\Script\UI\UIManager.cs" Line="120" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\TerrainNode.cs" line="13" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="386" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="394" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="388" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Game\Soldier\SoldierMoveState.cs" line="32" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Game\Soldier\Soldier.cs" line="425" />
+      <Breakpoint file="H:\Study tools\Unity\Unity_Project\PathFinding\PathFinding\PathFinding\Assets\Script\Game\Soldier\Soldier.cs" line="482" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="Assets\Script\Game\Soldier\Soldier.cs" line="480" offsetX="1005" offsetY="8143" expression="mCurrentCalculatingPaths" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

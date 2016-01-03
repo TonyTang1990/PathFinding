@@ -69,7 +69,7 @@ public class InputManager : MonoBehaviour {
 			if (Input.GetKey (KeyCode.F1)) {
 				Debug.Log ("KeyCode.F1 Pressed");
 				mInputTimer = 0.0f;
-				//MapManager.MMInstance.DeselectChoosingStaff ();
+				MapManager.MMInstance.DeselectChoosingStaff ();
 			}
 		}
 

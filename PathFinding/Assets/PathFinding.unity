@@ -2215,7 +2215,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mRow: 10
   mColumn: 10
-  mNodeDistance: 1
   mBDrawMap: 1
 --- !u!114 &896086168
 MonoBehaviour:

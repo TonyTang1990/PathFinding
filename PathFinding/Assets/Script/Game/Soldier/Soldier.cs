@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 [Serializable]
 public enum SoldierType
@@ -85,6 +86,14 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	protected Building mOldAttackingObject;
 
+	public List<Building> CurrentCalculatingPaths {
+		get {
+			return mCurrentCalculatingPaths;
+		}
+		set {
+			mCurrentCalculatingPaths = value;
+		}
+	}
 	private List<Building> mCurrentCalculatingPaths = null;
 
 	public Building ShortestPathTarget
@@ -194,7 +203,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	private SearchAStar[] mPathsInfo;
 
 	/* Number of paths completed so far */
-	private int mNumCompleted = 0;
+	//private int mNumCompleted = 0;
 
 	public int CurrentWayPoint {
 		get {
@@ -339,18 +348,12 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	private Building ObtainAttackObjectInDetectionRange()
 	{
-		mCurrentCalculatingPaths = mDetectionRange.RangeTargetList;
-		CalculateAllPathsInfo(mDetectionRange.RangeTargetList);
-
-		mShortestPath = null;
-		mShortestPathObject = FindShortestPathTarget (mDetectionRange.RangeTargetList);
-
-		return mShortestPathObject;
+		return FindShortestPathObject(mDetectionRange.RangeTargetList);
 	}
 
 	public void MakeDecision()
 	{
-		if (gameObject != null && !mIsDead) {
+		if (gameObject != null) {
 			mDetectionRange.RangeTargetList.RemoveAll(item => item.mBI.IsDestroyed);
 			mOldAttackingObject = mAttackingObject;
 			if(ShouldChangeAttackTarget())
@@ -363,20 +366,30 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				if(mAttackingObject == null)
 				{
 					Debug.Log("Chose Target From Whole Map");
-					return;
-				    //mAttackingObject= GameManager.mGameInstance.ObtainAttackObject (this);
+					mAttackingObject= MapManager.MMInstance.ObtainAttackObject (this);
 				}
 
 				if(mAttackingObject != mOldAttackingObject && mAttackingObject!=null)
 				{
 					mAStarPath = mShortestPath.MovementPathToTarget;
+
+					mCurrentWayPoint = mAStarPath.Count - 1;
+					//Change the first point to gameobject location to avoid soldier move away from target
+					mAStarPath[mCurrentWayPoint] = transform.position;
 				}
 			}
 		}
 	}
 
-	private void CalculateAllPathsInfo(List<Building> bds)
+	public Building FindShortestPathObject(List<Building> calculatingpaths)
 	{
+		mCurrentCalculatingPaths = calculatingpaths;
+		Debug.Log ("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
+
+		if (mCurrentCalculatingPaths.Count == 0) {
+			return null;
+		}
+
 		//Reset mpathsInfo to null before we caculate for all paths again
 		if (mPathsInfo != null)
 		{
@@ -385,13 +398,18 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		//Create a new lastPaths array if necessary (can reuse the old one?)
 		int validbuildingnumbers = 0; //= MapManager.mMapInstance.NullWallBuildingNumber;
-		int nullwallbuildingnumbers = bds.Count;
-		foreach (Building nwbd in bds) {
-			if(nwbd.mBI.IsDestroyed != true)
+		//int nullwallbuildingnumbers = mCurrentCalculatingPaths.Count;
+		foreach (Building nwbd in mCurrentCalculatingPaths) {
+			if(nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
 			{
 				validbuildingnumbers++;
 			}
 		}
+
+		if (validbuildingnumbers == 0) {
+			return null;
+		}
+
 		if (mPathsInfo == null || mPathsInfo.Length != validbuildingnumbers) {
 			mPathsInfo = new SearchAStar[validbuildingnumbers];
 		}
@@ -400,41 +418,52 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		int pathindex = 0;
 		Vector2 soldierindex;
 		Vector2 bdindex;
-		for(int i = 0; i < nullwallbuildingnumbers; i++)
-		{
-			foreach (Building bd in MapManager.MMInstance.BuildingsInfoInGame) {
-			
-				if( bd.mBI.IsDestroyed || bd.mBI.mBT == BuildingType.E_WALL)
+		//for(int i = 0; i < nullwallbuildingnumbers; i++)
+		//{
+		foreach (Building bd in mCurrentCalculatingPaths) {
+		
+			if( bd.mBI.mBT == BuildingType.E_WALL)
+			{
+				//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
+				continue;
+			}
+			else
+			{
+				Debug.Log ("FindShortestPathObject() called");
+				tempbd = bd;
+				if(tempbd.mBI.IsDestroyed!=true)
 				{
-					//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
-					continue;
+					Debug.Log ("transform.position = " + transform.position);
+					Debug.Log ("bd.transform.position = " + tempbd.transform.position);
+					soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
+					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
+					Debug.Log ("soldierindex = " + soldierindex);
+					Debug.Log ("bdindex = " + bdindex);
+
+					mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
+					mSeeker.CreatePathAStar();
+					SearchAStar path = mSeeker.mAstarSearch;
+					mPathsInfo[pathindex] = path;
+					//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
+					//mLastPaths[pathindex] = p;
+					//AstarPath.StartPath (p);
 				}
-				else
-				{
-					Debug.Log ("CalculateAllPathsInfo() called");
-					tempbd = bds[i];
-					if(tempbd.mBI.IsDestroyed!=true)
-					{
-						Debug.Log ("transform.position = " + transform.position);
-						Debug.Log ("bd.transform.position = " + tempbd.transform.position);
-						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
-						bdindex = Utility.ConvertFloatPositionToRC(tempbd.transform.position);
-						mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
-						mSeeker.CreatePathAStar();
-						SearchAStar path = mSeeker.mAstarSearch;
-						mPathsInfo[pathindex] = path;
-						//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
-						//mLastPaths[pathindex] = p;
-						//AstarPath.StartPath (p);
-						pathindex++;
-					}
-				}
+				pathindex++;
 			}
 		}
+
+		mShortestPathObject = FindShortestPathTarget ();
+
+		mCurrentCalculatingPaths = null;
+
+		return mShortestPathObject;
+		//}
 	}
 
-	private Building FindShortestPathTarget(List<Building> bds)
+	private Building FindShortestPathTarget()
 	{
+		mShortestPath = null;
+
 		int index = -1;
 		float distance = Mathf.Infinity;
 		foreach (SearchAStar sas in mPathsInfo) {
@@ -446,10 +475,19 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			}
 		}
 
-		if (index == -1) {
-			mShortestPathObject = null;
-		} else {
-			mShortestPathObject = bds[index];
+		if (mShortestPath != null && mShortestPath.IsWallInPathToTarget) {
+			Debug.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
+			int wallindex = -1;
+			wallindex = MapManager.MMInstance.BuildingsInfoInGame.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
+			//wallindex = mCurrentCalculatingPaths.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
+			Debug.Log("wallindex = " + wallindex);
+			Assert.IsTrue(wallindex != -1);
+			//mShortestPathObject = mCurrentCalculatingPaths[wallindex];
+			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[wallindex];
+		}
+		else
+		{
+			mShortestPathObject = mCurrentCalculatingPaths[index];
 		}
 
 		return mShortestPathObject;
@@ -459,7 +497,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	{
 		if (mAttackingObject != null) 
 		{
-			mDistanceToTarget = Vector3.Distance (transform.position, mAttackingObject.mBI.Position);
+			mDistanceToTarget = Vector3.Distance (transform.position, MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position /*mAttackingObject.mBI.Position*/);
 			if (mDistanceToTarget > mAttackDistance) 
 			{
 				return false;
@@ -499,7 +537,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			}
 			//Direction to the next waypoint
 			Vector3 dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
-			
+			dir.y = 0.0f;
+
 			transform.LookAt (mAStarPath [mCurrentWayPoint]);
 			
 			Vector3 newposition = transform.position + dir * mSpeed * Time.deltaTime;

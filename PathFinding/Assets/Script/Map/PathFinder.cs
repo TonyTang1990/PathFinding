@@ -9,22 +9,6 @@ public class PathFinder : MonoBehaviour {
 	public int mRow = 2;
 	
 	public int mColumn = 2;
-	
-	public float mNodeDistance = 1.0f;
-
-	public int RealRow {
-		get {
-			return mRealRow;
-		}
-	}
-	private int mRealRow;
-	
-	public int RealColumn {
-		get {
-			return mRealColumn;
-		}
-	}
-	private int mRealColumn;
 
 	private List<int> mTerrainType;
 
@@ -63,14 +47,7 @@ public class PathFinder : MonoBehaviour {
 		mNavGraph = null;
 		mTotalNodes = 0;
 		mTotalEdges = 0;
-
-		Assert.IsTrue(mNodeDistance > 0.0f && mNodeDistance <= 1.0f);
-
-		mRealRow = (int)(mRow * mNodeDistance);
-		mRealColumn = (int)(mColumn * mNodeDistance);
-		UnityEngine.Debug.Log ("mRealRow = " + mRealRow);
-		UnityEngine.Debug.Log ("mRealColumn = " + mRealColumn);
-
+		
 		TimerCounter.CreateInstance().Restart("CreateGraph");
 		CreateGraph ();
 		TimerCounter.CreateInstance ().End ();
@@ -87,7 +64,7 @@ public class PathFinder : MonoBehaviour {
 		//SparseGraph nodes data
 		for (int rw = 0; rw < mRow; rw++) {
 			for (int col = 0; col < mColumn; col++) {
-				nodeposition = new Vector3 (rw * mNodeDistance, 0.0f, col * mNodeDistance);
+				nodeposition = new Vector3 (rw, 0.0f, col);
 				nextindex = mNavGraph.NextFreeNodeIndex;
 				mNavGraph.AddNode (new NavGraphNode (nextindex, nodeposition, 0.0f, false));
 			}

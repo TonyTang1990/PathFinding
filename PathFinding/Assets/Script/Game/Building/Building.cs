@@ -52,6 +52,8 @@ public class BuildingInfo
 	}
 	private BuildingPosition mPosition;
 
+	public int mIndex;
+
 	public bool IsDestroyed
 	{
 		get
@@ -204,6 +206,30 @@ public class Building : MonoBehaviour, GameObjectType {
             break;
 		}
 		return weightNodeList;
+	}
+
+	public int GetBuildingIndex()
+	{
+		//We assume all building occupied size mRow = mColumn
+		int BuildingNodeList = 0;
+		int buildingpositionnoderow = 0;
+		int buildingpositionnodecomlumn = 0;
+		buildingpositionnoderow = (int)(mBI.Position.x + 1);
+		buildingpositionnodecomlumn = (int)(mBI.Position.z + 1);
+
+		switch (mBI.getSize ().mRow) {
+		case 1:
+		case 2:
+			BuildingNodeList = Utility.ConvertRCToIndex(buildingpositionnoderow, buildingpositionnodecomlumn);
+			break;
+		case 3:
+		case 4:
+			BuildingNodeList = Utility.ConvertRCToIndex (buildingpositionnoderow + 1, buildingpositionnodecomlumn + 1);
+			break;
+		default:
+			break;
+		}
+		return BuildingNodeList;
 	}
 	/*
 	void OnTriggerEnter(Collider other) {

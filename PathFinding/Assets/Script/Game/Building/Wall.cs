@@ -35,6 +35,17 @@ public class Wall : Building {
 	public override void TakeDamage(float damage)
 	{
 		base.TakeDamage (damage);
+		//Once the wall has been destroyed, we should update Node status
+		if (mBI.IsDestroyed) {
+			MapManager.MMInstance.PathFinder.NavGraph.Nodes[mBI.mIndex].IsWall = false;
+			MapManager.MMInstance.NodeTerrainList[mBI.mIndex].IsWall = false;
+
+			MapManager.MMInstance.UpdateSpecificNodeWeight(mBI.mIndex, 0);
+			
+			MapManager.MMInstance.UpdateSpecificNodeWallStatus(mBI.mIndex,false);
+
+			MapManager.MMInstance.UpdateSpecificNodeWeight(mBI.mIndex, -mWeight);
+		}
 	}
 
 	public override bool CanAttack()
