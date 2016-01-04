@@ -6,7 +6,7 @@ public class Drawer : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Debug.Log ("Drawer::Awake()");
+		Utility.Log ("Drawer::Awake()");
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
 	}

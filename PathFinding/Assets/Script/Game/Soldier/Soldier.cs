@@ -86,7 +86,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	protected Building mOldAttackingObject;
 
-	public List<Building> CurrentCalculatingPaths {
+	public Hashtable CurrentCalculatingPaths {
 		get {
 			return mCurrentCalculatingPaths;
 		}
@@ -94,7 +94,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			mCurrentCalculatingPaths = value;
 		}
 	}
-	private List<Building> mCurrentCalculatingPaths = null;
+	private Hashtable mCurrentCalculatingPaths = null;
 
 	public Building ShortestPathTarget
 	{
@@ -200,7 +200,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	private SearchAStar mShortestPath;
 
-	private SearchAStar[] mPathsInfo;
+	private List<Pair<int, SearchAStar>>/*SearchAStar[]*/ mPathsInfo;
 
 	/* Number of paths completed so far */
 	//private int mNumCompleted = 0;
@@ -258,9 +258,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	public float mDetectionDistance;
 
+	private bool mBMakeNewDecision = false;
+
 	public virtual void Awake()
 	{
-		Debug.Log("Soldier's Position = " + gameObject.transform.position);
+		Utility.Log("Soldier's Position = " + gameObject.transform.position);
 		/*
 		if (mST == SoldierType.E_ZOMBUNNY) {
 			mAnim = GetComponent<Animator>();
@@ -269,7 +271,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
 		if (mHPText == null) {
-			Debug.Log("mHPText == null");
+			Utility.Log("mHPText == null");
 		}
 		mHPText.text = "HP: " + mSHP;
 
@@ -288,11 +290,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mAttackablePositions = new Vector3[8];
 	
 		mGameType = ObjectType.EOT_SOLDIER;
-		Debug.Log ("Soldier::Awake() mGameType = " + mGameType);
+		Utility.Log ("Soldier::Awake() mGameType = " + mGameType);
 
 		mDetectionRangeCollider = gameObject.transform.Find ("AttackRangeCollider").gameObject;
 		mDetectionRangeCollider.GetComponent<SphereCollider> ().radius = mDetectionDistance;
-		Debug.Log ("DetectionDistance = " + mDetectionDistance);
+		Utility.Log ("DetectionDistance = " + mDetectionDistance);
 		mDetectionRange = mDetectionRangeCollider.GetComponent<SoldierDetectRange> ();
 	}
 
@@ -332,17 +334,25 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	private bool ShouldChangeAttackTarget()
 	{
-		if (mAttackingObject != null)
+		if(mBMakeNewDecision)
 		{
-			if (!mAttackingObject.mBI.IsDestroyed) {
-				return false;
-			}
-			else
+			mBMakeNewDecision = false;
+			return !mBMakeNewDecision;
+		}
+		else
 			{
+			if (mAttackingObject != null)
+			{
+				if (!mAttackingObject.mBI.IsDestroyed) {
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			} else {
 				return true;
 			}
-		} else {
-			return true;
 		}
 	}
 
@@ -354,18 +364,34 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	public void MakeDecision()
 	{
 		if (gameObject != null) {
-			mDetectionRange.RangeTargetList.RemoveAll(item => item.mBI.IsDestroyed);
+			//mDetectionRange.RangeTargetList.RemoveAll(item => item.mBI.IsDestroyed);
+			Building temp = null;
+			List<int> indextoremove = new List<int>();
+			foreach(DictionaryEntry entry in mDetectionRange.RangeTargetList)
+			{
+				temp = entry.Value as Building;
+				if(temp.mBI.IsDestroyed)
+				{
+					indextoremove.Add(temp.mBI.mIndex);
+				}
+			}
+
+			foreach(int inedx in indextoremove)
+			{
+				mDetectionRange.RangeTargetList.Remove(inedx);
+			}
+
 			mOldAttackingObject = mAttackingObject;
 			if(ShouldChangeAttackTarget())
 			{
 				//mAttackingObject = null;
-				Debug.Log ("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
+				Utility.Log ("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
 				mAttackingObject = ObtainAttackObjectInDetectionRange();
 				//CalculateAllPathsInfo(MapManager.mMapInstance.NullWallBuildingsInfoInGame);
 				//Otherwise chose one as attack target in whole map
 				if(mAttackingObject == null)
 				{
-					Debug.Log("Chose Target From Whole Map");
+					Utility.Log("Chose Target From Whole Map");
 					mAttackingObject= MapManager.MMInstance.ObtainAttackObject (this);
 				}
 
@@ -376,30 +402,45 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					mCurrentWayPoint = mAStarPath.Count - 1;
 					//Change the first point to gameobject location to avoid soldier move away from target
 					mAStarPath[mCurrentWayPoint] = transform.position;
+
+					//if the attacking object is Wall,
+					//we let soldier listenning for wall break event to make new decision once has wall breaked
+					if(mAttackingObject.mBI.getBuildingType() == BuildingType.E_WALL)
+					{
+						EventManager.mEMInstance.StartListening("WALL_BREAK",WallBreakDelegate);
+					}
+					else
+					{
+						EventManager.mEMInstance.StopListening("WALL_BREAK",WallBreakDelegate);
+					}
 				}
 			}
 		}
 	}
 
-	public Building FindShortestPathObject(List<Building> calculatingpaths)
+	private void WallBreakDelegate()
+    {
+		Utility.Log ("WallBreakDelegate() called");
+		mBMakeNewDecision = true;
+	}
+
+	public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
 	{
 		mCurrentCalculatingPaths = calculatingpaths;
-		Debug.Log ("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
+		Utility.Log ("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
 
 		if (mCurrentCalculatingPaths.Count == 0) {
 			return null;
 		}
 
 		//Reset mpathsInfo to null before we caculate for all paths again
-		if (mPathsInfo != null)
-		{
-			mPathsInfo = null;
-		}
-
+		mPathsInfo = null;
+	
 		//Create a new lastPaths array if necessary (can reuse the old one?)
 		int validbuildingnumbers = 0; //= MapManager.mMapInstance.NullWallBuildingNumber;
 		//int nullwallbuildingnumbers = mCurrentCalculatingPaths.Count;
-		foreach (Building nwbd in mCurrentCalculatingPaths) {
+		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
+			Building nwbd = entry.Value as Building;
 			if(nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
 			{
 				validbuildingnumbers++;
@@ -410,8 +451,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			return null;
 		}
 
-		if (mPathsInfo == null || mPathsInfo.Length != validbuildingnumbers) {
-			mPathsInfo = new SearchAStar[validbuildingnumbers];
+		if (mPathsInfo == null) {
+			mPathsInfo = new List<Pair<int, SearchAStar>>(validbuildingnumbers);/*new SearchAStar[validbuildingnumbers];*/
 		}
 
 		Building tempbd = null;
@@ -420,8 +461,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		Vector2 bdindex;
 		//for(int i = 0; i < nullwallbuildingnumbers; i++)
 		//{
-		foreach (Building bd in mCurrentCalculatingPaths) {
-		
+		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
+			Building bd = entry.Value as Building;
 			if( bd.mBI.mBT == BuildingType.E_WALL)
 			{
 				//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
@@ -429,21 +470,21 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			}
 			else
 			{
-				Debug.Log ("FindShortestPathObject() called");
+				Utility.Log ("FindShortestPathObject() called");
 				tempbd = bd;
 				if(tempbd.mBI.IsDestroyed!=true)
 				{
-					Debug.Log ("transform.position = " + transform.position);
-					Debug.Log ("bd.transform.position = " + tempbd.transform.position);
+					Utility.Log ("transform.position = " + transform.position);
+					Utility.Log ("bd.transform.position = " + tempbd.transform.position);
 					soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
 					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
-					Debug.Log ("soldierindex = " + soldierindex);
-					Debug.Log ("bdindex = " + bdindex);
+					Utility.Log ("soldierindex = " + soldierindex);
+					Utility.Log ("bdindex = " + bdindex);
 
 					mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
 					mSeeker.CreatePathAStar();
 					SearchAStar path = mSeeker.mAstarSearch;
-					mPathsInfo[pathindex] = path;
+					mPathsInfo.Add(new Pair<int, SearchAStar> (tempbd.mBI.mIndex,path));
 					//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
 					//mLastPaths[pathindex] = p;
 					//AstarPath.StartPath (p);
@@ -466,28 +507,29 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		int index = -1;
 		float distance = Mathf.Infinity;
-		foreach (SearchAStar sas in mPathsInfo) {
-			if(sas.GetCostToTarget() < distance)
+		foreach (Pair<int, SearchAStar> pair in mPathsInfo) {
+			if(pair.Value.GetCostToTarget() < distance)
 			{
-				index++;
-				distance = sas.GetCostToTarget();
-				mShortestPath = sas;
+				index = pair.Key;
+				distance = pair.Value.GetCostToTarget();
+				mShortestPath = pair.Value;
 			}
 		}
 
 		if (mShortestPath != null && mShortestPath.IsWallInPathToTarget) {
-			Debug.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
-			int wallindex = -1;
-			wallindex = MapManager.MMInstance.BuildingsInfoInGame.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
+			Utility.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
+			//int wallindex = -1;
+			//wallindex = MapManager.MMInstance.BuildingsInfoInGame.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
 			//wallindex = mCurrentCalculatingPaths.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
-			Debug.Log("wallindex = " + wallindex);
-			Assert.IsTrue(wallindex != -1);
+			//Debug.Log("wallindex = " + wallindex);
+			//Assert.IsTrue(wallindex != -1);
 			//mShortestPathObject = mCurrentCalculatingPaths[wallindex];
-			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[wallindex];
+			//mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[wallindex];
+			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
 		}
 		else
 		{
-			mShortestPathObject = mCurrentCalculatingPaths[index];
+			mShortestPathObject = mCurrentCalculatingPaths[index] as Building;
 		}
 
 		return mShortestPathObject;
@@ -531,17 +573,32 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				//We have no path to move after yet
 				return;
 			}
+
+			Vector3 dir = new Vector3();
+			Vector3 newposition = new Vector3();
+
 			if (mCurrentWayPoint < 0) {
-				Debug.Log ("End Of Path Reached");
+				//Move forward to target object to make sure it under soldier attack range
+				//Direction to the next waypoint
+				dir = (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position - transform.position).normalized;
+				dir.y = 0.0f;
+				
+				transform.LookAt (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
+
+				//Here we set speed to 1.0f to avoid soldier move too far from destination node
+				newposition = transform.position + dir * 1.0f * Time.deltaTime;
+				transform.position = newposition;
+
+				Utility.Log ("End Of Path Reached");
 				return;
 			}
 			//Direction to the next waypoint
-			Vector3 dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
+			dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
 			dir.y = 0.0f;
 
 			transform.LookAt (mAStarPath [mCurrentWayPoint]);
 			
-			Vector3 newposition = transform.position + dir * mSpeed * Time.deltaTime;
+			newposition = transform.position + dir * mSpeed * Time.deltaTime;
 			transform.position = newposition;
 			
 			//Check if we are close enough to the next waypoint
@@ -589,7 +646,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	{
 		if(mAttackingObject != null)
 		{
-			Debug.Log ("CalculatePath() called");
+			Utility.Log ("CalculatePath() called");
 			//mAStarPath = mSeeker();
 			//StartCoroutine(WaitForPathCalculation());
 		}

@@ -26,15 +26,13 @@ public class BuildingAttackRange: MonoBehaviour{
 		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
 			return;
 		} else {
-			Debug.Log ("other.tag = " + other.tag);
-			Debug.Log("other.name = " + other.name);
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 				if(objtype == ObjectType.EOT_SOLDIER)
 				{
 					Soldier so = other.gameObject.GetComponent<Soldier>();
 					if (so.IsDead != true && mRangeTargetList.Contains (so) != true) {
 						mRangeTargetList.Add (so);
-					Debug.Log ("OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
+						Utility.Log ("OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
 					}
 				}
 		}
@@ -51,7 +49,7 @@ public class BuildingAttackRange: MonoBehaviour{
 					Soldier so = other.gameObject.GetComponent<Soldier>();
 					if (mRangeTargetList.Contains (so) == true) {
 						mRangeTargetList.Remove (so);
-					Debug.Log ("OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
+						Utility.Log ("OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
 					}
 				}
 		}

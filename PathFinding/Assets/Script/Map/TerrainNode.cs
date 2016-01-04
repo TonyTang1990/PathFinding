@@ -12,8 +12,8 @@ public class TerrainNode : MonoBehaviour {
 	{
 		Index = index;
 		mRowColumnInfo = Utility.ConvertIndexToRC (index);
-		Debug.Log("mRowColumnInfo.x = " + mRowColumnInfo.x);
-		Debug.Log("mRowColumnInfo.y = " + mRowColumnInfo.y);
+		Utility.Log("mRowColumnInfo.x = " + mRowColumnInfo.x);
+		Utility.Log("mRowColumnInfo.y = " + mRowColumnInfo.y);
 
 		mPosition = pos;
 		mWeight = weight;

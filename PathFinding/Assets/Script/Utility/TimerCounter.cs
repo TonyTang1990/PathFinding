@@ -59,6 +59,6 @@ public class TimerCounter{
 
 		mTimeSpend = mTimer.ElapsedMilliseconds;
 
-		UnityEngine.Debug.Log (mName + " takes: " + mTimeSpend);
+		Utility.Log (mName + " takes: " + mTimeSpend);
 	}
 }

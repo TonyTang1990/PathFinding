@@ -11,6 +11,8 @@ GameObject:
   - 95: {fileID: 9532212}
   - 136: {fileID: 13622380}
   - 54: {fileID: 5460048}
+  - 114: {fileID: 11469402}
+  - 114: {fileID: 11402616}
   m_Layer: 0
   m_Name: Zombunny
   m_TagString: Soldier
@@ -112,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -12.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 401328}
@@ -197,6 +199,23 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &11402616
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 102878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 996b1180fad215d408919d5b58ba7100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNextWaypointDistance: .200000003
+  mIgnoreWall: 0
+  mHCostPercentage: 1
+  mBDrawMovementPath: 0
+  mBDrawExplorePath: 0
+  mExplorePathRemainTime: 2
 --- !u!114 &11461960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -208,6 +227,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53546526978fe049b8bb2e8fb2b4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11469402
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 102878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8caf7782c45a0dc46af9c6ca9a320117, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mSpeed: 2
+  mPreferAttackType: 2
+  mAttackInterval: 2
+  mAttackDistance: 3
+  mSHP: 10
+  mBullet: {fileID: 197372, guid: c0cb62fc9ce26ea4d9095149340dcec6, type: 2}
+  mNextWaypointDistance: .200000003
+  mDetectionDistance: 10
 --- !u!114 &11496644
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -302,6 +340,34 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: strength
       value: .25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mPreferAttackType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mAttackInterval
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mAttackDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSHP
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mBullet
+      value: 
+      objectReference: {fileID: 197372, guid: c0cb62fc9ce26ea4d9095149340dcec6, type: 2}
+    - target: {fileID: 0}
+      propertyPath: mDetectionDistance
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

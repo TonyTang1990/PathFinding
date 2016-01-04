@@ -29,7 +29,7 @@ public class InputManager : MonoBehaviour {
 		mInputTimer += Time.deltaTime;
 
 		if (Input.GetMouseButtonDown (0)) {
-			Debug.Log ("Left Mouse Clicked");
+			Utility.Log ("Left Mouse Clicked");
 
 			if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject ()) {
 				mInputTimer = 0.0f;
@@ -38,11 +38,11 @@ public class InputManager : MonoBehaviour {
 				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
 					if (hit.collider) {
 						if (MapManager.MMInstance.isSoldierSelected) {
-							Debug.Log ("hit.point = " + hit.point);
+							Utility.Log ("hit.point = " + hit.point);
 							MapManager.MMInstance.DeploySoldier (hit.point);
 						}
 						else{
-							Debug.Log("hit.collider.name = " + hit.collider.name);
+							Utility.Log("hit.collider.name = " + hit.collider.name);
 							MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode>();
 							UIManager.UIMInstance.ShowNWAdjustPanel();
 						}
@@ -59,7 +59,7 @@ public class InputManager : MonoBehaviour {
 		
 		if (mInputTimer > mValidInputDeltaTime) {
 			if (Input.GetKey (KeyCode.O)) {
-				Debug.Log ("KeyCode.O Pressed");
+				Utility.Log ("KeyCode.O Pressed");
 				mInputTimer = 0.0f;
 				if (MapManager.MMInstance.IsTerrainAvaibleToBuild ()) {
 					MapManager.MMInstance.BuildBuilding ();
@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour {
 			}
 			
 			if (Input.GetKey (KeyCode.F1)) {
-				Debug.Log ("KeyCode.F1 Pressed");
+				Utility.Log ("KeyCode.F1 Pressed");
 				mInputTimer = 0.0f;
 				MapManager.MMInstance.DeselectChoosingStaff ();
 			}

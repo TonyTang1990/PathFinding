@@ -62,7 +62,7 @@ public class House : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Debug.Log ("House::Awake()");
+		Utility.Log ("House::Awake()");
 		mSpawnPoint = gameObject.transform.Find ("BulletSpawnPoint").gameObject.transform.position;
 
 		mHouseBulletScript = GetComponent<Bullet> ();

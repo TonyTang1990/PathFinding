@@ -90,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 197974}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.9499998, y: 0, z: 0}
+  m_LocalPosition: {x: 11.9499998, y: -24.6000004, z: 0}
   m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children:
   - {fileID: 456902}
@@ -221,11 +221,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 996b1180fad215d408919d5b58ba7100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mSpeed: 1
   mNextWaypointDistance: .100000001
   mIgnoreWall: 0
   mHCostPercentage: 1
-  mBDrawExplorePath: 1
+  mBDrawMovementPath: 0
+  mBDrawExplorePath: 0
   mExplorePathRemainTime: 2
 --- !u!114 &11443200
 MonoBehaviour:
@@ -241,7 +241,7 @@ MonoBehaviour:
   mSpeed: 1
   mPreferAttackType: 0
   mAttackInterval: 3
-  mAttackDistance: 2
+  mAttackDistance: 1
   mSHP: 50
   mBullet: {fileID: 197372, guid: c0cb62fc9ce26ea4d9095149340dcec6, type: 2}
   mNextWaypointDistance: .200000003

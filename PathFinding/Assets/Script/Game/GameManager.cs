@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour {
 	}
 	private Seeker mAttackingSoldierSeeker;
 
+	public bool mIsDebugEnable = true;
+
 	void Awake()
 	{
 		if (mGameInstance == null) {

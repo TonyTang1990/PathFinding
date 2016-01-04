@@ -6,7 +6,7 @@ public class Wall : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Debug.Log ("Wall::Awake()");
+		Utility.Log ("Wall::Awake()");
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
 	}
@@ -38,13 +38,15 @@ public class Wall : Building {
 		//Once the wall has been destroyed, we should update Node status
 		if (mBI.IsDestroyed) {
 			MapManager.MMInstance.PathFinder.NavGraph.Nodes[mBI.mIndex].IsWall = false;
+
 			MapManager.MMInstance.NodeTerrainList[mBI.mIndex].IsWall = false;
 
-			MapManager.MMInstance.UpdateSpecificNodeWeight(mBI.mIndex, 0);
-			
 			MapManager.MMInstance.UpdateSpecificNodeWallStatus(mBI.mIndex,false);
 
 			MapManager.MMInstance.UpdateSpecificNodeWeight(mBI.mIndex, -mWeight);
+
+			//Once wall is breaked, we dispatch WALL_BREAK Event to soldier
+			EventManager.mEMInstance.TriggerEvent("WALL_BREAK");
 		}
 	}
 

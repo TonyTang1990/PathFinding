@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class Seeker : MonoBehaviour {
     
-	public float mSpeed = 1.0f;
+	private float mSpeed = 1.0f;
 
 	public float mNextWaypointDistance = 0.2f;
 
@@ -95,8 +95,10 @@ public class Seeker : MonoBehaviour {
 	public bool mIgnoreWall = false;
 
 	public float mHCostPercentage = 1.0f;
-	
-	public bool mBDrawExplorePath = true;
+
+	public bool mBDrawMovementPath = false;
+
+	public bool mBDrawExplorePath = false;
 	
 	public float mExplorePathRemainTime = 2.0f;
 
@@ -163,9 +165,9 @@ public class Seeker : MonoBehaviour {
 
 		TimerCounter.CreateInstance ().End ();
 
-		Debug.Log ("mAstarSearch.ITarget = " + mAstarSearch.ITarget);
-		Debug.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.IsWallInPathToTarget);
-		Debug.Log ("mAstarSearch.WallInPathToTargetIndex = " + mAstarSearch.WallInPathToTargetIndex);
+		Utility.Log ("mAstarSearch.ITarget = " + mAstarSearch.ITarget);
+		Utility.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.IsWallInPathToTarget);
+		Utility.Log ("mAstarSearch.WallInPathToTargetIndex = " + mAstarSearch.WallInPathToTargetIndex);
 
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
 		
@@ -210,13 +212,14 @@ public class Seeker : MonoBehaviour {
 
 	private void DrawMovementPath()
 	{
-		if (mSubTree != null && mPath.Count != 0) {
-			int nd = mPath[0];
+		if (mBDrawMovementPath) {
+			if (mSubTree != null && mPath.Count != 0) {
+				int nd = mPath [0];
 			
-			while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) 
-			{
-				Debug.DrawLine(mNavGraph.Nodes[mSubTree[nd].From].Position,mNavGraph.Nodes[nd].Position,Color.green, mCostToTarget / mSpeed);
-				nd = mSubTree[nd].From;
+				while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) {
+					Debug.DrawLine (mNavGraph.Nodes [mSubTree [nd].From].Position, mNavGraph.Nodes [nd].Position, Color.green, mCostToTarget / mSpeed);
+					nd = mSubTree [nd].From;
+				}
 			}
 		}
 	}
@@ -228,7 +231,7 @@ public class Seeker : MonoBehaviour {
 			return;
 		}
 		if (mCurrentWayPoint < 0) {
-			Debug.Log ("End Of Path Reached");
+			Utility.Log ("End Of Path Reached");
 			mIsMoving = false;
 			return;
 		}
@@ -250,9 +253,9 @@ public class Seeker : MonoBehaviour {
 
 	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn, float strickdistance)
 	{
-		Debug.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
+		Utility.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
 		
-		Debug.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
+		Utility.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
 		
 		mSourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
 		
@@ -260,10 +263,10 @@ public class Seeker : MonoBehaviour {
 		
 		mStrickDistance = strickdistance;
 		
-		Debug.Log ("mSourceCellIndex = " + mSourceCellIndex);
+		Utility.Log ("mSourceCellIndex = " + mSourceCellIndex);
 		
-		Debug.Log ("mTargetCellIndex = " + mTargetCellIndex);
+		Utility.Log ("mTargetCellIndex = " + mTargetCellIndex);
 		
-		Debug.Log ("mStrickDistance = " + mStrickDistance);
+		Utility.Log ("mStrickDistance = " + mStrickDistance);
 	}
 }

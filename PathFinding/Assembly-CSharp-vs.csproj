@@ -90,6 +90,7 @@
      <Compile Include="Assets\Script\Game\Building\Drawer.cs" />
      <Compile Include="Assets\Script\Game\Building\House.cs" />
      <Compile Include="Assets\Script\Game\Building\Wall.cs" />
+     <Compile Include="Assets\Script\Game\Event\EventManager.cs" />
      <Compile Include="Assets\Script\Game\GameManager.cs" />
      <Compile Include="Assets\Script\Game\General\BuildingAttackRange.cs" />
      <Compile Include="Assets\Script\Game\General\HealthText.cs" />

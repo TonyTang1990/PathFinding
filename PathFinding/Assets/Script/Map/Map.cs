@@ -15,7 +15,7 @@ public class Map {
 
 	public void addBuilding(BuildingInfo building)
 	{
-		Debug.Log(string.Format("building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
+		Utility.Log(string.Format("building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
 		mBuildings.Add (building);
 	}
 
@@ -32,7 +32,7 @@ public class Map {
 	public bool getMapOccupiedInfo(int row, int column)
 	{
 		if (mMapOccupied.Length == 0) {
-			Debug.Log("mMapOccupied.Length == 0");
+			Utility.Log("mMapOccupied.Length == 0");
 		}
 		return mMapOccupied[row,column];
 	}

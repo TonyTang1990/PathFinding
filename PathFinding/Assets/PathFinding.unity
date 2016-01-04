@@ -595,6 +595,7 @@ GameObject:
   - 114: {fileID: 233022213}
   - 114: {fileID: 233022212}
   - 114: {fileID: 233022211}
+  - 114: {fileID: 233022215}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -658,6 +659,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
+--- !u!114 &233022215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 233022210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec60da2e17d1e246a189a843c37be02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &266975360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1822,6 +1834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mTargetSoldier: {fileID: 367726340}
   mAttackingSoldier: {fileID: 1118869923}
+  mIsDebugEnable: 0
 --- !u!4 &831284170
 Transform:
   m_ObjectHideFlags: 0

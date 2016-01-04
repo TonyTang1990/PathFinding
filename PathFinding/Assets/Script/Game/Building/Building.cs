@@ -113,15 +113,15 @@ public class Building : MonoBehaviour, GameObjectType {
 
 	public virtual void Awake()
 	{
-		Debug.Log ("Building::Awake()");
+		Utility.Log ("Building::Awake()");
 		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
 		if (mHPText == null) {
-			Debug.Log("mHPText == null");
+			Utility.Log("mHPText == null");
 		}
 		mHPText.text = "HP: " + mBI.mBHP;
 		
 		mGameType = ObjectType.EOT_BUILDING;
-		Debug.Log ("Building::Awake() mGameType = " + mGameType);
+		Utility.Log ("Building::Awake() mGameType = " + mGameType);
 
 		Assert.IsTrue (mWeight >= 0);
 	}
@@ -150,9 +150,10 @@ public class Building : MonoBehaviour, GameObjectType {
 		if (mBI.mBHP > damage) {
 			mBI.mBHP -= damage;
 		} else {
-			Debug.Log("IsDestroyed == true");
+			Utility.Log("IsDestroyed == true");
 			mBI.mBHP = 0;
 			mBI.IsDestroyed = true;
+			gameObject.SetActive(false);
 		}
 	}
 

@@ -21,13 +21,23 @@ public class MapManager : MonoBehaviour {
 	
 	private List<GameObject> mBuldingsInGame;
 
+	//Due to we index building frequently, we use hashtable instead of List
+	/*
 	public List<Building> BuildingsInfoInGame {
 		get {
 			return mBuldingsInfoInGame;
 		}
 	}
 	private List<Building> mBuldingsInfoInGame;
-	
+	*/
+	public Hashtable BuildingsInfoInGame {
+		get {
+			return mBuildingsInfoInGame;
+		}
+	}
+	private Hashtable mBuildingsInfoInGame;
+
+
 	private List<GameObject> mSoldiersInGame;
 	
 	private List<Soldier> mSoldiersScriptInGame;
@@ -118,10 +128,11 @@ public class MapManager : MonoBehaviour {
 		}
 
 		mMapSavePath = Application.persistentDataPath + "/mapInfo.dat";
-		Debug.Log ("mMapSavePath = " + mMapSavePath);
+		Utility.Log ("mMapSavePath = " + mMapSavePath);
 		
 		mBuldingsInGame = new List<GameObject>();
-		mBuldingsInfoInGame = new List<Building> ();
+		//mBuldingsInfoInGame = new List<Building> ();
+
 		mSoldiersInGame = new List<GameObject> ();
 		mSoldiersScriptInGame = new List<Soldier>();
 
@@ -139,7 +150,7 @@ public class MapManager : MonoBehaviour {
 
 	void LoadMap()
 	{
-		Debug.Log("LoadMap()");
+		Utility.Log("LoadMap()");
 		if (File.Exists (mMapSavePath)) {
 			BinaryFormatter bf = new BinaryFormatter ();
 			FileStream fs = File.Open (mMapSavePath, FileMode.Open);
@@ -158,7 +169,7 @@ public class MapManager : MonoBehaviour {
 
 	void SaveMap()
 	{
-		Debug.Log("SaveMap()");
+		Utility.Log("SaveMap()");
 		if (!File.Exists (mMapSavePath)) {
 			FileStream fsc = File.Create(mMapSavePath);
 			fsc.Close();
@@ -182,37 +193,38 @@ public class MapManager : MonoBehaviour {
 				
 				if(mMap.getMapOccupiedInfo(i + mRow/2,j + mColumn/2) == true)
 				{
-					Debug.Log(string.Format("mMap.getMapOccupiedInfo[{0}][{1}] = {2}]",i + mRow/2,j + mColumn/2,mMap.getMapOccupiedInfo(i + mRow/2,j + mColumn/2)));
+					Utility.Log(string.Format("mMap.getMapOccupiedInfo[{0}][{1}] = {2}]",i + mRow/2,j + mColumn/2,mMap.getMapOccupiedInfo(i + mRow/2,j + mColumn/2)));
 				}
 				mMapOccupied[i + mRow/2,j + mColumn/2] = mMap.getMapOccupiedInfo(i + mRow/2,j + mColumn/2);
 			}
 		}
 
-		Debug.Log("mMap.getBuildings().Capacity = " + mMap.getBuildings().Capacity);
+		Utility.Log("mMap.getBuildings().Capacity = " + mMap.getBuildings().Capacity);
 		GameObject bd;
 		Building bding;
 		List<int> weightnodeindexs;
 		Vector3 position;
+		mBuildingsInfoInGame = new Hashtable (mMap.getBuildings ().Count * 2, 0.6f);
 		foreach( BuildingInfo bdi in mMap.getBuildings())
 		{
-			Debug.Log("bdi.getBuildingType() = " + bdi.getBuildingType());
-			Debug.Log(string.Format("bd.getPosition().x = {0} .y = {1} .z = {2}", bdi.Position.x, bdi.Position.y, bdi.Position.z));
+			Utility.Log("bdi.getBuildingType() = " + bdi.getBuildingType());
+			Utility.Log(string.Format("bd.getPosition().x = {0} .y = {1} .z = {2}", bdi.Position.x, bdi.Position.y, bdi.Position.z));
 			position = new Vector3(bdi.Position.x,bdi.Position.y,bdi.Position.z);
 			//position = new Vector3( mNodeTerrainList[bdi.Index].Position.x, mNodeTerrainList[bdi.Index].Position.y, mNodeTerrainList[bdi.Index].Position.z);
 			bd = Instantiate(mBuildings[(int)bdi.getBuildingType()],position,Quaternion.identity) as GameObject;
 			bding = bd.GetComponent<Building>();
 			bding.mBI.Position = position;
 			bding.mBI.mIndex = bdi.mIndex;
-			Debug.Log("bding.mBI.mIndex = " + bding.mBI.mIndex);
+			Utility.Log("bding.mBI.mIndex = " + bding.mBI.mIndex);
 			mBuldingsInGame.Add(bd);
-			mBuldingsInfoInGame.Add(bding/*bd.GetComponent<Building>()*/);
+			mBuildingsInfoInGame.Add(bding.mBI.mIndex,bding/*bd.GetComponent<Building>()*/);
 
 			weightnodeindexs = bding.GetWeightNodeIndex();
 
 			//Update Node weight
 			foreach(int index in weightnodeindexs)
 			{
-				Debug.Log("weightnodeindex = " + index);
+				Utility.Log("weightnodeindex = " + index);
 				UpdateSpecificNodeWeight(index, bding.mWeight);
 			}
 
@@ -220,12 +232,12 @@ public class MapManager : MonoBehaviour {
 			if(bding.mBI.getBuildingType() == BuildingType.E_WALL)
 			{
 				int index = bding.mBI.mIndex; //Utility.ConvertRCToIndex((int)(bding.mBI.Position.x + 1),(int)(bding.mBI.Position.z + 1));
-				Debug.Log("WALL Index = " + index);
+				Utility.Log("WALL Index = " + index);
 				mNodeTerrainList[index].IsWall = true;
 				UpdateSpecificNodeWallStatus(index,true);
 			}
 
-			Debug.Log("bdi.Position" + bdi.Position);
+			Utility.Log("bdi.Position" + bdi.Position);
 		}
 	}
 
@@ -325,27 +337,27 @@ public class MapManager : MonoBehaviour {
 					{
 						if(mMapOccupied[(int)mCurrentOccupiedIndex.x + i - 1, (int)mCurrentOccupiedIndex.y + j - 1])
 						{
-							Debug.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",(int)mCurrentOccupiedIndex.x + i - 1,(int)mCurrentOccupiedIndex.y + j - 1,mMapOccupied[(int)mCurrentOccupiedIndex.x + i - 1, (int)mCurrentOccupiedIndex.y + j - 1]));
+							Utility.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",(int)mCurrentOccupiedIndex.x + i - 1,(int)mCurrentOccupiedIndex.y + j - 1,mMapOccupied[(int)mCurrentOccupiedIndex.x + i - 1, (int)mCurrentOccupiedIndex.y + j - 1]));
 							isavaliable = false;
 						}
 					}
 					else{
-						Debug.Log(string.Format("isValideTerrainIndex([{0}],[{1})]",(int)mCurrentOccupiedIndex.x + i,(int)mCurrentOccupiedIndex.y + j));
-						Debug.Log("Index invalide");
+						Utility.Log(string.Format("isValideTerrainIndex([{0}],[{1})]",(int)mCurrentOccupiedIndex.x + i,(int)mCurrentOccupiedIndex.y + j));
+						Utility.Log("Index invalide");
 						isavaliable = false;
 						break;
 					}
 				}
 			}
 		}
-		Debug.Log ("isavaliable = " + isavaliable);
+		Utility.Log ("isavaliable = " + isavaliable);
 		return isavaliable;
 	}
 
 	public void BuildBuilding()
 	{
-		Debug.Log ("mCurrentOccupiedIndex.x = " + mCurrentOccupiedIndex.x);
-		Debug.Log ("mCurrentOccupiedIndex.y = " + mCurrentOccupiedIndex.y);
+		Utility.Log ("mCurrentOccupiedIndex.x = " + mCurrentOccupiedIndex.x);
+		Utility.Log ("mCurrentOccupiedIndex.y = " + mCurrentOccupiedIndex.y);
 		
 		if (mCurrentSelectedBuilding) {
 			//Building buildinginfo = mCurrentSelectedBuilding.GetComponent<Building>() as Building;
@@ -360,11 +372,11 @@ public class MapManager : MonoBehaviour {
 				}
 			}
 
-			Debug.Log("mCurrentSelectedNode.Position = " + mCurrentSelectedNode.Position.ToString());
+			Utility.Log("mCurrentSelectedNode.Position = " + mCurrentSelectedNode.Position.ToString());
 
 			mSelectedBuilding.mBI.mIndex = mSelectedBuilding.GetBuildingIndex(); /*Utility.ConvertFloatPositionToIndex(mCurrentSelectedNode.Position)*/;
 
-			Debug.Log("mSelectedBuilding.mBI.mIndex = " + mSelectedBuilding.mBI.mIndex);
+			Utility.Log("mSelectedBuilding.mBI.mIndex = " + mSelectedBuilding.mBI.mIndex);
 
 			mSelectedBuilding.UpdateChildPosition();
 			
@@ -372,14 +384,14 @@ public class MapManager : MonoBehaviour {
 			
 			mBuldingsInGame.Add(mCurrentSelectedBuilding);
 			
-			mBuldingsInfoInGame.Add(mSelectedBuilding);
+			mBuildingsInfoInGame.Add(mSelectedBuilding.mBI.mIndex,mSelectedBuilding);
 
 			//Update Node weight
 			List<int> weightnodeindexs = mSelectedBuilding.GetWeightNodeIndex();
 			
 			foreach(int index in weightnodeindexs)
 			{
-				Debug.Log("weightnodeindex = " + index);
+				Utility.Log("weightnodeindex = " + index);
 				UpdateSpecificNodeWeight(index, mSelectedBuilding.mWeight);
 			}
 
@@ -387,7 +399,7 @@ public class MapManager : MonoBehaviour {
 			if(mSelectedBuilding.mBI.getBuildingType() == BuildingType.E_WALL)
 			{
 				int index = mSelectedBuilding.mBI.mIndex;
-				Debug.Log("WALL Index = " + index);
+				Utility.Log("WALL Index = " + index);
 				CurrentSelectedNode.IsWall = true;
 				UpdateSpecificNodeWallStatus(index,true);
 			}
@@ -448,7 +460,7 @@ public class MapManager : MonoBehaviour {
 			}
 		}
 		*/
-		return sod.FindShortestPathObject(mBuldingsInfoInGame);
+		return sod.FindShortestPathObject(mBuildingsInfoInGame);
 	}
 	
 	public Soldier ObtainAttackSoldier(Building bd)
@@ -483,7 +495,7 @@ public class MapManager : MonoBehaviour {
 			{
 				if(mMapOccupied[i,j])
 				{
-					Debug.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",i,j,mMapOccupied[i,j]));
+					Utility.Log(string.Format("mMapOccupied[{0}][{1}] = {2}",i,j,mMapOccupied[i,j]));
 				}
 			}
 		}
@@ -499,9 +511,9 @@ public class MapManager : MonoBehaviour {
 	
 	public void UpdateSearchInfo(int sourcerow, int sourcecolumn, int targetrow, int targetcolumn, float strickdistance)
 	{
-		Debug.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
+		Utility.Log (string.Format ("Source Index = [{0}][{1}]", sourcerow, sourcecolumn));
 
-        Debug.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
+		Utility.Log (string.Format ("Target Index = [{0}][{1}]", targetrow, targetcolumn));
 
 		GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = Utility.ConvertRCToIndex (sourcerow, sourcecolumn);
 
@@ -509,18 +521,18 @@ public class MapManager : MonoBehaviour {
 
 		GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = strickdistance;
 
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex);
+		Utility.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.SourceCellIndex);
 
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex);
+		Utility.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex = " + GameManager.mGameInstance.AttackingSoldierSeeker.TargetCellIndex);
 
-		Debug.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
+		Utility.Log ("GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance = " + GameManager.mGameInstance.AttackingSoldierSeeker.StrickDistance);
 	}
 
 	
 	public void UpdateSpecificNodeWeight(int index, float value)
 	{
 		Assert.IsTrue(index >= 0 && index < mRow * mColumn);
-		Assert.IsTrue(value >= 0.0f);
+		//Assert.IsTrue(value >= 0.0f);
 
 		mNodeTerrainList[index].Weight += value;
 	
@@ -535,7 +547,7 @@ public class MapManager : MonoBehaviour {
 	{
 		if (CurrentSelectedNode != null) {
 			int index = mCurrentSelectedNode.Index;
-			Debug.Log("CurrrentSelectedNode.Index = " + CurrentSelectedNode.Index);
+			Utility.Log("CurrrentSelectedNode.Index = " + CurrentSelectedNode.Index);
 
 			float weight = MapManager.MMInstance.CurrentSelectedNode.Weight + value;
 

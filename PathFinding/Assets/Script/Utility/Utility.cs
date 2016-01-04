@@ -9,7 +9,7 @@ public class Utility {
 	{
 
 		if (!Int32.TryParse (s,out result)) {
-			Debug.Log("----------------------------ParserStringToInt Failed");
+			Utility.Log("----------------------------ParserStringToInt Failed");
 		}
 
 		Assert.IsTrue (result >= 0);
@@ -19,7 +19,7 @@ public class Utility {
 	{
 
 		if (!float.TryParse(s,out result)) {
-			Debug.Log("----------------------------ParserStringToFloat Failed");
+			Utility.Log("----------------------------ParserStringToFloat Failed");
 		}
 		
 		Assert.IsTrue (result >= 0.0f);
@@ -66,5 +66,12 @@ public class Utility {
 		rc.y = column;
 		
 		return rc;
+	}
+
+	public static void Log(string s)
+	{
+		if (GameManager.mGameInstance.mIsDebugEnable) {
+			Debug.Log (s);
+		}
 	}
 }

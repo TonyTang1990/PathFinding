@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class SoldierDetectRange : MonoBehaviour {
 
-	public List<Building> RangeTargetList {
+	public Hashtable/*List<Building>*/ RangeTargetList {
 		get {
 			return mRangeTargetList;
 		}
@@ -12,13 +12,13 @@ public class SoldierDetectRange : MonoBehaviour {
 			mRangeTargetList = value;
 		}
 	}
-	private List<Building> mRangeTargetList;
+	private Hashtable /*List<Building>*/ mRangeTargetList;
 	
 	//public BuildingType mInterestedBuildingType;
 	
 	void Awake()
 	{
-		mRangeTargetList = new List<Building> ();
+		mRangeTargetList = new Hashtable (20, 0.6f); /*new List<Building> ();*/
 	}
 	
 	void OnTriggerEnter(Collider other)
@@ -38,8 +38,8 @@ public class SoldierDetectRange : MonoBehaviour {
 				else
 				{
 					if (bd.mBI.IsDestroyed != true && mRangeTargetList.Contains (bd) != true) {
-						mRangeTargetList.Add (bd);
-						Debug.Log ("Soldier mRanTargetList.Add(bd) bd.name = " + bd.name);
+						mRangeTargetList.Add (bd.mBI.mIndex,bd);
+						Utility.Log ("Soldier mRanTargetList.Add(bd) bd.name = " + bd.name);
 					}
 				}
 			}
@@ -62,8 +62,8 @@ public class SoldierDetectRange : MonoBehaviour {
 				else
 				{
 					if (mRangeTargetList.Contains (bd) != true) {
-						mRangeTargetList.Remove (bd);
-						Debug.Log ("Soldier mRanTargetList.Remove(bd) bd.name = " + bd.name);
+						mRangeTargetList.Remove (bd.mBI.mIndex);
+						Utility.Log ("Soldier mRanTargetList.Remove(bd) bd.name = " + bd.name);
 					}
 				}
 			}

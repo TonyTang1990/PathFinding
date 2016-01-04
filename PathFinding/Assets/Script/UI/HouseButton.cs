@@ -4,7 +4,7 @@ using System.Collections;
 public class HouseButton : MonoBehaviour{
 	public void onClick()
 	{
-		Debug.Log ("HouseButton::onClick");
+		Utility.Log ("HouseButton::onClick");
 		MapManager.MMInstance.setCurrenctSelectedBuilding ((int)BuildingType.E_HOUSE);
 	}
 }
