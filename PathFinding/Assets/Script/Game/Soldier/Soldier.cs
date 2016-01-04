@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -182,6 +182,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		}
 	}
 	private float mNearestTargetPathLength = Mathf.Infinity;
+
+	private Vector3 mFinalMovePosition;
 /*
 	public Path ShortestPath {
 		get {
@@ -296,6 +298,10 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mDetectionRangeCollider.GetComponent<SphereCollider> ().radius = mDetectionDistance;
 		Utility.Log ("DetectionDistance = " + mDetectionDistance);
 		mDetectionRange = mDetectionRangeCollider.GetComponent<SoldierDetectRange> ();
+
+		mAStarPath = null;
+
+		mFinalMovePosition = new Vector3();
 	}
 
 	public void Start()
@@ -365,13 +371,17 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	{
 		if (gameObject != null) {
 			//mDetectionRange.RangeTargetList.RemoveAll(item => item.mBI.IsDestroyed);
+			//if there are any object has been destroyed in detect range, we let soldier made decision again
+			bool needmakedecisionagain = false;
 			Building temp = null;
 			List<int> indextoremove = new List<int>();
+
 			foreach(DictionaryEntry entry in mDetectionRange.RangeTargetList)
 			{
 				temp = entry.Value as Building;
 				if(temp.mBI.IsDestroyed)
 				{
+					needmakedecisionagain = true;
 					indextoremove.Add(temp.mBI.mIndex);
 				}
 			}
@@ -379,6 +389,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			foreach(int inedx in indextoremove)
 			{
 				mDetectionRange.RangeTargetList.Remove(inedx);
+			}
+
+			if(needmakedecisionagain)
+			{
+				mBMakeNewDecision = true;
 			}
 
 			mOldAttackingObject = mAttackingObject;
@@ -397,10 +412,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 				if(mAttackingObject != mOldAttackingObject && mAttackingObject!=null)
 				{
+					//Change the first point to gameobject location to avoid soldier move away from target
 					mAStarPath = mShortestPath.MovementPathToTarget;
 
 					mCurrentWayPoint = mAStarPath.Count - 1;
-					//Change the first point to gameobject location to avoid soldier move away from target
+
 					mAStarPath[mCurrentWayPoint] = transform.position;
 
 					//if the attacking object is Wall,
@@ -476,7 +492,17 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				{
 					Utility.Log ("transform.position = " + transform.position);
 					Utility.Log ("bd.transform.position = " + tempbd.transform.position);
-					soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
+					//If soldier has movement path, we use it last movememnt node as his position
+					//to avoid inaccuracy position conversion
+					if(mAStarPath != null)
+					{
+						soldierindex = Utility.ConvertFloatPositionToRC(mFinalMovePosition);
+					}
+					else
+					{
+						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
+					}
+					//soldierindex = 
 					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
 					Utility.Log ("soldierindex = " + soldierindex);
 					Utility.Log ("bdindex = " + bdindex);
@@ -585,11 +611,12 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				
 				transform.LookAt (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
 
-				//Here we set speed to 1.0f to avoid soldier move too far from destination node
-				newposition = transform.position + dir * 1.0f * Time.deltaTime;
+				//Here we set speed to 0.5f to avoid soldier move too far from destination node
+				newposition = transform.position + dir * 0.5f * Time.deltaTime;
 				transform.position = newposition;
 
 				Utility.Log ("End Of Path Reached");
+				mFinalMovePosition = mAStarPath[0];
 				return;
 			}
 			//Direction to the next waypoint
@@ -604,6 +631,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			//Check if we are close enough to the next waypoint
 			//If we are, proceed to follow the next waypoint
 			if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
+				mFinalMovePosition = mAStarPath[mCurrentWayPoint];
 				mCurrentWayPoint--;
 				return;
 			}

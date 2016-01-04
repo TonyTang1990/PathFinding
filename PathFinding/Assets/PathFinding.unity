@@ -2226,9 +2226,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638b2199504235d48a6c1ec64bbefebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRow: 10
-  mColumn: 10
-  mBDrawMap: 1
+  mRow: 40
+  mColumn: 40
+  mBDrawMap: 0
 --- !u!114 &896086168
 MonoBehaviour:
   m_ObjectHideFlags: 0
