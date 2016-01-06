@@ -109,6 +109,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	private Building mShortestPathObject;
 
+	private Building mOriginalPathObject;
+
 	public Vector3[] AttackablePostions
 	{
 		get
@@ -160,6 +162,13 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		}
 	}
 	protected List<Vector3> mAStarPath;
+
+	public List<int> AStarPathIndexList {
+		get {
+			return mAStarPathIndexList;
+		}
+	}
+	private List<int> mAStarPathIndexList;
 
 	public float ShortestTargetPathLength {
 		get {
@@ -301,12 +310,20 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		mAStarPath = null;
 
+		mAStarPathIndexList = null;
+
 		mFinalMovePosition = new Vector3();
+
+		mShortestPathObject = null;
+
+		mOriginalPathObject = null;
 	}
 
 	public void Start()
 	{
 		mSCurrentState = mSMoveState;
+
+		StartCoroutine (RemoveDestroyedObjectInRange());
 	}
 
 	public virtual void Update ()
@@ -346,18 +363,25 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			return !mBMakeNewDecision;
 		}
 		else
+		{
+			if(mOriginalPathObject != null && mOriginalPathObject.mBI.IsDestroyed)
 			{
-			if (mAttackingObject != null)
+				return true;
+			}
+			else
 			{
-				if (!mAttackingObject.mBI.IsDestroyed) {
-					return false;
-				}
-				else
+				if (mAttackingObject != null)
 				{
+					if (!mAttackingObject.mBI.IsDestroyed) {
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				} else {
 					return true;
 				}
-			} else {
-				return true;
 			}
 		}
 	}
@@ -370,32 +394,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	public void MakeDecision()
 	{
 		if (gameObject != null) {
-			//mDetectionRange.RangeTargetList.RemoveAll(item => item.mBI.IsDestroyed);
-			//if there are any object has been destroyed in detect range, we let soldier made decision again
-			bool needmakedecisionagain = false;
-			Building temp = null;
-			List<int> indextoremove = new List<int>();
-
-			foreach(DictionaryEntry entry in mDetectionRange.RangeTargetList)
-			{
-				temp = entry.Value as Building;
-				if(temp.mBI.IsDestroyed)
-				{
-					needmakedecisionagain = true;
-					indextoremove.Add(temp.mBI.mIndex);
-				}
-			}
-
-			foreach(int inedx in indextoremove)
-			{
-				mDetectionRange.RangeTargetList.Remove(inedx);
-			}
-
-			if(needmakedecisionagain)
-			{
-				mBMakeNewDecision = true;
-			}
-
 			mOldAttackingObject = mAttackingObject;
 			if(ShouldChangeAttackTarget())
 			{
@@ -415,6 +413,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					//Change the first point to gameobject location to avoid soldier move away from target
 					mAStarPath = mShortestPath.MovementPathToTarget;
 
+					mAStarPathIndexList = mShortestPath.PathToTarget;
+
 					mCurrentWayPoint = mAStarPath.Count - 1;
 
 					mAStarPath[mCurrentWayPoint] = transform.position;
@@ -430,6 +430,35 @@ public class Soldier : MonoBehaviour, GameObjectType {
 						EventManager.mEMInstance.StopListening("WALL_BREAK",WallBreakDelegate);
 					}
 				}
+			}
+		}
+	}
+
+	private IEnumerator RemoveDestroyedObjectInRange()
+	{
+		//if there are any object has been destroyed in detect range, we let soldier made decision again
+		//This takes O(n) times, so we do not do this frequently
+		while (true) {
+			if(gameObject != null && !IsDead)
+			{
+				Building temp = null;
+				List<int> indextoremove = new List<int> ();
+			
+				foreach (DictionaryEntry entry in mDetectionRange.RangeTargetList) {
+					temp = entry.Value as Building;
+					if (temp.mBI.IsDestroyed) {
+						indextoremove.Add (temp.mBI.mIndex);
+					}
+				}
+			
+				foreach (int inedx in indextoremove) {
+					mDetectionRange.RangeTargetList.Remove (inedx);
+				}	
+				yield return new WaitForSeconds(3.0f);
+			}
+			else
+			{
+				break;
 			}
 		}
 	}
@@ -502,6 +531,12 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					{
 						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
 					}
+					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
+					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
+					{
+						Debug.Log("index = " + index);
+						Debug.Log("Soldier stays at Wall Position");
+					}
 					//soldierindex = 
 					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
 					Utility.Log ("soldierindex = " + soldierindex);
@@ -520,6 +555,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		}
 
 		mShortestPathObject = FindShortestPathTarget ();
+
 
 		mCurrentCalculatingPaths = null;
 
@@ -552,10 +588,12 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			//mShortestPathObject = mCurrentCalculatingPaths[wallindex];
 			//mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[wallindex];
 			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
+			mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
 		}
 		else
 		{
 			mShortestPathObject = mCurrentCalculatingPaths[index] as Building;
+			mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
 		}
 
 		return mShortestPathObject;
@@ -600,9 +638,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				return;
 			}
 
+
 			Vector3 dir = new Vector3();
 			Vector3 newposition = new Vector3();
 
+			//Never reach the final point(to avoid soldier reach wall position), so give soldier at least 1 strick distance
 			if (mCurrentWayPoint < 0) {
 				//Move forward to target object to make sure it under soldier attack range
 				//Direction to the next waypoint
@@ -612,28 +652,64 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				transform.LookAt (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
 
 				//Here we set speed to 0.5f to avoid soldier move too far from destination node
-				newposition = transform.position + dir * 0.5f * Time.deltaTime;
+				newposition = transform.position + dir * 0.2f * Time.deltaTime;
 				transform.position = newposition;
 
 				Utility.Log ("End Of Path Reached");
-				mFinalMovePosition = mAStarPath[0];
+
+				if(MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[0]].IsWall)
+				{
+					Debug.Log("mCurrentWayPoint < 0 MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[mCurrentWayPoint]].IsWall");
+					mFinalMovePosition = mFinalMovePosition;
+				}
+				else
+				{
+					mFinalMovePosition = mAStarPath[0];
+				}
+
 				return;
 			}
-			//Direction to the next waypoint
-			dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
-			dir.y = 0.0f;
+			else
+			{
+				if(mAStarPath.Count <= 1)
+				{
+					Debug.Log("mAStarPath.Count <= 1");
+				}
+				//Direction to the next waypoint
+				dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
+				dir.y = 0.0f;
+				
+				transform.LookAt (mAStarPath [mCurrentWayPoint]);
+				
+				newposition = transform.position + dir * mSpeed * Time.deltaTime;
+				transform.position = newposition;
 
-			transform.LookAt (mAStarPath [mCurrentWayPoint]);
-			
-			newposition = transform.position + dir * mSpeed * Time.deltaTime;
-			transform.position = newposition;
-			
-			//Check if we are close enough to the next waypoint
-			//If we are, proceed to follow the next waypoint
-			if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
-				mFinalMovePosition = mAStarPath[mCurrentWayPoint];
-				mCurrentWayPoint--;
-				return;
+				//Check if we are close enough to the next waypoint
+				if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
+					
+					Vector2 soldierindex = Utility.ConvertFloatPositionToRC( mAStarPath[mCurrentWayPoint]);
+
+					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
+
+					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
+					{
+						Debug.Log("soldierindex.x = " + soldierindex.x);
+						Debug.Log("soldierindex.y = " + soldierindex.y);
+
+						Debug.Log("index = " + index);
+						Debug.Log("mAStarPathIndexList[mCurrentWayPoint] = " + mAStarPathIndexList[mCurrentWayPoint]);
+						Debug.Log("mAStarPathIndexList[mCurrentWayPoint-1] = " + mAStarPathIndexList[mCurrentWayPoint - 1]);
+
+						Debug.Log("mCurrentWayPoint !< 0 MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[mCurrentWayPoint]].IsWall");
+						mFinalMovePosition = mFinalMovePosition;
+					}
+					else
+					{
+						mFinalMovePosition = mAStarPath[mCurrentWayPoint];
+					}
+					mCurrentWayPoint--;
+					return;
+				}
 			}
 		}
 		/*

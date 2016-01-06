@@ -36,6 +36,7 @@ public class SearchAStar {
 		}
 		mISource = source;
 		mITarget = target;
+		mOriginalTarget = target;
 		
 		mNodesSearched = 0;
 		
@@ -187,6 +188,13 @@ public class SearchAStar {
 		}
 	}
 	private int mITarget;
+
+	public int OriginalTarget {
+		get {
+			return mOriginalTarget;
+		}
+	}
+	private int mOriginalTarget;
 
 	public int NodesSearched
 	{
