@@ -532,6 +532,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
 					}
 					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
+
 					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
 					{
 						Debug.Log("index = " + index);
@@ -657,9 +658,14 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 				Utility.Log ("End Of Path Reached");
 
-				if(MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[0]].IsWall)
+				//Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+				//We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
+				Vector2 soldierindex = Utility.ConvertFloatPositionToRC( mAStarPath[0]);
+				
+				int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
+				
+				if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
 				{
-					Debug.Log("mCurrentWayPoint < 0 MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[mCurrentWayPoint]].IsWall");
 					mFinalMovePosition = mFinalMovePosition;
 				}
 				else
@@ -671,10 +677,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			}
 			else
 			{
-				if(mAStarPath.Count <= 1)
-				{
-					Debug.Log("mAStarPath.Count <= 1");
-				}
 				//Direction to the next waypoint
 				dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
 				dir.y = 0.0f;
@@ -686,21 +688,15 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 				//Check if we are close enough to the next waypoint
 				if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
-					
+
+					//Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+					//We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
 					Vector2 soldierindex = Utility.ConvertFloatPositionToRC( mAStarPath[mCurrentWayPoint]);
 
 					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
 
 					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
 					{
-						Debug.Log("soldierindex.x = " + soldierindex.x);
-						Debug.Log("soldierindex.y = " + soldierindex.y);
-
-						Debug.Log("index = " + index);
-						Debug.Log("mAStarPathIndexList[mCurrentWayPoint] = " + mAStarPathIndexList[mCurrentWayPoint]);
-						Debug.Log("mAStarPathIndexList[mCurrentWayPoint-1] = " + mAStarPathIndexList[mCurrentWayPoint - 1]);
-
-						Debug.Log("mCurrentWayPoint !< 0 MapManager.MMInstance.NodeTerrainList[mAStarPathIndexList[mCurrentWayPoint]].IsWall");
 						mFinalMovePosition = mFinalMovePosition;
 					}
 					else
