@@ -1,17 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class FPSDisplay : MonoBehaviour
 {
-	float deltaTime = 0.0f;
-	
+	public Text mFPSText;
+
+	private float mDeltaTime = 0.0f;
+
+	private float mFPS = 0.0f;
+
 	void Update()
 	{
-		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+		mDeltaTime += (Time.deltaTime - mDeltaTime) * 0.1f;
+		float msec = mDeltaTime * 1000.0f;
+		mFPS = 1.0f / mDeltaTime;
+		mFPSText.text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, mFPS);
+
 	}
 	
 	void OnGUI()
 	{
+		/*
 		int w = Screen.width, h = Screen.height;
 		
 		GUIStyle style = new GUIStyle();
@@ -24,5 +34,6 @@ public class FPSDisplay : MonoBehaviour
 		float fps = 1.0f / deltaTime;
 		string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
 		GUI.Label(rect, text, style);
+		*/
 	}
 }

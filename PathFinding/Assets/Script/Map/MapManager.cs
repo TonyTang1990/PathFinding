@@ -148,7 +148,7 @@ public class MapManager : MonoBehaviour {
 		MapSetup ();
 	}
 
-	void LoadMap()
+	private void LoadMap()
 	{
 		Utility.Log("LoadMap()");
 		if (File.Exists (mMapSavePath)) {
@@ -167,7 +167,7 @@ public class MapManager : MonoBehaviour {
 		LoadNodeWeights ();
 	}
 
-	void SaveMap()
+	public void SaveMap()
 	{
 		Utility.Log("SaveMap()");
 		if (!File.Exists (mMapSavePath)) {
@@ -181,7 +181,19 @@ public class MapManager : MonoBehaviour {
 		fs.Close ();
 	}
 
-	void MapSetup()
+	public void ClearMap()
+	{
+		Utility.Log("ClearMap()");
+		if (File.Exists (mMapSavePath)) {
+			File.Delete(mMapSavePath);
+			mMap = new Map();
+			SaveMap();
+			//Reload Map
+			Application.LoadLevel(Application.loadedLevel);
+		}
+	}
+
+	private void MapSetup()
 	{
 		mMapOccupied = new bool[mRow ,mColumn];
 
@@ -282,7 +294,6 @@ public class MapManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//DrawMap ();
 		if (mIsBuildingSelected) {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hit;
@@ -417,6 +428,11 @@ public class MapManager : MonoBehaviour {
 
 	public void DeselectChoosingStaff()
 	{
+		if (mCurrentSelectedBuilding) {
+			Destroy(mCurrentSelectedBuilding);
+		}
+		mSelectedBuilding = null;
+		mCurrentSelectedSoldierType = SoldierType.E_DEFAULT;
 		mIsSoldierSelected = false;
 		mIsBuildingSelected = false;
 	}
@@ -437,54 +453,7 @@ public class MapManager : MonoBehaviour {
 	
 	public Building ObtainAttackObject(Soldier sod)
 	{
-		/*
-		Building targetbuilding = null;
-		float shortestdistance = Mathf.Infinity;
-		float currentdistance = 0.0f;
-
-		foreach (Building bd in mBuldingsInfoInGame) {
-			if( bd.mBI.IsDestroyed )
-			{
-				//Debug.Log("IsDestroyed = " + bdi.IsDestroyed);
-				continue;
-			}
-			else
-			{
-				currentdistance = Vector3.Distance(mNodeTerrainList[bd.mBI.mIndex].Position, sod.gameObject.transform.position);
-			
-				if( currentdistance < shortestdistance )
-				{
-					shortestdistance = currentdistance;
-					targetbuilding = bd;
-				}
-			}
-		}
-		*/
 		return sod.FindShortestPathObject(mBuildingsInfoInGame);
-	}
-	
-	public Soldier ObtainAttackSoldier(Building bd)
-	{
-		Soldier targetsoldier = null;
-		float shortestdistance = Mathf.Infinity;
-		float currentdistance = 0.0f;
-		foreach (Soldier so in mSoldiersScriptInGame) {
-			if( so.IsDead )
-			{
-				//Debug.Log("IsDestroyed = " + bdi.IsDestroyed);
-				continue;
-			}
-			else
-			{
-				currentdistance = Vector3.Distance(so.transform.position, bd.mBI.Position);
-				if( currentdistance < shortestdistance )
-				{
-					shortestdistance = currentdistance;
-					targetsoldier = so;
-				}
-			}
-		}
-		return targetsoldier;
 	}
 	
 	void PrintAllOccupiedInfo()

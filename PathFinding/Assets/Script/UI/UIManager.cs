@@ -41,6 +41,8 @@ public class UIManager : MonoBehaviour {
 	
 	public Button mChangeWallJumpableStatus;
 
+	public Text mGameModeText;
+
 	void Awake()
 	{
 		if (UIMInstance == null) {
@@ -57,7 +59,7 @@ public class UIManager : MonoBehaviour {
 
 	void Start()
 	{
-
+		mGameModeText.text = GameManager.mGameInstance.CurrentGameMode.ToString ();
 	}
 
 	public void UpdateAstarInfo()
@@ -160,5 +162,30 @@ public class UIManager : MonoBehaviour {
 			}
 			MapManager.MMInstance.UpdateNodeWallJumpableStatus (MapManager.MMInstance.CurrentSelectedNode.IsJumpable);
 		}
+	}
+
+	public void ReLoadScene()
+	{
+		Application.LoadLevel (Application.loadedLevel);
+	}
+
+	public void ClearProfile()
+	{
+		MapManager.MMInstance.ClearMap ();
+	}
+
+	public void EnterDeleteMode()
+	{
+		GameMode currentgamemode = GameManager.mGameInstance.CurrentGameMode;
+		if (currentgamemode == GameMode.E_DELETEMODE) {
+			GameManager.mGameInstance.CurrentGameMode = GameMode.E_BUILDINGMODE;
+		} else {
+			GameManager.mGameInstance.CurrentGameMode = GameMode.E_DELETEMODE;
+		}
+	}
+	
+	public void EnterAttackMode()
+	{
+		GameManager.mGameInstance.CurrentGameMode = GameMode.E_ATTACKMODE;
 	}
 }

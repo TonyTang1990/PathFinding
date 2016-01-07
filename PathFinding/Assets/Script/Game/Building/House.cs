@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class House : Building {
 
@@ -102,23 +103,26 @@ public class House : Building {
 		mAttackRange.RangeTargetList.RemoveAll(item => item == null);
 		if (mAttackRange.RangeTargetList.Count != 0) {
 			Soldier targetsoldier = null;
-			float shortestdistance = Mathf.Infinity;
 			float currentdistance = 0.0f;
+			List<Soldier> soldierlistinrange = new List<Soldier> ();
 			foreach (Soldier so in mAttackRange.RangeTargetList) {
 				if( so.IsDead )
 				{
-					//Debug.Log("IsDestroyed = " + bdi.IsDestroyed);
 					continue;
 				}
 				else
 				{
-					currentdistance = Vector3.Distance(so.transform.position, transform.position);
-					if( currentdistance < shortestdistance )
+					currentdistance = Vector3.Distance(so.transform.position, mBI.Position);
+					if(currentdistance <= mAttackDistance)
 					{
-						shortestdistance = currentdistance;
-						targetsoldier = so;
+						soldierlistinrange.Add(so);
 					}
 				}
+			}
+			//Provide random select attacking target to make game fun
+			if (soldierlistinrange.Count > 0) {
+				int randomnumber = (int)(Random.Range (0.0f, soldierlistinrange.Count - 1));
+				targetsoldier = soldierlistinrange [randomnumber];
 			}
 			return targetsoldier;
 		} else {
@@ -130,7 +134,6 @@ public class House : Building {
 	public override bool CanAttack()
 	{
 		if (gameObject != null && !mBI.IsDestroyed && mAttackable) {
-			//mAttackingObject = GameManager.mGameInstance.ObtainAttackSoldier (this);
 			mAttackingObject = ChooseAttackTarget();
 			if(mAttackingObject!=null)
 			{
@@ -189,29 +192,5 @@ public class House : Building {
 	public override void Update()
 	{
 		base.Update ();
-		/*
-		if (gameObject != null && !mBI.IsDestroyed) {
-			mAttackingObject = GameManager.mGameInstance.ObtainAttackSoldier (this);
-
-			if(mAttackingObject != null && mAttackable)
-			{
-				if (mIsAttacking) {
-					mAttackTimer += Time.deltaTime;
-					if (mAttackTimer >= mAttackInterval) {
-						mAttackTimer = 0.0f;
-						Attack ();
-					}
-				}
-				
-				mDistanceToTarget = Vector3.Distance (transform.position, mAttackingObject.transform.position);
-				if (mDistanceToTarget > mAttackDistance) {
-					mIsAttacking = false;
-					mAttackTimer = mAttackInterval;
-				} else {
-					mIsAttacking = true;
-				}
-			}
-		}
-		*/
 	}
 }
