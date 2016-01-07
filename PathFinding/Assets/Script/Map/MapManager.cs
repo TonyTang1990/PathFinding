@@ -294,34 +294,34 @@ public class MapManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (mIsBuildingSelected) {
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
-				if(hit.collider)
-				{
-					//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
-					Vector3 tempselectposition = hit.collider.transform.position;
-					TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode>();
-					switch(mSelectedBuilding.mBI.getBuildingType())
-					{
-					case BuildingType.E_WALL:
-						tempselectposition.y += 0.5f;
-						break;
-					case BuildingType.E_HOUSE:
-						tempselectposition.x += 0.5f;
-						tempselectposition.z += 0.5f;
-						break;
-					case BuildingType.E_DRAWER:
-						tempselectposition.x += 0.9f;
-						tempselectposition.z += 0.9f;
-						break;
-					}
+		if (GameManager.mGameInstance.CurrentGameMode == GameMode.E_BUILDINGMODE) {
+			if (mIsBuildingSelected) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit hit;
+				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
+					if (hit.collider) {
+						//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
+						Vector3 tempselectposition = hit.collider.transform.position;
+						TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode> ();
+						switch (mSelectedBuilding.mBI.getBuildingType ()) {
+						case BuildingType.E_WALL:
+							tempselectposition.y += 0.5f;
+							break;
+						case BuildingType.E_HOUSE:
+							tempselectposition.x += 0.5f;
+							tempselectposition.z += 0.5f;
+							break;
+						case BuildingType.E_DRAWER:
+							tempselectposition.x += 0.9f;
+							tempselectposition.z += 0.9f;
+							break;
+						}
 
-					mCurrentSelectedBuilding.transform.position = tempselectposition;
-					mSelectedBuilding.mBI.Position = tempselectposition;
-					mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
-					mCurrentSelectedNode = mNodeTerrainList[tempterrainnode.Index];
+						mCurrentSelectedBuilding.transform.position = tempselectposition;
+						mSelectedBuilding.mBI.Position = tempselectposition;
+						mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
+						mCurrentSelectedNode = mNodeTerrainList [tempterrainnode.Index];
+					}
 				}
 			}
 		}
@@ -371,15 +371,13 @@ public class MapManager : MonoBehaviour {
 		Utility.Log ("mCurrentOccupiedIndex.y = " + mCurrentOccupiedIndex.y);
 		
 		if (mCurrentSelectedBuilding) {
-			//Building buildinginfo = mCurrentSelectedBuilding.GetComponent<Building>() as Building;
-			
+
 			for( int i = 0 ; i < mSelectedBuilding.mBI.getSize().mRow; i++ )
 			{
 				for( int j = 0; j < mSelectedBuilding.mBI.getSize().mColumn; j++ )
 				{
 					mMapOccupied [(int)mCurrentOccupiedIndex.x + i - 1, (int)mCurrentOccupiedIndex.y + j - 1] = true;
 					mMap.setMapOccupiedInfo((int)mCurrentOccupiedIndex.x + i - 1, (int)mCurrentOccupiedIndex.y + j - 1, true);
-					//mTerrainTilesScript [(int)mCurrentOccupiedIndex.x + i, (int)mCurrentOccupiedIndex.y + j].setOccupiedBuilding (mCurrentSelectedBuilding);
 				}
 			}
 
@@ -423,6 +421,53 @@ public class MapManager : MonoBehaviour {
 			PrintAllOccupiedInfo ();
 			
 			SaveMap ();
+		}
+	}
+
+	public void RemoveBuilding(GameObject removebuilding)
+	{
+		if (removebuilding != null) {
+			Building building = removebuilding.GetComponent<Building> ();
+
+			if (building) {
+				int bottomleftindex = building.GetBuildingBottomLeftIndex();
+				Vector2 bottleleftrc = Utility.ConvertIndexToRC(bottomleftindex);
+				Utility.Log("bottomleftindex = " + bottomleftindex);
+				for (int i = 0; i < building.mBI.getSize().mRow; i++) {
+					for (int j = 0; j < building.mBI.getSize().mColumn; j++) {
+						mMapOccupied [(int)bottleleftrc.x + i - 1, (int)bottleleftrc.y + j - 1] = false;
+						mMap.setMapOccupiedInfo ((int)bottleleftrc.x + i - 1, (int)bottleleftrc.y + j - 1, false);
+					}
+				}
+			
+				mMap.removeBuilding (building.mBI);
+			
+				mBuldingsInGame.Remove (removebuilding);
+			
+				mBuildingsInfoInGame.Remove (building.mBI.mIndex);
+			
+				//Update Node weight
+				List<int> weightnodeindexs = building.GetWeightNodeIndex ();
+			
+				foreach (int index in weightnodeindexs) {
+					Utility.Log ("weightnodeindex = " + index);
+					UpdateSpecificNodeWeight (index, -building.mWeight);
+				}
+			
+				//Update Node Info
+				if (building.mBI.getBuildingType () == BuildingType.E_WALL) {
+					int index = building.mBI.mIndex;
+					Utility.Log ("WALL Index = " + index);
+					mNodeTerrainList[index].IsWall = false;
+					UpdateSpecificNodeWallStatus (index, false);
+				}
+			
+				PrintAllOccupiedInfo ();
+
+				Destroy(removebuilding);
+
+				SaveMap ();
+			}
 		}
 	}
 

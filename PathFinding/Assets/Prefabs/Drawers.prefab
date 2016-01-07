@@ -13,7 +13,7 @@ GameObject:
   - 95: {fileID: 9537364}
   - 114: {fileID: 11487350}
   - 65: {fileID: 6593828}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Drawers
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ GameObject:
   - 23: {fileID: 2328222}
   - 102: {fileID: 10256348}
   - 114: {fileID: 11432310}
-  m_Layer: 10
+  m_Layer: 13
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,6 +196,7 @@ MonoBehaviour:
       mRow: 3
       mColumn: 3
     mBHP: 50
+    mIndex: 0
   mWeight: 5
   mAttackable: 0
 --- !u!1001 &100100000
@@ -244,6 +245,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: mWeight
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

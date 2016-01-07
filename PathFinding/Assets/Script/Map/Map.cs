@@ -15,8 +15,14 @@ public class Map {
 
 	public void addBuilding(BuildingInfo building)
 	{
-		Utility.Log(string.Format("building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
+		Utility.Log(string.Format("addBuilding() building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
 		mBuildings.Add (building);
+	}
+
+	public void removeBuilding(BuildingInfo building)
+	{
+		Utility.Log(string.Format("removeBuilding() building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
+		mBuildings.Remove (building);
 	}
 
 	public List<BuildingInfo> getBuildings()

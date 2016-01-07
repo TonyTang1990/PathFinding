@@ -174,14 +174,14 @@ public class UIManager : MonoBehaviour {
 		MapManager.MMInstance.ClearMap ();
 	}
 
+	public void EnterBuildMode()
+	{
+		GameManager.mGameInstance.CurrentGameMode = GameMode.E_BUILDINGMODE;
+	}
+
 	public void EnterDeleteMode()
 	{
-		GameMode currentgamemode = GameManager.mGameInstance.CurrentGameMode;
-		if (currentgamemode == GameMode.E_DELETEMODE) {
-			GameManager.mGameInstance.CurrentGameMode = GameMode.E_BUILDINGMODE;
-		} else {
-			GameManager.mGameInstance.CurrentGameMode = GameMode.E_DELETEMODE;
-		}
+		GameManager.mGameInstance.CurrentGameMode = GameMode.E_DELETEMODE;
 	}
 	
 	public void EnterAttackMode()

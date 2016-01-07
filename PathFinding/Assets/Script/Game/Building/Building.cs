@@ -232,6 +232,30 @@ public class Building : MonoBehaviour, GameObjectType {
 		}
 		return BuildingNodeList;
 	}
+
+	public int GetBuildingBottomLeftIndex()
+	{
+		//We assume all building occupied size mRow = mColumn
+		int bottomleftindex = 0;
+		Vector2 buildingindexrc = Utility.ConvertIndexToRC (mBI.mIndex);
+		int buildingpositionnoderow = (int)(buildingindexrc.x);
+		int buildingpositionnodecomlumn = (int)(buildingindexrc.y);
+
+		switch (mBI.getSize ().mRow) {
+		case 1:
+		case 2:
+			bottomleftindex = Utility.ConvertRCToIndex(buildingpositionnoderow, buildingpositionnodecomlumn);
+			break;
+		case 3:
+		case 4:
+			bottomleftindex = Utility.ConvertRCToIndex (buildingpositionnoderow - 1, buildingpositionnodecomlumn - 1);
+			break;
+		default:
+			break;
+		}
+		return bottomleftindex;
+	}
+
 	/*
 	void OnTriggerEnter(Collider other) {
 		Debug.Log ("other.name = " + other.name);

@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		MapManager.MMInstance.DeselectChoosingStaff ();
+		UIManager.UIMInstance.mGameModeText.text = mCurrentGameMode.ToString ();
 	}
 
 	// Update is called once per frame
