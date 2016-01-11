@@ -17,6 +17,10 @@ public class CameraController : MonoBehaviour {
 
 	private Vector3 mLookDirection;
 
+	private Vector2 startPos;
+	private Vector2 direction;
+	private bool directionChosen;
+
     void Start()
     {
 
@@ -33,6 +37,13 @@ public class CameraController : MonoBehaviour {
 				Camera.main.orthographicSize -= mZoomSpeed * Time.deltaTime;
 			}
 			Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, mOrthographicMinSize, mOrthographicMaxSize);
+		}
+
+		if (SystemInfo.deviceModel.Contains ("iPad") || Application.platform == RuntimePlatform.IPhonePlayer)
+		{
+
+
+
 		}
 	}
 
@@ -52,6 +63,11 @@ public class CameraController : MonoBehaviour {
 			clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
 			clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
 			transform.position = new Vector3 (clampx, transform.position.y, clampz);
+		}
+
+		if (SystemInfo.deviceModel.Contains ("iPad") || Application.platform == RuntimePlatform.IPhonePlayer)
+		{
+
 		}
     }
 }
