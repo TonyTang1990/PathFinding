@@ -24,31 +24,34 @@ public class CameraController : MonoBehaviour {
 
 	void Update()
 	{
-		if (Input.GetKey (KeyCode.U)) {
-			Camera.main.orthographicSize += mZoomSpeed * Time.deltaTime;
-	   }
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+			if (Input.GetKey (KeyCode.U)) {
+				Camera.main.orthographicSize += mZoomSpeed * Time.deltaTime;
+			}
 
-		if (Input.GetKey (KeyCode.P)) {
-			Camera.main.orthographicSize -= mZoomSpeed * Time.deltaTime;
+			if (Input.GetKey (KeyCode.P)) {
+				Camera.main.orthographicSize -= mZoomSpeed * Time.deltaTime;
+			}
+			Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, mOrthographicMinSize, mOrthographicMaxSize);
 		}
-		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, mOrthographicMinSize, mOrthographicMaxSize);
 	}
 
     void LateUpdate()
     {
         //Vector3 normalizedforward = transform.forward.normalized;
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+			float moveHorizontal = Input.GetAxis ("Horizontal") * mMoveSpeed * Time.deltaTime;
+			float moveVertical = Input.GetAxis ("Vertical") * mMoveSpeed * Time.deltaTime;
 
-        float moveHorizontal = Input.GetAxis("Horizontal") * mMoveSpeed * Time.deltaTime;
-        float moveVertical = Input.GetAxis("Vertical") * mMoveSpeed * Time.deltaTime;
+			Vector3 movement = transform.rotation * new Vector3 (moveHorizontal, 0.0f, moveVertical);
+			movement.y = 0.0f;
 
-		Vector3 movement = transform.rotation * new Vector3(moveHorizontal, 0.0f, moveVertical);
-		movement.y = 0.0f;
-
-		transform.position += movement;
-		float clampx;
-		float clampz;
-		clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
-		clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
-		transform.position = new Vector3 (clampx, transform.position.y, clampz);
+			transform.position += movement;
+			float clampx;
+			float clampz;
+			clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
+			clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
+			transform.position = new Vector3 (clampx, transform.position.y, clampz);
+		}
     }
 }

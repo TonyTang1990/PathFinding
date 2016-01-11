@@ -22,7 +22,7 @@ public class Map {
 	public void removeBuilding(BuildingInfo building)
 	{
 		Utility.Log(string.Format("removeBuilding() building.getPosition().mX = {0} mY = {1} mZ = {2}",building.Position.x,building.Position.y,building.Position.z));
-		mBuildings.Remove (building);
+		mBuildings.RemoveAll(item => item.mIndex == building.mIndex);
 	}
 
 	public List<BuildingInfo> getBuildings()
