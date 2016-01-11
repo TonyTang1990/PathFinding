@@ -11,4 +11,9 @@ public class Hellephant : Soldier {
 	public override void Update () {
 		base.Update ();
 	}
+
+	public override void UpdateChildPosition()
+	{
+		base.UpdateChildPosition();
+	}
 }

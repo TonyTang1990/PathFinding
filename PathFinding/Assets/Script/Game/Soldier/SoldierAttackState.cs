@@ -10,6 +10,11 @@ public class SoldierAttackState : SoldierState {
 		mSoldier = soldier;
 	}
 
+	public void EnterState()
+	{
+		mSoldier.UpdateChildPosition ();
+	}
+
 	public void UpdateState()
 	{
 		if (!mSoldier.IsDead) {
@@ -40,6 +45,11 @@ public class SoldierAttackState : SoldierState {
 		}
 	}
 
+	public void ExitState()
+	{
+
+	}
+
 	public void ToAttackState()
 	{
 
@@ -48,12 +58,12 @@ public class SoldierAttackState : SoldierState {
 	public void ToMoveState()
 	{
 		mSoldier.Anim.SetBool("SoldierMoving",true);
-		mSoldier.mSCurrentState = mSoldier.mSMoveState;
+		mSoldier.SCurrentState = mSoldier.mSMoveState;
 	}
 
 	public void ToDeadState()
 	{
 		mSoldier.Anim.SetBool("SoldierDead",true);
-		mSoldier.mSCurrentState = mSoldier.mSDeadState;
+		mSoldier.SCurrentState = mSoldier.mSDeadState;
 	}
 }

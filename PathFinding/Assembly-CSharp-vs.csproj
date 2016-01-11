@@ -85,6 +85,7 @@
      <Compile Include="Assets\Script\Camera\CameraController.cs" />
      <Compile Include="Assets\Script\Game\Building\Building.cs" />
      <Compile Include="Assets\Script\Game\Building\BuildingAttackState.cs" />
+     <Compile Include="Assets\Script\Game\Building\BuildingBuildState.cs" />
      <Compile Include="Assets\Script\Game\Building\BuildingIdleState.cs" />
      <Compile Include="Assets\Script\Game\Building\BuildingState.cs" />
      <Compile Include="Assets\Script\Game\Building\Drawer.cs" />
@@ -116,6 +117,7 @@
      <Compile Include="Assets\Script\Map\SearchAStar.cs" />
      <Compile Include="Assets\Script\Map\Seeker.cs" />
      <Compile Include="Assets\Script\Map\TerrainNode.cs" />
+     <Compile Include="Assets\Script\UI\BuildingUI.cs" />
      <Compile Include="Assets\Script\UI\DrawerButton.cs" />
      <Compile Include="Assets\Script\UI\HellephantButton.cs" />
      <Compile Include="Assets\Script\UI\HouseButton.cs" />

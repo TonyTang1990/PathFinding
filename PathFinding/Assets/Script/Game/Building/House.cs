@@ -63,13 +63,13 @@ public class House : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Utility.Log ("House::Awake()");
 		mSpawnPoint = gameObject.transform.Find ("BulletSpawnPoint").gameObject.transform.position;
 
 		mHouseBulletScript = GetComponent<Bullet> ();
 
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
+		mBBuildingState = new BuildingBuildState (this);
 
 		mAttackRangeCollider = gameObject.transform.Find ("AttackRangeCollider").gameObject;
 		mAttackRangeCollider.GetComponent<SphereCollider> ().radius = mAttackDistance / gameObject.transform.lossyScale.x;
@@ -79,7 +79,7 @@ public class House : Building {
 	public override void Start()
 	{
 		base.Start ();
-		mBCurrentState = mBIdleState;
+		BCurrentState = mBBuildingState;
 	}
 
 	
@@ -95,7 +95,13 @@ public class House : Building {
 
 	public override void UpdateChildPosition()
 	{
+		base.UpdateChildPosition ();
 		mSpawnPoint = gameObject.transform.Find ("BulletSpawnPoint").gameObject.transform.position;
+	}
+
+	public override void ActiveBuildingUI(bool isactive)
+	{
+		base.ActiveBuildingUI (isactive);
 	}
 
 	private Soldier ChooseAttackTarget()

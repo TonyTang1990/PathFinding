@@ -6,15 +6,15 @@ public class Drawer : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Utility.Log ("Drawer::Awake()");
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
+		mBBuildingState = new BuildingBuildState (this);
 	}
 	
 	public override void Start()
 	{
 		base.Start ();
-		mBCurrentState = mBIdleState;
+		BCurrentState = mBBuildingState;
 	}
 
 	public override void Update()
@@ -31,6 +31,11 @@ public class Drawer : Building {
 	public override void TakeDamage(float damage)
 	{
 		base.TakeDamage (damage);
+	}
+
+	public override void ActiveBuildingUI(bool isactive)
+	{
+		base.ActiveBuildingUI (isactive);
 	}
 
 	public override bool CanAttack()

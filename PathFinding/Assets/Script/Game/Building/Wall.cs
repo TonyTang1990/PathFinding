@@ -6,15 +6,15 @@ public class Wall : Building {
 	public override void Awake()
 	{
 		base.Awake ();
-		Utility.Log ("Wall::Awake()");
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
+		mBBuildingState = new BuildingBuildState (this);
 	}
 	
 	public override void Start()
 	{
 		base.Start ();
-		mBCurrentState = mBIdleState;
+		BCurrentState = mBBuildingState;
 	}
 	
 	public override void FixedUpdate()
@@ -48,6 +48,11 @@ public class Wall : Building {
 			//Once wall is breaked, we dispatch WALL_BREAK Event to soldier
 			EventManager.mEMInstance.TriggerEvent("WALL_BREAK");
 		}
+	}
+
+	public override void ActiveBuildingUI(bool isactive)
+	{
+		base.ActiveBuildingUI (isactive);
 	}
 
 	public override bool CanAttack()

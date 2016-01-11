@@ -49,6 +49,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	
 	public GameObject mBullet;
 
+	protected Vector3 mBulletSpawnPoint;
+
 	public float DistanceToTarget {
 		get {
 			return mDistanceToTarget;
@@ -127,7 +129,17 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	protected Animator mAnim;
 
-	[HideInInspector] public SoldierState mSCurrentState;
+	public SoldierState SCurrentState {
+		set {
+			if(mSCurrentState != null)
+			{
+				mSCurrentState.ExitState();
+			}
+			mSCurrentState = value;
+			mSCurrentState.EnterState();
+		}
+	}
+	[HideInInspector] private SoldierState mSCurrentState;
 
 	[HideInInspector] public SoldierAttackState mSAttackState;
 
@@ -193,15 +205,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	private float mNearestTargetPathLength = Mathf.Infinity;
 
 	private Vector3 mFinalMovePosition;
-/*
-	public Path ShortestPath {
-		get {
-			return mShortestPath;
-		}
-	}
-	protected Path mShortestPath;
-*/
-	//private Path[] mLastPaths;
 
 	//A Star Search Info
 	public SearchAStar ShortestPath {
@@ -211,10 +214,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	}
 	private SearchAStar mShortestPath;
 
-	private List<Pair<int, SearchAStar>>/*SearchAStar[]*/ mPathsInfo;
-
-	/* Number of paths completed so far */
-	//private int mNumCompleted = 0;
+	private List<Pair<int, SearchAStar>> mPathsInfo;
 
 	public int CurrentWayPoint {
 		get {
@@ -224,8 +224,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	protected int mCurrentWayPoint = 0;
 
 	public float mNextWaypointDistance = 0.2f;
-
-	//private CharacterController mController;
 
 	public float NearestTargetDistance {
 		get {
@@ -274,11 +272,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	public virtual void Awake()
 	{
 		Utility.Log("Soldier's Position = " + gameObject.transform.position);
-		/*
-		if (mST == SoldierType.E_ZOMBUNNY) {
-			mAnim = GetComponent<Animator>();
-		}
-		*/
 
 		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
 		if (mHPText == null) {
@@ -289,8 +282,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mAnim = GetComponent<Animator>();
 
 		mSeeker = GetComponent<Seeker> ();
-
-		//mController = GetComponent<CharacterController> ();
 
 		mSAttackState = new SoldierAttackState (this);
 
@@ -332,6 +323,11 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			mHPText.text = "HP: " + mSHP;
 			mSCurrentState.UpdateState();
 		}
+	}
+
+	public virtual void UpdateChildPosition()
+	{		
+		mBulletSpawnPoint = gameObject.transform.Find ("BulletSpawnPoint").gameObject.transform.position;
 	}
 
 	public void TakeDamage (float damage)
@@ -397,10 +393,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			mOldAttackingObject = mAttackingObject;
 			if(ShouldChangeAttackTarget())
 			{
-				//mAttackingObject = null;
 				Utility.Log ("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
 				mAttackingObject = ObtainAttackObjectInDetectionRange();
-				//CalculateAllPathsInfo(MapManager.mMapInstance.NullWallBuildingsInfoInGame);
+
 				//Otherwise chose one as attack target in whole map
 				if(mAttackingObject == null)
 				{
@@ -482,8 +477,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mPathsInfo = null;
 	
 		//Create a new lastPaths array if necessary (can reuse the old one?)
-		int validbuildingnumbers = 0; //= MapManager.mMapInstance.NullWallBuildingNumber;
-		//int nullwallbuildingnumbers = mCurrentCalculatingPaths.Count;
+		int validbuildingnumbers = 0;
 		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
 			Building nwbd = entry.Value as Building;
 			if(nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
@@ -504,8 +498,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		int pathindex = 0;
 		Vector2 soldierindex;
 		Vector2 bdindex;
-		//for(int i = 0; i < nullwallbuildingnumbers; i++)
-		//{
+
 		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
 			Building bd = entry.Value as Building;
 			if( bd.mBI.mBT == BuildingType.E_WALL)
@@ -547,9 +540,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					mSeeker.CreatePathAStar();
 					SearchAStar path = mSeeker.mAstarSearch;
 					mPathsInfo.Add(new Pair<int, SearchAStar> (tempbd.mBI.mIndex,path));
-					//ABPath p = ABPath.Construct (transform.position, bd.transform.position, OnPathInfoComplete);
-					//mLastPaths[pathindex] = p;
-					//AstarPath.StartPath (p);
 				}
 				pathindex++;
 			}
@@ -561,7 +551,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mCurrentCalculatingPaths = null;
 
 		return mShortestPathObject;
-		//}
 	}
 
 	private Building FindShortestPathTarget()
@@ -581,13 +570,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		if (mShortestPath != null && mShortestPath.IsWallInPathToTarget) {
 			Utility.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
-			//int wallindex = -1;
-			//wallindex = MapManager.MMInstance.BuildingsInfoInGame.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
-			//wallindex = mCurrentCalculatingPaths.FindIndex(x => x.mBI.mIndex == mShortestPath.WallInPathToTargetIndex);
-			//Debug.Log("wallindex = " + wallindex);
-			//Assert.IsTrue(wallindex != -1);
-			//mShortestPathObject = mCurrentCalculatingPaths[wallindex];
-			//mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[wallindex];
 			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
 			mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
 		}
@@ -625,7 +607,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mAttackTimer += Time.deltaTime;
 		if (mAttackTimer >= mAttackInterval) {
 			mAttackTimer = 0.0f;
-			GameObject bl = MonoBehaviour.Instantiate (mBullet, transform.position, Quaternion.identity) as GameObject;
+			GameObject bl = MonoBehaviour.Instantiate (mBullet, mBulletSpawnPoint, Quaternion.identity) as GameObject;
 			bl.GetComponent<Bullet> ().AttackTarget = mAttackingObject;
 		}
 	}
@@ -708,131 +690,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				}
 			}
 		}
-		/*
-		if (mAttackingObject != null) {
-			if (mAStarPath == null) {
-				//We have no path to move after yet
-				return;
-			}
-			if (mCurrentWayPoint >= mAStarPath.vectorPath.Count) {
-				Debug.Log ("End Of Path Reached");
-				return;
-			}
-			//Direction to the next waypoint
-			Vector3 dir = (mAStarPath.vectorPath [mCurrentWayPoint] - transform.position).normalized;
-
-			transform.LookAt (mAStarPath.vectorPath [mCurrentWayPoint]);
-		*/
-			/*
-		if (mController != null) {
-			mController.SimpleMove (dir);
-		}
-		*/
-		/*
-			Vector3 newposition = transform.position + dir * mSpeed * Time.deltaTime;
-			transform.position = newposition;
-
-			//Check if we are close enough to the next waypoint
-			//If we are, proceed to follow the next waypoint
-			if (Vector3.Distance (transform.position, mAStarPath.vectorPath [mCurrentWayPoint]) < mNextWaypointDistance) {
-				mCurrentWayPoint++;
-				return;
-			}
-		}
-		*/
-	}
-	
-	public void CalculatePath()
-	{
-		if(mAttackingObject != null)
-		{
-			Utility.Log ("CalculatePath() called");
-			//mAStarPath = mSeeker();
-			//StartCoroutine(WaitForPathCalculation());
-		}
-	}
-
-	/*
-	private IEnumerator WaitForPathCalculation()
-	{
-		Debug.Log ("mAttackingObject.transform.position = " + mAttackingObject.transform.position);
-		mAStarPath = mSeeker.StartPath(transform.position, mAttackingObject.transform.position, OnPathComplete);
-		yield return StartCoroutine (mAStarPath.WaitForPath ());
-		mNearestTargetPathLength = mAStarPath.GetTotalLength ();
-		Debug.Log ("mNearestTargetPathLength = " + mNearestTargetPathLength);
-		mAStarPath.Claim (this);
-	}
-	*/
-/*	
-	private void OnPathComplete(Path path)
-	{
-		if (!path.error) {
-			//mAStarPath = path;
-			//if(mAStarPath==null)
-			//{
-				//Debug.Log ("mAStarPath == null");
-			//}
-			mCurrentWayPoint = 0;
-			float targetpositiondistance = Vector3.Distance (mAttackingObject.transform.position, path.vectorPath [path.vectorPath.Count - 1]);
-			Debug.Log ("targetpositiondistance = " + targetpositiondistance);
-		} else {
-			Debug.Log ("Oh noes, the target was not reachable: "+path.errorLog);
-			mAStarPath = null;
-		}
-	}
-*/
-	//private void OnPathInfoComplete(Path p)
-	//{
-		//if (!p.error) {
-			/*float temppathlength = p.GetTotalLength ();
-			if (temppathlength < mShortestTargetPathLength) {
-				mShortestTargetPathLength = temppathlength;
-				//mShortestPathObject = bd;
-				Debug.Log ("mShortestTargetPathLength = " + mShortestTargetPathLength);
-			}
-			mCurrentWayPoint = 0;
-			*/
-			//Make sure this path is not an old one
-			//for (int i=0;i<mLastPaths.Length;i++) {
-				//if (mLastPaths[i] == p) {
-					//mNumCompleted++;
-					
-					//if (mNumCompleted >= mLastPaths.Length) {
-						//CompleteSearchClosest ();
-					//}
-					//return;
-				//}
-			//}
-		//} else {
-			//Debug.Log ("Oh noes, the target was not reachable: "+p.errorLog);
-			//mShortestPath = null;
-		//}
-	//}
-
-	/* Called when all paths have completed calculation */
-	public void CompleteSearchClosest () {
-		
-		//Find the shortest path
-		/*
-		Path shortest = null;
-		float shortestLength = float.PositiveInfinity;
-		
-		//Loop through the paths
-		for (int i=0;i<mLastPaths.Length;i++) {
-			//Get the total length of the path, will return infinity if the path had an error
-			float length = mLastPaths[i].GetTotalLength();
-			
-			Debug.Log ("length = "+ length);
-
-			if (shortest == null || length < mShortestTargetPathLength) {
-				shortest = mLastPaths[i];
-				mShortestTargetPathLength = length;
-				mShortestPathObject = mCurrentCalculatingPaths[i];				
-			}
-		}
-		Debug.Log ("mShortestTargetPathLength = "+ mShortestTargetPathLength);
-		mShortestPath = shortest;
-		*/
 	}
 }
 

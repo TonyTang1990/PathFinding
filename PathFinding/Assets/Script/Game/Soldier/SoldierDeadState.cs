@@ -10,11 +10,21 @@ public class SoldierDeadState : SoldierState {
 		mSoldier = solider;
 	}
 
+	public void EnterState()
+	{
+		
+	}
+
 	public void UpdateState()
 	{
 		
 	}
-	
+
+	public void ExitState()
+	{
+		
+	}
+
 	public void ToAttackState()
 	{
 		

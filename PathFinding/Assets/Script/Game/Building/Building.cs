@@ -67,6 +67,16 @@ public class BuildingInfo
 	}
 	private bool mIsDestroyed = false;
 
+	public bool IsBuildedCompleted {
+		get {
+			return mIsBuildedCompleted;
+		}
+		set {
+			mIsBuildedCompleted = value;
+		}
+	}
+	private bool mIsBuildedCompleted;
+
 	public BuildingType getBuildingType()
 	{
 		return mBT;
@@ -89,14 +99,28 @@ public class Building : MonoBehaviour, GameObjectType {
 	public bool mAttackable = true;
 
 	private TextMesh mHPText;
+
+	private GameObject mBuildingUI;
 	
 	protected Vector3 mSpawnPoint;
 
-	[HideInInspector] public BuildingState mBCurrentState;
+	public BuildingState BCurrentState {
+		set {
+			if(mBCurrentState != null)
+			{
+				mBCurrentState.ExitState();
+			}
+			mBCurrentState = value;
+			mBCurrentState.EnterState();
+		}
+	}
+	[HideInInspector] private BuildingState mBCurrentState;
 	
 	[HideInInspector] public BuildingAttackState mBAttackState;
 	
 	[HideInInspector] public BuildingIdleState mBIdleState;
+
+	[HideInInspector] public BuildingBuildState mBBuildingState;
 
 	public ObjectType GameType
 	{
@@ -113,17 +137,24 @@ public class Building : MonoBehaviour, GameObjectType {
 
 	public virtual void Awake()
 	{
-		Utility.Log ("Building::Awake()");
 		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
 		if (mHPText == null) {
-			Utility.Log("mHPText == null");
+			Debug.Log("mHPText == null");
 		}
 		mHPText.text = "HP: " + mBI.mBHP;
 		
+		mBuildingUI = gameObject.transform.Find ("BuildingUI").gameObject;
+		if (mBuildingUI == null) {
+			Debug.Log("mBuildingUI == null");
+		}
+		
 		mGameType = ObjectType.EOT_BUILDING;
-		Utility.Log ("Building::Awake() mGameType = " + mGameType);
-
+		//Debug.Log ("Building::Awake() mGameType = " + mGameType);
+		
+		mBI.IsBuildedCompleted = false;
+		
 		Assert.IsTrue (mWeight >= 0);
+
 	}
 
 	public virtual void Start()
@@ -133,7 +164,7 @@ public class Building : MonoBehaviour, GameObjectType {
 
 	public virtual void Update()
 	{
-		if (gameObject && mBCurrentState != null) {
+		if (gameObject &&  mBCurrentState!= null) {
 			mBCurrentState.UpdateState();
 		}
 	}
@@ -160,6 +191,11 @@ public class Building : MonoBehaviour, GameObjectType {
 	public virtual void UpdateChildPosition()
 	{
 
+	}
+
+	public virtual void ActiveBuildingUI(bool isactive)
+	{
+		mBuildingUI.SetActive (isactive);
 	}
 
 	public virtual bool CanAttack()

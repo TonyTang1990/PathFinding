@@ -9,6 +9,11 @@ public class BuildingAttackState : BuildingState {
 		mBuilding = building;
 	}
 
+	public void EnterState()
+	{
+
+	}
+
 	public void UpdateState()
 	{
 		if (mBuilding.IsTargetAvalibleToAttack () && !mBuilding.mBI.IsDestroyed) {
@@ -17,7 +22,12 @@ public class BuildingAttackState : BuildingState {
 			ToIdleState();
 		}
 	}
-	
+
+	public void ExitState()
+	{
+
+	}
+
 	public void ToAttackState()
 	{
 		
@@ -25,7 +35,7 @@ public class BuildingAttackState : BuildingState {
 	
 	public void ToIdleState()
 	{
-		mBuilding.mBCurrentState = mBuilding.mBIdleState;
+		mBuilding.BCurrentState = mBuilding.mBIdleState;
 	}
 
 	private void Attack()

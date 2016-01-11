@@ -227,6 +227,7 @@ public class MapManager : MonoBehaviour {
 			bding = bd.GetComponent<Building>();
 			bding.mBI.Position = position;
 			bding.mBI.mIndex = bdi.mIndex;
+			bding.mBI.IsBuildedCompleted = bdi.IsBuildedCompleted;
 			Utility.Log("bding.mBI.mIndex = " + bding.mBI.mIndex);
 			mBuldingsInGame.Add(bd);
 			mBuildingsInfoInGame.Add(bding.mBI.mIndex,bding/*bd.GetComponent<Building>()*/);
@@ -382,6 +383,8 @@ public class MapManager : MonoBehaviour {
 			}
 
 			Utility.Log("mCurrentSelectedNode.Position = " + mCurrentSelectedNode.Position.ToString());
+
+			mSelectedBuilding.mBI.IsBuildedCompleted = true;
 
 			mSelectedBuilding.mBI.mIndex = mSelectedBuilding.GetBuildingIndex(); /*Utility.ConvertFloatPositionToIndex(mCurrentSelectedNode.Position)*/;
 

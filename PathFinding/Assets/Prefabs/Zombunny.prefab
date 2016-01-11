@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &101104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 441518}
+  m_Layer: 2
+  m_Name: BulletSpawnPoint
+  m_TagString: Building
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &102878
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,6 +110,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 465852}
   m_RootOrder: 2
+--- !u!4 &441518
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101104}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .317000002, y: .709999979, z: .00400000019}
+  m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
+  m_Children: []
+  m_Father: {fileID: 465852}
+  m_RootOrder: 3
 --- !u!4 &455560
 Transform:
   m_ObjectHideFlags: 1
@@ -114,12 +141,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -12.71, z: 0}
+  m_LocalPosition: {x: 0, y: -12.71, z: 2.1400001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 401328}
   - {fileID: 455560}
   - {fileID: 438214}
+  - {fileID: 441518}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!23 &2363850

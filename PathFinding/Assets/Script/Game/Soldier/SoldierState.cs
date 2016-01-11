@@ -3,7 +3,11 @@ using System.Collections;
 
 public interface SoldierState {
 
+	void EnterState();
+	
 	void UpdateState();
+	
+	void ExitState();
 
 	void ToMoveState();
 
