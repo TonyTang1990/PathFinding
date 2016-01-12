@@ -297,7 +297,21 @@ public class MapManager : MonoBehaviour {
 	void Update () {
 		if (GameManager.mGameInstance.CurrentGameMode == GameMode.E_BUILDINGMODE) {
 			if (mIsBuildingSelected) {
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				Ray ray = new Ray();
+				if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+				{
+					ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				}
+				else if(Application.platform == RuntimePlatform.Android)
+				{
+					if(Input.touchCount == 1)
+					{
+						if(!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject (Input.touches[0].fingerId))
+						{
+							ray = Camera.main.ScreenPointToRay (Input.touches[0].position);
+						}
+					}
+				}
 				RaycastHit hit;
 				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
 					if (hit.collider) {

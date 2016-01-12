@@ -2741,6 +2741,7 @@ MonoBehaviour:
   mCameraMaxX: -10
   mCameraMinZ: -50
   mCameraMaxZ: -10
+  mValidInputDeltaTime: .5
 --- !u!114 &896086170
 MonoBehaviour:
   m_ObjectHideFlags: 0
