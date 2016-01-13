@@ -2753,7 +2753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b0b53f73b64ff4f8669d190995c52f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mValidInputDeltaTime: .5
+  mValidInputDeltaTime: .200000003
 --- !u!1 &908922787
 GameObject:
   m_ObjectHideFlags: 0

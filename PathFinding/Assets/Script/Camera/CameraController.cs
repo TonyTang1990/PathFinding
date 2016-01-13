@@ -56,6 +56,29 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	private void CameraMove()
+	{
+		if(Input.touches[0].phase == TouchPhase.Began)
+		{
+			mScreenPos = Input.touches[0].position;
+		}
+		
+		if(Input.touches[0].phase == TouchPhase.Moved)
+		{
+			Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
+			
+			Debug.Log("Input.touches[0].deltaPosition.x = " + Input.touches[0].deltaPosition.x);
+			Debug.Log("Input.touches[0].deltaPosition.y = " + Input.touches[0].deltaPosition.y);
+			
+			transform.position += movement;
+			float clampx;
+			float clampz;
+			clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
+			clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
+			transform.position = new Vector3 (clampx, transform.position.y, clampz);
+		}
+	}
+
 	void Update()
 	{
 		mInputTimer += Time.deltaTime;
@@ -97,25 +120,28 @@ public class CameraController : MonoBehaviour {
 			{
 				if(Input.touchCount == 1)
 				{
-					if(Input.touches[0].phase == TouchPhase.Began)
+					if(!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject (Input.touches[0].fingerId))
 					{
-						mScreenPos = Input.touches[0].position;
-					}
+						Ray ray = new Ray();
+						RaycastHit hit;
 
-					if(Input.touches[0].phase == TouchPhase.Moved)
-					{
+						if(MapManager.MMInstance.isBuildingSelected)
+						{
+							ray = Camera.main.ScreenPointToRay (Input.touches[0].position);
 
-						Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
-
-						Debug.Log("Input.touches[0].deltaPosition.x = " + Input.touches[0].deltaPosition.x);
-						Debug.Log("Input.touches[0].deltaPosition.y = " + Input.touches[0].deltaPosition.y);
-
-						transform.position += movement;
-						float clampx;
-						float clampz;
-						clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
-						clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
-						transform.position = new Vector3 (clampx, transform.position.y, clampz);
+							if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) 
+							{
+								TerrainNode currentterrainnode = hit.transform.gameObject.GetComponent<TerrainNode>();
+								if(!Utility.IsValidTerrainToMoveBuilding(currentterrainnode.Index))
+								{
+									CameraMove();
+								}
+							}
+						}
+						else
+						{
+							CameraMove();
+						}
 					}
 				}
 				else if(Input.touchCount == 2)
@@ -183,8 +209,6 @@ public class CameraController : MonoBehaviour {
 		    {
 				return;
 			}
-
-
 		}
 	}
 

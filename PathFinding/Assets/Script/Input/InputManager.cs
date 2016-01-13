@@ -6,7 +6,7 @@ public class InputManager : MonoBehaviour {
 
 	public static InputManager mInputInstance = null;
 
-	public float mValidInputDeltaTime = 0.5f;
+	public float mValidInputDeltaTime = 0.2f;
 
 	private float mInputTimer = 0.0f;
 
@@ -80,8 +80,8 @@ public class InputManager : MonoBehaviour {
 									}
 								}
 							} else {
-							MapManager.MMInstance.CurrentSelectedNode = null;
-							UIManager.UIMInstance.HideNWAdustPanel ();
+								MapManager.MMInstance.CurrentSelectedNode = null;
+								UIManager.UIMInstance.HideNWAdustPanel ();
 							}
 						}
 					}

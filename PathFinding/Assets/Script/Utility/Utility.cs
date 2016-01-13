@@ -68,6 +68,23 @@ public class Utility {
 		return rc;
 	}
 
+	
+	public static bool IsValidTerrainToMoveBuilding(int index)
+	{
+		Vector2 currentselectedbuildingrc = Utility.ConvertIndexToRC (MapManager.MMInstance.SelectedBuilding.mBI.mIndex);
+		Vector2 currentselectedterrainrc = Utility.ConvertIndexToRC (index);
+		
+		//Valid range
+		bool isrowvalid = currentselectedterrainrc.x <= currentselectedbuildingrc.x + 2 && currentselectedterrainrc.x >= currentselectedbuildingrc.x - 2;
+		bool iscolumnvalid = currentselectedterrainrc.y <= currentselectedbuildingrc.y + 2 && currentselectedterrainrc.y >= currentselectedbuildingrc.y - 2;
+		if (isrowvalid && iscolumnvalid) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
 	public static void Log(string s)
 	{
 		if (GameManager.mGameInstance.mIsDebugEnable) {

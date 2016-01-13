@@ -43,8 +43,19 @@ public class MapManager : MonoBehaviour {
 	private List<Soldier> mSoldiersScriptInGame;
 
 	private bool[,] mMapOccupied;
+
+	public GameObject CurrentSelectedBuilding {
+		get {
+			return mCurrentSelectedBuilding;
+		}
+	}
 	private GameObject mCurrentSelectedBuilding;
 
+	public Building SelectedBuilding {
+		get {
+			return mSelectedBuilding;
+		}
+	}
 	private Building mSelectedBuilding;
 
 	private SoldierType mCurrentSelectedSoldierType;
@@ -287,7 +298,7 @@ public class MapManager : MonoBehaviour {
 		if (mCurrentSelectedBuilding) {
 			Destroy(mCurrentSelectedBuilding);
 		}
-		mCurrentSelectedBuilding = Instantiate(mBuildings [index],new Vector3(0.0f,100.0f,0.0f),Quaternion.identity) as GameObject;
+		mCurrentSelectedBuilding = Instantiate(mBuildings [index],new Vector3(0.0f,0.0f,0.0f),Quaternion.identity) as GameObject;
 		mSelectedBuilding = mCurrentSelectedBuilding.GetComponent<Building> ();
 		mIsBuildingSelected = true;
 		mIsSoldierSelected = false;
@@ -298,46 +309,83 @@ public class MapManager : MonoBehaviour {
 		if (GameManager.mGameInstance.CurrentGameMode == GameMode.E_BUILDINGMODE) {
 			if (mIsBuildingSelected) {
 				Ray ray = new Ray();
+				RaycastHit hit;
 				if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
 				{
 					ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+					if(Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) 
+					{
+						if (hit.collider) {
+							//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
+							Vector3 tempselectposition = hit.collider.transform.position;
+							TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode> ();
+							switch (mSelectedBuilding.mBI.getBuildingType ()) {
+							case BuildingType.E_WALL:
+								tempselectposition.y += 0.5f;
+								break;
+							case BuildingType.E_HOUSE:
+								tempselectposition.x += 0.5f;
+								tempselectposition.z += 0.5f;
+								break;
+							case BuildingType.E_DRAWER:
+								tempselectposition.x += 0.9f;
+								tempselectposition.z += 0.9f;
+								break;
+							}
+							
+							mCurrentSelectedBuilding.transform.position = tempselectposition;
+							mSelectedBuilding.mBI.Position = tempselectposition;
+							mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
+							mCurrentSelectedNode = mNodeTerrainList [tempterrainnode.Index];
+						}
+					}
 				}
 				else if(Application.platform == RuntimePlatform.Android)
 				{
 					if(Input.touchCount == 1)
 					{
-						if(!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject (Input.touches[0].fingerId))
+						if(Input.touches[0].phase == TouchPhase.Moved)
 						{
 							ray = Camera.main.ScreenPointToRay (Input.touches[0].position);
+							if(Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) 
+							{
+								if (hit.collider) {
+									TerrainNode currentterrainnode = hit.transform.gameObject.GetComponent<TerrainNode>();
+									if(Utility.IsValidTerrainToMoveBuilding(currentterrainnode.Index))
+									{
+										//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
+										Vector3 tempselectposition = hit.collider.transform.position;
+										TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode> ();
+										switch (mSelectedBuilding.mBI.getBuildingType ()) {
+										case BuildingType.E_WALL:
+											tempselectposition.y += 0.5f;
+											break;
+										case BuildingType.E_HOUSE:
+											tempselectposition.x += 0.5f;
+											tempselectposition.z += 0.5f;
+											break;
+										case BuildingType.E_DRAWER:
+											tempselectposition.x += 0.9f;
+											tempselectposition.z += 0.9f;
+											break;
+										}
+										
+										mCurrentSelectedBuilding.transform.position = tempselectposition;
+										mSelectedBuilding.mBI.Position = tempselectposition;
+										mSelectedBuilding.mBI.mIndex = mSelectedBuilding.GetBuildingIndex();
+										mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
+										mCurrentSelectedNode = mNodeTerrainList [tempterrainnode.Index];
+									}
+								}
+							}
+						}
+						else
+						{
+							Debug.Log("hit.transform.gameObject.GetInstanceID() != MapManager.MMInstance.CurrentSelectedBuilding.GetInstanceID()");
 						}
 					}
 				}
-				RaycastHit hit;
-				if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
-					if (hit.collider) {
-						//hit.collider.GetComponent<SpriteRenderer> ().color = new Color (0, 0, 0);
-						Vector3 tempselectposition = hit.collider.transform.position;
-						TerrainNode tempterrainnode = hit.collider.GetComponent<TerrainNode> ();
-						switch (mSelectedBuilding.mBI.getBuildingType ()) {
-						case BuildingType.E_WALL:
-							tempselectposition.y += 0.5f;
-							break;
-						case BuildingType.E_HOUSE:
-							tempselectposition.x += 0.5f;
-							tempselectposition.z += 0.5f;
-							break;
-						case BuildingType.E_DRAWER:
-							tempselectposition.x += 0.9f;
-							tempselectposition.z += 0.9f;
-							break;
-						}
 
-						mCurrentSelectedBuilding.transform.position = tempselectposition;
-						mSelectedBuilding.mBI.Position = tempselectposition;
-						mCurrentOccupiedIndex = tempterrainnode.RowColumnInfo;
-						mCurrentSelectedNode = mNodeTerrainList [tempterrainnode.Index];
-					}
-				}
 			}
 		}
 	}
