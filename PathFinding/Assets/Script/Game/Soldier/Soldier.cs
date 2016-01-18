@@ -416,6 +416,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 					//if the attacking object is Wall,
 					//we let soldier listenning for wall break event to make new decision once has wall breaked
+					/*
+					 * Inform all soldiers that is listenning to WALL_BREAK will cause fps drop
+					 * Only inform soldiers that are in valid wall notification range
 					if(mAttackingObject.mBI.getBuildingType() == BuildingType.E_WALL)
 					{
 						EventManager.mEMInstance.StartListening("WALL_BREAK",WallBreakDelegate);
@@ -424,6 +427,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					{
 						EventManager.mEMInstance.StopListening("WALL_BREAK",WallBreakDelegate);
 					}
+					*/
 				}
 			}
 		}
@@ -449,7 +453,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				foreach (int inedx in indextoremove) {
 					mDetectionRange.RangeTargetList.Remove (inedx);
 				}	
-				yield return new WaitForSeconds(3.0f);
+				yield return new WaitForSeconds(30.0f);
 			}
 			else
 			{
@@ -458,7 +462,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		}
 	}
 
-	private void WallBreakDelegate()
+	public void WallBreakDelegate()
     {
 		Utility.Log ("WallBreakDelegate() called");
 		mBMakeNewDecision = true;
@@ -512,8 +516,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 				tempbd = bd;
 				if(tempbd.mBI.IsDestroyed!=true)
 				{
-					Utility.Log ("transform.position = " + transform.position);
-					Utility.Log ("bd.transform.position = " + tempbd.transform.position);
 					//If soldier has movement path, we use it last movememnt node as his position
 					//to avoid inaccuracy position conversion
 					if(mAStarPath != null)
@@ -524,13 +526,7 @@ public class Soldier : MonoBehaviour, GameObjectType {
 					{
 						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
 					}
-					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
 
-					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
-					{
-						Debug.Log("index = " + index);
-						Debug.Log("Soldier stays at Wall Position");
-					}
 					//soldierindex = 
 					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
 					Utility.Log ("soldierindex = " + soldierindex);

@@ -106,12 +106,12 @@ public class House : Building {
 
 	private Soldier ChooseAttackTarget()
 	{
-		mAttackRange.RangeTargetList.RemoveAll(item => item == null);
+		//mAttackRange.RangeTargetList.RemoveAll(item => item == null);
 		if (mAttackRange.RangeTargetList.Count != 0) {
 			Soldier targetsoldier = null;
 			float currentdistance = 0.0f;
 			List<Soldier> soldierlistinrange = new List<Soldier> ();
-			foreach (Soldier so in mAttackRange.RangeTargetList) {
+			foreach (Soldier so in mAttackRange.RangeTargetList.Values) {
 				if( so.IsDead )
 				{
 					continue;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class BuildingAttackRange: MonoBehaviour{
 
-	public List<Soldier> RangeTargetList {
+	public Hashtable RangeTargetList {
 		get {
 			return mRangeTargetList;
 		}
@@ -12,27 +12,28 @@ public class BuildingAttackRange: MonoBehaviour{
 			mRangeTargetList = value;
 		}
 	}
-	private List<Soldier> mRangeTargetList;
+	private Hashtable mRangeTargetList;
 
 	//public ObjectType mInterestedObjectType;
 
 	void Awake()
 	{
-		mRangeTargetList = new List<Soldier> ();
+		mRangeTargetList = new Hashtable (50, 0.6f);
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
+		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
 			return;
 		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 				if(objtype == ObjectType.EOT_SOLDIER)
 				{
 					Soldier so = other.gameObject.GetComponent<Soldier>();
-					if (so.IsDead != true && mRangeTargetList.Contains (so) != true) {
-						mRangeTargetList.Add (so);
-						Utility.Log ("OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
+					int soinstanceid = so.gameObject.GetInstanceID();
+				if (so.IsDead != true && mRangeTargetList.Contains (soinstanceid) != true) {
+						mRangeTargetList.Add (soinstanceid, so);
+						Utility.Log ("BuildingAttackRange::OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
 					}
 				}
 		}
@@ -40,16 +41,17 @@ public class BuildingAttackRange: MonoBehaviour{
 
 	void OnTriggerExit(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
+		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
 			return;
 		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;
 				if(objtype == ObjectType.EOT_SOLDIER)
 				{
 					Soldier so = other.gameObject.GetComponent<Soldier>();
-					if (mRangeTargetList.Contains (so) == true) {
-						mRangeTargetList.Remove (so);
-						Utility.Log ("OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
+					int soinstanceid = so.gameObject.GetInstanceID();
+					if (mRangeTargetList.Contains (soinstanceid) == true) {
+						mRangeTargetList.Remove (soinstanceid);
+						Utility.Log ("BuildingAttackRange::OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
 					}
 				}
 		}

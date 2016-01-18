@@ -23,7 +23,7 @@ public class SoldierDetectRange : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
+		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
 			return;
 		} else {
 			//mRangeTargetList.RemoveAll(item => item == null);
@@ -48,7 +48,7 @@ public class SoldierDetectRange : MonoBehaviour {
 	
 	void OnTriggerExit(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet") {
+		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
 			return;
 		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;

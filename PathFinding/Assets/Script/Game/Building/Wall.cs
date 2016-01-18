@@ -3,12 +3,20 @@ using System.Collections;
 
 public class Wall : Building {
 
+	private BuildingInformRange mInformRange;
+
+	private GameObject mInformRangeCollider;
+
 	public override void Awake()
 	{
 		base.Awake ();
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
 		mBBuildingState = new BuildingBuildState (this);
+
+		mInformRangeCollider = gameObject.transform.Find ("InformRangeCollider").gameObject;
+		Debug.Log("mInformRangeCollider.GetComponent<SphereCollider> ().radius = " + mInformRangeCollider.GetComponent<SphereCollider> ().radius);
+		mInformRange = mInformRangeCollider.GetComponent<BuildingInformRange> ();
 	}
 	
 	public override void Start()
@@ -46,7 +54,18 @@ public class Wall : Building {
 			MapManager.MMInstance.UpdateSpecificNodeWeight(mBI.mIndex, -mWeight);
 
 			//Once wall is breaked, we dispatch WALL_BREAK Event to soldier
-			EventManager.mEMInstance.TriggerEvent("WALL_BREAK");
+			//EventManager.mEMInstance.TriggerEvent("WALL_BREAK");
+			InformAllSoldiersInRange();
+		}
+	}
+
+	private void InformAllSoldiersInRange()
+	{
+		foreach (Soldier so in mInformRange.RangeTargetList.Values) {
+			if(!so.IsDead && so.AttackTarget.mBI.getBuildingType() == BuildingType.E_WALL)
+			{
+				so.WallBreakDelegate();
+			}
 		}
 	}
 

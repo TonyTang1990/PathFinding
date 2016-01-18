@@ -32,6 +32,8 @@ public class CameraController : MonoBehaviour {
 
     void Start()
     {
+		Camera.main.transparencySortMode = TransparencySortMode.Orthographic;
+
 		mOFinger1Position = new Vector2 ();
 		mOFinger2Postion = new Vector2 ();
 		mIsForward = 1;

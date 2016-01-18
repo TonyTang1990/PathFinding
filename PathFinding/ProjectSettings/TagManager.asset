@@ -12,6 +12,7 @@ TagManager:
   - Soldier
   - Debug
   - Map
+  - Spell
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Invisible
   - Terrain
   - Clickable
-  - 
+  - Spell
   - 
   - 
   - 
