@@ -19,6 +19,8 @@ public class MapManager : MonoBehaviour {
 	
 	public List<GameObject> mSoldiers;
 	
+	public List<GameObject> mSpells;
+
 	private List<GameObject> mBuldingsInGame;
 
 	//Due to we index building frequently, we use hashtable instead of List
@@ -59,7 +61,9 @@ public class MapManager : MonoBehaviour {
 	private Building mSelectedBuilding;
 
 	private SoldierType mCurrentSelectedSoldierType;
-	
+
+	private SpellType mCurrentSelectedSpellType;
+
 	public bool isBuildingSelected
 	{
 		get
@@ -85,6 +89,20 @@ public class MapManager : MonoBehaviour {
 		}
 	}
 	private bool mIsSoldierSelected = false;
+
+	public bool isSpellSelected
+	{
+		get
+		{
+			return mIsSpellSelected;
+		}
+		set
+		{
+			mIsSpellSelected = value;
+		}
+	}
+	private bool mIsSpellSelected = false;
+
 	
 	private Vector2 mCurrentOccupiedIndex;
 	
@@ -545,6 +563,7 @@ public class MapManager : MonoBehaviour {
 		mCurrentSelectedSoldierType = SoldierType.E_DEFAULT;
 		mIsSoldierSelected = false;
 		mIsBuildingSelected = false;
+		mIsSpellSelected = false;
 	}
 	
 	public void setCurrentSelectedSoldier(SoldierType stp)
@@ -552,6 +571,7 @@ public class MapManager : MonoBehaviour {
 		mCurrentSelectedSoldierType = stp;
 		mIsSoldierSelected = true;
 		mIsBuildingSelected = false;
+		mIsSpellSelected = false;
 	}
 	
 	public void DeploySoldier(Vector3 hitpoint)
@@ -559,6 +579,21 @@ public class MapManager : MonoBehaviour {
 		GameObject go = SoldierFactory.SpawnSoldier(mCurrentSelectedSoldierType,hitpoint);
 		mSoldiersInGame.Add(go);
 		mSoldiersScriptInGame.Add(go.GetComponent<Soldier>());
+	}
+
+	public void setCurrentSelectedSpell(SpellType st)
+	{
+		mCurrentSelectedSpellType = st;
+		mIsSpellSelected = true;
+		mIsSoldierSelected = false;
+		mIsBuildingSelected = false;
+	}
+
+	public void DeploySpell(Vector3 hitpoint)
+	{
+		hitpoint.y += 1.0f;
+		GameObject go = SpellFactory.SpawnSpell (mCurrentSelectedSpellType, hitpoint);
+
 	}
 	
 	public Building ObtainAttackObject(Soldier sod)

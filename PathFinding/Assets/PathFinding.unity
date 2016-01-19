@@ -2728,6 +2728,7 @@ MonoBehaviour:
   mSoldiers:
   - {fileID: 197974, guid: c55db0c5a1ba6474aac239aa8df20e04, type: 2}
   - {fileID: 102878, guid: 9a96ffabeccdd7e4cbac58dedd871640, type: 2}
+  mSpells: []
   mNodeWeight: {fileID: 189318, guid: 0dfd42ab677cd36449a1a968025877a1, type: 2}
 --- !u!114 &896086167
 MonoBehaviour:
@@ -3934,22 +3935,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1143874186}
---- !u!1 &1162099676 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 115564, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
-  m_PrefabInternal: {fileID: 1502059567}
---- !u!135 &1162099679
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1162099676}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: .449999988
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1195851451
 GameObject:
   m_ObjectHideFlags: 0
@@ -5228,24 +5213,15 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 115564, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
-      propertyPath: m_Name
-      value: Spell
-      objectReference: {fileID: 0}
-    - target: {fileID: 2374178, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f5f51bb814b2fb344a86d653efa7820a, type: 2}
-    - target: {fileID: 2374178, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
-      propertyPath: m_ReceiveShadows
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 22307166, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 896086164}
-    m_RemovedComponents:
-    - {fileID: 13652250, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
+    - target: {fileID: 115564, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
+      propertyPath: m_Name
+      value: JumpSpell
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d205a1a344ac26d44adecfcb40c73c33, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &1538964053

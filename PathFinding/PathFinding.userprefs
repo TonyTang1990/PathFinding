@@ -1,46 +1,49 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Game\General\BuildingInformRange.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Map\MapManager.cs">
     <Files>
-      <File FileName="PathFinding.sln" Line="1" Column="1" />
-      <File FileName="Assets\Script\Map\MapManager.cs" Line="16" Column="19" />
       <File FileName="Assets\Script\Input\InputManager.cs" Line="1" Column="1" />
+      <File FileName="PathFinding.sln" Line="1" Column="1" />
+      <File FileName="Assets\Script\Map\MapManager.cs" Line="580" Column="12" />
       <File FileName="Assets\Script\UI\UIManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\UI\BuildingUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\UI\DrawerButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Building\Building.cs" Line="201" Column="2" />
-      <File FileName="Assets\Script\Game\Building\House.cs" Line="125" Column="7" />
-      <File FileName="Assets\Script\Game\Building\BuildingIdleState.cs" Line="20" Column="19" />
+      <File FileName="Assets\Script\Game\Building\Building.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Building\House.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Building\BuildingIdleState.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Building\BuildingAttackState.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Building\BuildingState.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Building\BuildingBuildState.cs" Line="29" Column="13" />
+      <File FileName="Assets\Script\Game\Building\BuildingBuildState.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Building\Drawer.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Building\Wall.cs" Line="68" Column="5" />
+      <File FileName="Assets\Script\Game\Building\Wall.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Utility\Utility.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\UI\WallButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\Soldier.cs" Line="603" Column="34" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierAttackState.cs" Line="26" Column="18" />
+      <File FileName="Assets\Script\Game\Soldier\Soldier.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierAttackState.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Soldier\SoldierState.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Soldier\SoldierDeadState.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierMoveState.cs" Line="26" Column="17" />
-      <File FileName="Assets\Script\Game\Soldier\SoldierFactory.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierMoveState.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\SoldierFactory.cs" Line="6" Column="39" />
       <File FileName="Assets\Script\Game\Soldier\Hellephant.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\Soldier\ZomBunny.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Game\GameManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Camera\CameraController.cs" Line="43" Column="12" />
+      <File FileName="Assets\Script\Camera\CameraController.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Map\Map.cs" Line="1" Column="1" />
       <File FileName="Assets\Resources\SurvivalShooter\_CompletedAssets\Scripts\Helpers\BeautyShot.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\UI\HouseButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Game\General\BuildingAttackRange.cs" Line="25" Column="3" />
-      <File FileName="Assets\Script\Game\General\BuildingInformRange.cs" Line="22" Column="3" />
-      <File FileName="Assets\Script\Game\General\SoldierDetectRange.cs" Line="51" Column="89" />
-      <File FileName="Assets\Script\Game\Soldier\Bullet.cs" Line="13" Column="3" />
+      <File FileName="Assets\Script\Game\General\BuildingAttackRange.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\General\BuildingInformRange.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\General\SoldierDetectRange.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Soldier\Bullet.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\General\ObjectType.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\General\SpellDetectRange.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Game\Spell\SpellFactory.cs" Line="7" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="231" />
-      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="191" />
+      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="249" />
+      <Breakpoint file="D:\Unity_Study\PathFinding\PathFinding\PathFinding\Assets\Script\Map\MapManager.cs" line="209" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

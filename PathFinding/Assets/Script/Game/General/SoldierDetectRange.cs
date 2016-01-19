@@ -61,7 +61,7 @@ public class SoldierDetectRange : MonoBehaviour {
 				}
 				else
 				{
-					if (mRangeTargetList.Contains (bd) != true) {
+					if (mRangeTargetList.Contains (bd) == true) {
 						mRangeTargetList.Remove (bd.mBI.mIndex);
 						Utility.Log ("Soldier mRanTargetList.Remove(bd) bd.name = " + bd.name);
 					}

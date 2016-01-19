@@ -9,8 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 452524}
   - 33: {fileID: 3317076}
-  - 136: {fileID: 13652250}
   - 23: {fileID: 2374178}
+  - 135: {fileID: 13541590}
+  - 114: {fileID: 11406758}
   m_Layer: 14
   m_Name: Spell
   m_TagString: Spell
@@ -60,7 +61,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 115564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.4300003, y: 1.03999996, z: 12.0500002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 8, y: .0199999996, z: 8}
   m_Children:
   - {fileID: 22431290}
@@ -74,7 +75,7 @@ MeshRenderer:
   m_GameObject: {fileID: 115564}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_Materials:
   - {fileID: 2100000, guid: f5f51bb814b2fb344a86d653efa7820a, type: 2}
   m_SubsetIndices: 
@@ -97,6 +98,19 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 115564}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &11406758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c467baca99766b9449f1adf944a379db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInterstedType: 0
+  mInterestedBuildingType: 0
 --- !u!114 &11421536
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -155,8 +169,8 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!136 &13652250
-CapsuleCollider:
+--- !u!135 &13541590
+SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -164,9 +178,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: .449999988
-  m_Height: 2
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!222 &22274666
 CanvasRenderer:
