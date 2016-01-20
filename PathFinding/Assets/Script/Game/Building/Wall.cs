@@ -15,7 +15,6 @@ public class Wall : Building {
 		mBBuildingState = new BuildingBuildState (this);
 
 		mInformRangeCollider = gameObject.transform.Find ("InformRangeCollider").gameObject;
-		Debug.Log("mInformRangeCollider.GetComponent<SphereCollider> ().radius = " + mInformRangeCollider.GetComponent<SphereCollider> ().radius);
 		mInformRange = mInformRangeCollider.GetComponent<BuildingInformRange> ();
 	}
 	

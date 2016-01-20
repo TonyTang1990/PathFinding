@@ -591,9 +591,7 @@ public class MapManager : MonoBehaviour {
 
 	public void DeploySpell(Vector3 hitpoint)
 	{
-		hitpoint.y += 1.0f;
 		GameObject go = SpellFactory.SpawnSpell (mCurrentSelectedSpellType, hitpoint);
-
 	}
 	
 	public Building ObtainAttackObject(Soldier sod)
@@ -700,5 +698,10 @@ public class MapManager : MonoBehaviour {
 			int index = mCurrentSelectedNode.Index;
 			mPathFinder.UpdateNodeWallJumpableStatus(index, iswalljumpable);
 		}
+	}
+
+	public void UpdateSpecificNodeWallJumpableStatus(int wallindex, bool iswalljumpable)
+	{
+		mPathFinder.UpdateNodeWallJumpableStatus(wallindex, iswalljumpable);
 	}
 }

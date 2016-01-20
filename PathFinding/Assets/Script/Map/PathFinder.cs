@@ -171,7 +171,9 @@ public class PathFinder : MonoBehaviour {
 	public void UpdateNodeWallJumpableStatus(int index,bool iswalljumpable)
 	{
 		Assert.IsTrue (index >= 0 && index < mNavGraph.NextFreeNodeIndex);
-		mNavGraph.Nodes [index].IsJumpable = iswalljumpable;
+		if (mNavGraph.Nodes [index].IsWall) {
+			mNavGraph.Nodes [index].IsJumpable = iswalljumpable;
+		}
 	}
 
 	private void UpdateAlgorithm()

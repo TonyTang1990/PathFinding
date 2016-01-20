@@ -108,6 +108,8 @@
      <Compile Include="Assets\Script\Game\Soldier\SoldierMoveState.cs" />
      <Compile Include="Assets\Script\Game\Soldier\SoldierState.cs" />
      <Compile Include="Assets\Script\Game\Soldier\ZomBunny.cs" />
+     <Compile Include="Assets\Script\Game\Spell\JumpSpell.cs" />
+     <Compile Include="Assets\Script\Game\Spell\Spell.cs" />
      <Compile Include="Assets\Script\Game\Spell\SpellFactory.cs" />
      <Compile Include="Assets\Script\Input\InputManager.cs" />
      <Compile Include="Assets\Script\Map\AStar\GraphEdge.cs" />
@@ -124,6 +126,7 @@
      <Compile Include="Assets\Script\UI\DrawerButton.cs" />
      <Compile Include="Assets\Script\UI\HellephantButton.cs" />
      <Compile Include="Assets\Script\UI\HouseButton.cs" />
+     <Compile Include="Assets\Script\UI\JumpSpellButton.cs" />
      <Compile Include="Assets\Script\UI\UIManager.cs" />
      <Compile Include="Assets\Script\UI\UpdateAStarInFo.cs" />
      <Compile Include="Assets\Script\UI\WallButton.cs" />
