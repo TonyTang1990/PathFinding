@@ -26,6 +26,12 @@ public class CameraController : MonoBehaviour {
 
 	private Vector2 mScreenPos;
 
+    private Vector2 mPreTouchPos;
+
+    private Vector2 mPreMoveDirection;
+
+    private Vector2 mCurrentTouchPos;
+
 	public float mValidInputDeltaTime = 0.5f;
 	
 	private float mInputTimer = 0.0f;
@@ -38,6 +44,9 @@ public class CameraController : MonoBehaviour {
 		mOFinger2Postion = new Vector2 ();
 		mIsForward = 1;
 		mScreenPos = new Vector2 ();
+        mPreTouchPos = new Vector2();
+        mCurrentTouchPos = new Vector2();
+        mPreMoveDirection = new Vector2();
     }
 
 	//用于判断是否放大
@@ -62,17 +71,24 @@ public class CameraController : MonoBehaviour {
 	{
 		if(Input.touches[0].phase == TouchPhase.Began)
 		{
-			mScreenPos = Input.touches[0].position;
+            mCurrentTouchPos = Input.touches[0].position;
+            mPreTouchPos = Input.touches[0].position;
 		}
-		
-		if(Input.touches[0].phase == TouchPhase.Moved)
+		else if(Input.touches[0].phase == TouchPhase.Moved)
 		{
-			Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
-			
-			Debug.Log("Input.touches[0].deltaPosition.x = " + Input.touches[0].deltaPosition.x);
-			Debug.Log("Input.touches[0].deltaPosition.y = " + Input.touches[0].deltaPosition.y);
-			
-			transform.position += movement;
+			//Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
+
+            mPreTouchPos = mCurrentTouchPos;
+            mCurrentTouchPos = Input.touches[0].position;
+
+            Vector2 offposition = mCurrentTouchPos - mPreTouchPos;
+
+            Debug.Log("offposition.x = " + offposition.x);
+            Debug.Log("offposition.y = " + offposition.y);
+
+            Vector3 movement = transform.rotation * new Vector3(offposition.x * 1.0f * Time.deltaTime, 0.0f, offposition.y * 1.0f * Time.deltaTime);
+
+            transform.position += movement;
 			float clampx;
 			float clampz;
 			clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
