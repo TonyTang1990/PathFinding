@@ -44,6 +44,12 @@ public class GameManager : MonoBehaviour {
 	}
 	private GameMode mCurrentGameMode;
 
+    private GameObject mSoldierUI;
+
+    private GameObject mBuildingUI;
+
+    private GameObject mSpellUI;
+
 	void Awake()
 	{
 		if (mGameInstance == null) {
@@ -55,6 +61,10 @@ public class GameManager : MonoBehaviour {
 		mTargetSoldierSeeker = mTargetSoldier.GetComponent<Seeker> ();
 
 		mAttackingSoldierSeeker = mAttackingSoldier.GetComponent<Seeker> ();
+
+        mSoldierUI = UIManager.UIMInstance.gameObject.transform.Find("GameUICanvas/SoldierUI").gameObject;
+        mBuildingUI = UIManager.UIMInstance.gameObject.transform.Find("GameUICanvas/BuildingUI").gameObject;
+        mSpellUI = UIManager.UIMInstance.gameObject.transform.Find("GameUICanvas/SpellUI").gameObject;
 	}
 
 	// Use this for initialization
@@ -65,21 +75,21 @@ public class GameManager : MonoBehaviour {
 
 	private void ApplyGameMode()
 	{
-		Transform soldierui = UIManager.UIMInstance.gameObject.transform.Find ("GameUICanvas/SoldierUI");
-		Transform buildingui = UIManager.UIMInstance.gameObject.transform.Find ("GameUICanvas/BuildingUI");
-
 		switch (mCurrentGameMode) {
 		case GameMode.E_BUILDINGMODE:
-			soldierui.gameObject.SetActive (false);
-			buildingui.gameObject.SetActive (true);
+            mSoldierUI.SetActive(false);
+            mBuildingUI.SetActive(true);
+            mSpellUI.SetActive(false);
 			break;
 		case GameMode.E_DELETEMODE:
-			soldierui.gameObject.SetActive (false);
-			buildingui.gameObject.SetActive (false);
+            mSoldierUI.SetActive(false);
+            mBuildingUI.SetActive(false);
+            mSpellUI.SetActive(false);
 			break;
 		case GameMode.E_ATTACKMODE:
-			soldierui.gameObject.SetActive (true);
-			buildingui.gameObject.SetActive (false);
+            mSoldierUI.SetActive(true);
+            mBuildingUI.SetActive(false);
+            mSpellUI.SetActive(true);
 			break;
 		}
 

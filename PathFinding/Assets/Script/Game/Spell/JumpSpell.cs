@@ -15,10 +15,10 @@ public class JumpSpell : Spell {
 
 	private void UpdateWallJumpableStatus()
 	{
-		Debug.Log ("UpdateWallJumpableStatus() called");
-		Debug.Log ("mSpellDetectRange.RangeTargetList.Count = " + mSpellDetectRange.RangeTargetList.Count);
+        Utility.Log("UpdateWallJumpableStatus() called");
+        Utility.Log("mSpellDetectRange.RangeTargetList.Count = " + mSpellDetectRange.RangeTargetList.Count);
 		foreach (int wallindex in mSpellDetectRange.RangeTargetList.Keys) {
-			Debug.Log("WallIndex = " + wallindex);
+            Utility.Log("WallIndex = " + wallindex);
 			MapManager.MMInstance.UpdateSpecificNodeWallJumpableStatus (wallindex,true);
 		}
 		Invoke ("RecoverWallJumpableStatus", mLifeTime);
@@ -27,8 +27,8 @@ public class JumpSpell : Spell {
 	private void RecoverWallJumpableStatus()
 	{
 		Debug.Log ("RecoverWallJumpableStatus() called");
-		foreach (int wallindex in mSpellDetectRange.RangeTargetList) {
-			Debug.Log("WallIndex = " + wallindex);
+		foreach (int wallindex in mSpellDetectRange.RangeTargetList.Keys) {
+			Utility.Log("WallIndex = " + wallindex);
 			MapManager.MMInstance.UpdateSpecificNodeWallJumpableStatus (wallindex,false);
 		}
 		Destroy (gameObject);

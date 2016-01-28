@@ -37,7 +37,7 @@ public class SoldierDetectRange : MonoBehaviour {
 				}
 				else
 				{
-					if (bd.mBI.IsDestroyed != true && mRangeTargetList.Contains (bd) != true) {
+					if (bd.mBI.IsDestroyed != true && mRangeTargetList.Contains (bd.mBI.mIndex) != true) {
 						mRangeTargetList.Add (bd.mBI.mIndex,bd);
 						Utility.Log ("Soldier mRanTargetList.Add(bd) bd.name = " + bd.name);
 					}

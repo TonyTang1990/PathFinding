@@ -39,7 +39,7 @@ public class SpellDetectRange : MonoBehaviour {
 				int soinstanceid = so.gameObject.GetInstanceID();
 				if (so.IsDead != true && mRangeTargetList.Contains (soinstanceid) != true) {
 					mRangeTargetList.Add (soinstanceid, so);
-					Utility.Log ("SpellDetectRange::OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
+                    Utility.Log("SpellDetectRange::OnTriggerEnter mRanTargetList.Add(so) so.name = " + so.name);
 				}
 			}
 			else if(objtype == mInterstedType && mInterstedType == ObjectType.EOT_BUILDING)
@@ -49,7 +49,7 @@ public class SpellDetectRange : MonoBehaviour {
 				{
 					if (bd.mBI.IsDestroyed != true && mRangeTargetList.Contains (bd) != true) {
 						mRangeTargetList.Add (bd.mBI.mIndex,bd);
-						Utility.Log ("Spell mRanTargetList.Add(bd) bd.name = " + bd.name);
+                        Utility.Log("Spell mRanTargetList.Add(bd) bd.name = " + bd.name);
 					}
 				}
 			}
@@ -68,7 +68,7 @@ public class SpellDetectRange : MonoBehaviour {
 				int soinstanceid = so.gameObject.GetInstanceID();
 				if (mRangeTargetList.Contains (soinstanceid) == true) {
 					mRangeTargetList.Remove (soinstanceid);
-					Utility.Log ("SpellDetectRange::OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
+                    Utility.Log("SpellDetectRange::OnTriggerExit mRanTargetList.Remove(so) so.name = " + so.name);
 				}
 			}
 			else if(objtype == mInterstedType && mInterstedType == ObjectType.EOT_BUILDING)
@@ -78,7 +78,7 @@ public class SpellDetectRange : MonoBehaviour {
 				{
 					if (mRangeTargetList.Contains (bd) == true) {
 						mRangeTargetList.Remove (bd.mBI.mIndex);
-						Utility.Log ("Spell mRanTargetList.Remove(bd) bd.name = " + bd.name);
+                        Utility.Log("Spell mRanTargetList.Remove(bd) bd.name = " + bd.name);
 					}
 				}
 			}
