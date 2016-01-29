@@ -46,6 +46,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	public float mAttackDistance;
 
 	public float mSHP;
+
+    public bool mUpdateHP = false;
 	
 	public GameObject mBullet;
 
@@ -319,11 +321,20 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 	public virtual void Update ()
 	{
-		if (gameObject) {
-			mHPText.text = "HP: " + mSHP;
+        if (gameObject)
+        {
 			mSCurrentState.UpdateState();
 		}
 	}
+
+    public virtual void FixedUpdate()
+    {
+        if (gameObject && mUpdateHP)
+        {
+            mHPText.text = "HP: " + mSHP;
+            mUpdateHP = false;
+        }
+    }
 
 	public virtual void UpdateChildPosition()
 	{		
@@ -338,7 +349,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			mSHP = 0;
 			mIsDead = true;
 		}
-	}
+        mUpdateHP = true;
+    }
 
 	//AniamtionEvent call
 	public void StartSinking ()
@@ -603,8 +615,10 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		mAttackTimer += Time.deltaTime;
 		if (mAttackTimer >= mAttackInterval) {
 			mAttackTimer = 0.0f;
-			GameObject bl = MonoBehaviour.Instantiate (mBullet, mBulletSpawnPoint, Quaternion.identity) as GameObject;
-			bl.GetComponent<Bullet> ().AttackTarget = mAttackingObject;
+			//GameObject bl = MonoBehaviour.Instantiate (mBullet, mBulletSpawnPoint, Quaternion.identity) as GameObject;
+            GameObject bl = ObjectPoolManager.mObjectPoolManagerInstance.GetSoldierBulletObject();
+            bl.transform.position = mBulletSpawnPoint;
+            bl.GetComponent<Bullet> ().AttackTarget = mAttackingObject;
 		}
 	}
 

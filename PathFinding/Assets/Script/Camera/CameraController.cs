@@ -86,7 +86,7 @@ public class CameraController : MonoBehaviour {
             Debug.Log("offposition.x = " + offposition.x);
             Debug.Log("offposition.y = " + offposition.y);
 
-            Vector3 movement = transform.rotation * new Vector3(offposition.x * 1.0f * Time.deltaTime, 0.0f, offposition.y * 1.0f * Time.deltaTime);
+            Vector3 movement = transform.rotation * new Vector3(offposition.x * mMoveSpeed * Time.deltaTime, 0.0f, offposition.y * mMoveSpeed * Time.deltaTime);
 
             transform.position += movement;
 			float clampx;

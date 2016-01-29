@@ -168,8 +168,10 @@ public class House : Building {
 			mAttackTimer += Time.deltaTime;
 			if (mAttackTimer >= mAttackInterval) {
 				mAttackTimer = 0.0f;
-				GameObject bl = Instantiate (mHouseBullet, mSpawnPoint, Quaternion.identity) as GameObject;
-				bl.GetComponent<Bullet>().AttackSoldier = mAttackingObject;
+				//GameObject bl = Instantiate (mHouseBullet, mSpawnPoint, Quaternion.identity) as GameObject;
+                GameObject bl = ObjectPoolManager.mObjectPoolManagerInstance.GetBuildingBulletObject();
+                bl.transform.position = mSpawnPoint;
+                bl.GetComponent<Bullet>().AttackSoldier = mAttackingObject;
 			}
 		}
 	}

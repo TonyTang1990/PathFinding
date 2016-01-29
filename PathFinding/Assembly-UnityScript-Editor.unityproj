@@ -46,17 +46,17 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Editor\ColorCorrectionCurvesEditor.js" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurves.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\TiltShiftHdrLensBlur.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBloom.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurvesSimple.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ChromaticAberrationShader.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\Fonts\LuckiestGuy\LICENSE.txt" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionSelective.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\SeparableBlur.shader" />
-     <None Include="Assets\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\VignettingShader.shader" />
+     <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Editor\ColorCorrectionCurvesEditor.js" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurves.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\TiltShiftHdrLensBlur.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBloom.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurvesSimple.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ChromaticAberrationShader.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\Fonts\LuckiestGuy\LICENSE.txt" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionSelective.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\SeparableBlur.shader" />
+     <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\VignettingShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Software/Unity5/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

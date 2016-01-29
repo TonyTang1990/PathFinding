@@ -74,7 +74,8 @@ public class Bullet : MonoBehaviour {
 
 	void DestroyItself()
 	{
-		Destroy (gameObject);
+        OnDestroy();
+		gameObject.SetActive(false);
 	}
 
 	void OnDestroy()

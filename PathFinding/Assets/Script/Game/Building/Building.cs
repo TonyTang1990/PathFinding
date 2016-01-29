@@ -94,6 +94,8 @@ public class Building : MonoBehaviour, GameObjectType {
 
 	public BuildingInfo mBI;
 
+    private bool mUpdateHP = false;
+
 	public float mWeight = 0.0f;
 
 	public bool mAttackable = true;
@@ -171,14 +173,17 @@ public class Building : MonoBehaviour, GameObjectType {
 
 	public virtual void FixedUpdate()
 	{
-		if (gameObject) {
+        if (gameObject && mUpdateHP)
+        {
 			mHPText.text = "HP: " + mBI.mBHP;
+            mUpdateHP = false;
 		}
 	}
 
 	public virtual void TakeDamage(float damage)
 	{
-		if (mBI.mBHP > damage) {
+        if (mBI.mBHP > damage)
+        {
 			mBI.mBHP -= damage;
 		} else {
 			Utility.Log("IsDestroyed == true");
@@ -186,6 +191,7 @@ public class Building : MonoBehaviour, GameObjectType {
 			mBI.IsDestroyed = true;
 			gameObject.SetActive(false);
 		}
+        mUpdateHP = true;
 	}
 
 	public virtual void UpdateChildPosition()
