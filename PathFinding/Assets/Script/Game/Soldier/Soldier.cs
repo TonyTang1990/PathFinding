@@ -454,16 +454,20 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			{
 				Building temp = null;
 				List<int> indextoremove = new List<int> ();
-			
-				foreach (DictionaryEntry entry in mDetectionRange.RangeTargetList) {
-					temp = entry.Value as Building;
+                IDictionaryEnumerator enu = mDetectionRange.RangeTargetList.GetEnumerator();
+                DictionaryEntry entry;
+
+				while (enu.MoveNext()) {
+                    entry = (DictionaryEntry)enu.Current;
+                    temp = entry.Value as Building;
 					if (temp.mBI.IsDestroyed) {
 						indextoremove.Add (temp.mBI.mIndex);
 					}
 				}
-			
-				foreach (int inedx in indextoremove) {
-					mDetectionRange.RangeTargetList.Remove (inedx);
+
+                for (int index = 0; index < indextoremove.Count; index++)
+                {
+                    mDetectionRange.RangeTargetList.Remove(index);
 				}	
 				yield return new WaitForSeconds(30.0f);
 			}
@@ -494,8 +498,13 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	
 		//Create a new lastPaths array if necessary (can reuse the old one?)
 		int validbuildingnumbers = 0;
-		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
-			Building nwbd = entry.Value as Building;
+        IDictionaryEnumerator enu = mCurrentCalculatingPaths.GetEnumerator();
+        DictionaryEntry entry;
+        Building nwbd;
+        while (enu.MoveNext())
+        {
+            entry = (DictionaryEntry)enu.Current;
+            nwbd = entry.Value as Building;
 			if(nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
 			{
 				validbuildingnumbers++;
@@ -515,7 +524,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 		Vector2 soldierindex;
 		Vector2 bdindex;
 
-		foreach (DictionaryEntry entry in mCurrentCalculatingPaths) {
+        enu = mCurrentCalculatingPaths.GetEnumerator();
+		while (enu.MoveNext()) {
+            entry = (DictionaryEntry)enu.Current;
 			Building bd = entry.Value as Building;
 			if( bd.mBI.mBT == BuildingType.E_WALL)
 			{
@@ -567,7 +578,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		int index = -1;
 		float distance = Mathf.Infinity;
-		foreach (Pair<int, SearchAStar> pair in mPathsInfo) {
+        Pair<int, SearchAStar> pair;
+		for ( int i = 0; i < mPathsInfo.Count; i++) {
+            pair = mPathsInfo[i];
 			if(pair.Value.GetCostToTarget() < distance)
 			{
 				index = pair.Key;

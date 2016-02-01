@@ -60,7 +60,12 @@ public class Wall : Building {
 
 	private void InformAllSoldiersInRange()
 	{
-		foreach (Soldier so in mInformRange.RangeTargetList.Values) {
+        Soldier so;
+        IDictionaryEnumerator enu = mInformRange.RangeTargetList.GetEnumerator();
+        DictionaryEntry entry;
+		while(enu.MoveNext()) {
+            entry = (DictionaryEntry)enu.Current;
+            so = entry.Value as Soldier;
 			if(!so.IsDead && so.AttackTarget.mBI.getBuildingType() == BuildingType.E_WALL)
 			{
 				so.WallBreakDelegate();

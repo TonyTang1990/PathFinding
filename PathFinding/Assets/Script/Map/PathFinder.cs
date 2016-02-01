@@ -140,7 +140,9 @@ public class PathFinder : MonoBehaviour {
 		mNavGraph.Nodes [index].Weight += value;
 
 		//Update edge info that starts from Node[index]
-		foreach (GraphEdge e in mNavGraph.mEdgesList[index]) {
+		GraphEdge e;
+        for (int i = 0; i < mNavGraph.mEdgesList[index].Count; i++) {
+            e =  mNavGraph.mEdgesList[index][i];
 			e.Cost += value;
 		}
 		//Update edge info that ends with Node[index]

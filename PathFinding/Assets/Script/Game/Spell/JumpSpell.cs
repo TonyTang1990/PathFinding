@@ -17,7 +17,12 @@ public class JumpSpell : Spell {
 	{
         Utility.Log("UpdateWallJumpableStatus() called");
         Utility.Log("mSpellDetectRange.RangeTargetList.Count = " + mSpellDetectRange.RangeTargetList.Count);
-		foreach (int wallindex in mSpellDetectRange.RangeTargetList.Keys) {
+        IDictionaryEnumerator enu = mSpellDetectRange.RangeTargetList.GetEnumerator();
+        DictionaryEntry entry;
+        int wallindex = 0;
+		while (enu.MoveNext()) {
+            entry = (DictionaryEntry)enu.Current;
+            wallindex = (int)entry.Key;
             Utility.Log("WallIndex = " + wallindex);
 			MapManager.MMInstance.UpdateSpecificNodeWallJumpableStatus (wallindex,true);
 		}
@@ -27,7 +32,13 @@ public class JumpSpell : Spell {
 	private void RecoverWallJumpableStatus()
 	{
 		Debug.Log ("RecoverWallJumpableStatus() called");
-		foreach (int wallindex in mSpellDetectRange.RangeTargetList.Keys) {
+        IDictionaryEnumerator enu = mSpellDetectRange.RangeTargetList.GetEnumerator();
+        DictionaryEntry entry;
+        int wallindex = 0;
+        while (enu.MoveNext())
+        {
+            entry = (DictionaryEntry)enu.Current;
+            wallindex = (int)entry.Key;
 			Utility.Log("WallIndex = " + wallindex);
 			MapManager.MMInstance.UpdateSpecificNodeWallJumpableStatus (wallindex,false);
 		}

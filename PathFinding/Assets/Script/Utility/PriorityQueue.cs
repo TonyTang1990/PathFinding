@@ -145,8 +145,10 @@ public class Heap<T1, T2>
 	
 	public void PrintOutAllMember()
 	{
-		foreach (Pair<T1, T2> valuepair in mList)
+        Pair<T1, T2> valuepair;
+		for (int i = 0; i < mList.Count; i++)
 		{
+            valuepair = mList[i];
 			Debug.Log(valuepair.ToString());
 		}
 	}

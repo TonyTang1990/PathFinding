@@ -49,13 +49,15 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 
 	private bool UniqueEdge(int from, int to)
 	{
-		foreach(T2 t in mEdgesList[from])
-		{
-			if(t.To == to)
-			{
-				return false;
-			}
-		}
+        T2 t;
+        for (int i = 0; i < mEdgesList[from].Count; i++ )
+        {
+            t = mEdgesList[from][i];
+            if (t.To == to)
+            {
+                return false;
+            }
+        }
 		return true;
 	}
 
@@ -67,7 +69,10 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 	public T2 GetEdge(int from, int to)
 	{
 		Assert.IsTrue (from < mNextNodeIndex && to < mNextNodeIndex);
-		foreach (T2 t in mEdgesList[from]) {
+		T2 t;
+        for (int i = 0; i < mEdgesList[from].Count; i++ )
+        {
+            t = mEdgesList[from][i];
 			if(t.To == to)
 			{
 				return t;
@@ -85,7 +90,9 @@ public class SparseGraph<T1,T2> where T1 : NavGraphNode where T2 : GraphEdge
 	public int NumEdges()
 	{
 		int total = 0;
-		foreach (List<T2> t in mEdgesList) {
+        List<T2> t;
+		for(int i = 0; i < mEdgesList.Count; i++) {
+            t = mEdgesList[i];
 			total += t.Count;
 		}
 		return total;

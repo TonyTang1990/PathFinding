@@ -23,7 +23,7 @@ public class BuildingAttackRange: MonoBehaviour{
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
+		if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell")) {
 			return;
 		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
@@ -41,7 +41,8 @@ public class BuildingAttackRange: MonoBehaviour{
 
 	void OnTriggerExit(Collider other)
 	{
-		if (other.tag == "TerrainTile" || other.tag == "AttackRange" || other.tag == "Bullet" || other.tag == "Spell") {
+        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        {
 			return;
 		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;

@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 public class SearchAStar {
 
-	private SearchAStar()
+    private SearchAStar()
 	{
 
 	}
@@ -59,10 +59,22 @@ public class SearchAStar {
 
 		mIsIgnoreWall = isignorewall;
 
-		Search (strickdistance,isignorewall);
+        mStrickDistance = strickdistance;
 
-		GeneratePathToTargetInfo ();
+        Search(mStrickDistance, mIsIgnoreWall);
+
+        GeneratePathToTargetInfo();
 	}
+
+    public void UpdateSearch()
+    {
+        Assert.IsTrue(mISource >= 0 && mISource < mGraph.NumNodes());
+        Assert.IsTrue(mITarget >= 0 && mITarget < mGraph.NumNodes());
+
+        Search(mStrickDistance, mIsIgnoreWall);
+
+        GeneratePathToTargetInfo();
+    }
 
 	public List<int> PathToTarget {
 		get {
@@ -102,6 +114,15 @@ public class SearchAStar {
 	private int mWallInPathToTargetIndex;
 
 	private bool mIsIgnoreWall;
+
+    public float StrickDistance
+    {
+        set
+        {
+            mStrickDistance = value;
+        }
+    }
+    private float mStrickDistance;
 
 	private void GeneratePathToTargetInfo()
 	{
@@ -178,10 +199,21 @@ public class SearchAStar {
 
 	private List<GraphEdge> mSearchFrontier;
 
+    public int ISource
+    {
+        set
+        {
+            mISource = value;
+        }
+    }
 	private int mISource;
 
 	public int ITarget
 	{
+        set
+        {
+            mITarget = value;
+        }
 		get
 		{
 			return mITarget;
@@ -249,9 +281,10 @@ public class SearchAStar {
 
 			//Now to test all the edges attached to this node
 			List<GraphEdge> edgelist = mGraph.EdgesList[nextclosestnode];
-
-			foreach(GraphEdge edge in edgelist)
+            GraphEdge edge;
+			for(int i = 0; i < edgelist.Count; i++)
 			{
+                edge = edgelist[i];
 				//calculate the heuristic cost from this node to the target (H)
 				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To) * mHCostPercentage;
 
@@ -332,52 +365,53 @@ public class SearchAStar {
 			
 			//Now to test all the edges attached to this node
 			List<GraphEdge> edgelist = mGraph.EdgesList[nextclosestnode];
-			
-			foreach(GraphEdge edge in edgelist)
-			{
-				//calculate the heuristic cost from this node to the target (H)
-				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To) * mHCostPercentage;
-				
-				//calculate the 'real' cost to this node from the source (G)
-				float gcost = mGCosts[nextclosestnode] + edge.Cost;
-				
-				//if the node has not been added to the frontier, add it and update the G and F costs
-				if(mSearchFrontier[edge.To] != null && !mSearchFrontier[edge.To].IsValidEdge())
-				{
-					mFCosts[edge.To].Value = gcost + hcost;
-					mGCosts[edge.To] = gcost;
-					
-					pq.Push(mFCosts[edge.To]);
-					
-					mSearchFrontier[edge.To] = edge;
-					
-					mEdgesSearched++;
-					
-					if(mBDrawExplorePath)
-					{
-						Debug.DrawLine(mGraph.Nodes[edge.From].Position,mGraph.Nodes[edge.To].Position,Color.yellow, mExplorePathRemainTime);
-					}
-				}
-				
-				//if this node is already on the frontier but the cost to get here
-				//is cheaper than has been found previously, update the node
-				//cost and frontier accordingly
-				else if(gcost < mGCosts[edge.To])
-				{
-					mFCosts[edge.To].Value = gcost + hcost;
-					mGCosts[edge.To] = gcost;
-					
-					//Due to some node's f cost has been changed
-					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
-					//compare the fcost will make sure we search the path in the right direction
-					//h cost is the key to search in the right direction
-					pq.ChangePriority(edge.To);
-					
-					mSearchFrontier[edge.To] = edge;
-					
-					mEdgesSearched++;
-				}
-			}
+			GraphEdge edge;
+            for (int i = 0; i < edgelist.Count; i++ )
+            {
+                edge = edgelist[i];
+                //calculate the heuristic cost from this node to the target (H)
+                float hcost = Heuristic_Euclid.Calculate(mGraph, mITarget, edge.To) * mHCostPercentage;
+
+                //calculate the 'real' cost to this node from the source (G)
+                float gcost = mGCosts[nextclosestnode] + edge.Cost;
+
+                //if the node has not been added to the frontier, add it and update the G and F costs
+                if (mSearchFrontier[edge.To] != null && !mSearchFrontier[edge.To].IsValidEdge())
+                {
+                    mFCosts[edge.To].Value = gcost + hcost;
+                    mGCosts[edge.To] = gcost;
+
+                    pq.Push(mFCosts[edge.To]);
+
+                    mSearchFrontier[edge.To] = edge;
+
+                    mEdgesSearched++;
+
+                    if (mBDrawExplorePath)
+                    {
+                        Debug.DrawLine(mGraph.Nodes[edge.From].Position, mGraph.Nodes[edge.To].Position, Color.yellow, mExplorePathRemainTime);
+                    }
+                }
+
+                //if this node is already on the frontier but the cost to get here
+                //is cheaper than has been found previously, update the node
+                //cost and frontier accordingly
+                else if (gcost < mGCosts[edge.To])
+                {
+                    mFCosts[edge.To].Value = gcost + hcost;
+                    mGCosts[edge.To] = gcost;
+
+                    //Due to some node's f cost has been changed
+                    //we should reoder the priority queue to make sure we pop up the lowest fcost node first
+                    //compare the fcost will make sure we search the path in the right direction
+                    //h cost is the key to search in the right direction
+                    pq.ChangePriority(edge.To);
+
+                    mSearchFrontier[edge.To] = edge;
+
+                    mEdgesSearched++;
+                }
+            }
 		}
 	}
 
@@ -415,77 +449,78 @@ public class SearchAStar {
 			
 			//Now to test all the edges attached to this node
 			List<GraphEdge> edgelist = mGraph.EdgesList[nextclosestnode];
-			
-			foreach(GraphEdge edge in edgelist)
-			{
-				//calculate the heuristic cost from this node to the target (H)
-				float hcost = Heuristic_Euclid.Calculate(mGraph,mITarget,edge.To) * mHCostPercentage;
-				
-				//calculate the 'real' cost to this node from the source (G)
-				float gcost = 0.0f;
-				if(isignorewall)
-				{
-					gcost = mGCosts[nextclosestnode] + edge.Cost;
+			GraphEdge edge;
+            for (int i = 0; i < edgelist.Count; i++ )
+            {
+                edge = edgelist[i];
+                //calculate the heuristic cost from this node to the target (H)
+                float hcost = Heuristic_Euclid.Calculate(mGraph, mITarget, edge.To) * mHCostPercentage;
 
-					if(mGraph.Nodes[edge.From].IsWall)
-					{
-						gcost -= mGraph.Nodes[edge.From].Weight;
-					}
-					if(mGraph.Nodes[edge.To].IsWall)
-					{
-						gcost -= mGraph.Nodes[edge.To].Weight;
-					}
-				}
-				else
-				{
-					gcost = mGCosts[nextclosestnode] + edge.Cost;
-					if(mGraph.Nodes[edge.From].IsJumpable)
-					{
-						gcost -= mGraph.Nodes[edge.From].Weight;
-					}
-					if(mGraph.Nodes[edge.To].IsJumpable)
-					{
-						gcost -= mGraph.Nodes[edge.To].Weight;
-					}
-				}
+                //calculate the 'real' cost to this node from the source (G)
+                float gcost = 0.0f;
+                if (isignorewall)
+                {
+                    gcost = mGCosts[nextclosestnode] + edge.Cost;
 
-				//if the node has not been added to the frontier, add it and update the G and F costs
-				if(mSearchFrontier[edge.To] != null && !mSearchFrontier[edge.To].IsValidEdge())
-				{
-					mFCosts[edge.To].Value = gcost + hcost;
-					mGCosts[edge.To] = gcost;
-					
-					pq.Push(mFCosts[edge.To]);
-					
-					mSearchFrontier[edge.To] = edge;
-					
-					mEdgesSearched++;
-					
-					if(mBDrawExplorePath)
-					{
-						Debug.DrawLine(mGraph.Nodes[edge.From].Position,mGraph.Nodes[edge.To].Position,Color.yellow, mExplorePathRemainTime);
-					}
-				}
-				
-				//if this node is already on the frontier but the cost to get here
-				//is cheaper than has been found previously, update the node
-				//cost and frontier accordingly
-				else if(gcost < mGCosts[edge.To])
-				{
-					mFCosts[edge.To].Value = gcost + hcost;
-					mGCosts[edge.To] = gcost;
-					
-					//Due to some node's f cost has been changed
-					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
-					//compare the fcost will make sure we search the path in the right direction
-					//h cost is the key to search in the right direction
-					pq.ChangePriority(edge.To);
-					
-					mSearchFrontier[edge.To] = edge;
-					
-					mEdgesSearched++;
-				}
-			}
+                    if (mGraph.Nodes[edge.From].IsWall)
+                    {
+                        gcost -= mGraph.Nodes[edge.From].Weight;
+                    }
+                    if (mGraph.Nodes[edge.To].IsWall)
+                    {
+                        gcost -= mGraph.Nodes[edge.To].Weight;
+                    }
+                }
+                else
+                {
+                    gcost = mGCosts[nextclosestnode] + edge.Cost;
+                    if (mGraph.Nodes[edge.From].IsJumpable)
+                    {
+                        gcost -= mGraph.Nodes[edge.From].Weight;
+                    }
+                    if (mGraph.Nodes[edge.To].IsJumpable)
+                    {
+                        gcost -= mGraph.Nodes[edge.To].Weight;
+                    }
+                }
+
+                //if the node has not been added to the frontier, add it and update the G and F costs
+                if (mSearchFrontier[edge.To] != null && !mSearchFrontier[edge.To].IsValidEdge())
+                {
+                    mFCosts[edge.To].Value = gcost + hcost;
+                    mGCosts[edge.To] = gcost;
+
+                    pq.Push(mFCosts[edge.To]);
+
+                    mSearchFrontier[edge.To] = edge;
+
+                    mEdgesSearched++;
+
+                    if (mBDrawExplorePath)
+                    {
+                        Debug.DrawLine(mGraph.Nodes[edge.From].Position, mGraph.Nodes[edge.To].Position, Color.yellow, mExplorePathRemainTime);
+                    }
+                }
+
+                //if this node is already on the frontier but the cost to get here
+                //is cheaper than has been found previously, update the node
+                //cost and frontier accordingly
+                else if (gcost < mGCosts[edge.To])
+                {
+                    mFCosts[edge.To].Value = gcost + hcost;
+                    mGCosts[edge.To] = gcost;
+
+                    //Due to some node's f cost has been changed
+                    //we should reoder the priority queue to make sure we pop up the lowest fcost node first
+                    //compare the fcost will make sure we search the path in the right direction
+                    //h cost is the key to search in the right direction
+                    pq.ChangePriority(edge.To);
+
+                    mSearchFrontier[edge.To] = edge;
+
+                    mEdgesSearched++;
+                }
+            }
 		}
 	}
 }
