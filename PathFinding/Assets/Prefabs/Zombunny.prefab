@@ -28,7 +28,7 @@ GameObject:
   - 54: {fileID: 5460048}
   - 114: {fileID: 11469402}
   - 114: {fileID: 11402616}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Zombunny
   m_TagString: Soldier
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   - 4: {fileID: 438214}
   - 114: {fileID: 11496644}
   - 135: {fileID: 13513084}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: AttackRangeCollider
   m_TagString: AttackRange
   m_Icon: {fileID: 0}
@@ -271,6 +271,7 @@ MonoBehaviour:
   mAttackInterval: 2
   mAttackDistance: 3
   mSHP: 10
+  mUpdateHP: 0
   mBullet: {fileID: 197372, guid: c0cb62fc9ce26ea4d9095149340dcec6, type: 2}
   mNextWaypointDistance: .200000003
   mDetectionDistance: 10

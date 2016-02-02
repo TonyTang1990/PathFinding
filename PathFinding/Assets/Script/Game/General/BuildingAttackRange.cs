@@ -23,9 +23,8 @@ public class BuildingAttackRange: MonoBehaviour{
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell")) {
-			return;
-		} else {
+		if (other.CompareTag("Soldier"))
+        {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 				if(objtype == ObjectType.EOT_SOLDIER)
 				{

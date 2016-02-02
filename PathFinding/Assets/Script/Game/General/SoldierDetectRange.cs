@@ -23,7 +23,7 @@ public class SoldierDetectRange : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell") || other.CompareTag("Soldier"))
         {
 			return;
 		} else {

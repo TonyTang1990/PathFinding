@@ -25,14 +25,14 @@ public class SearchAStar {
 		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
 		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
 		mSearchFrontier = new List<GraphEdge> (graph.NumNodes());
-		CostToTargetNode = new List<float> (graph.NumNodes());
+		//CostToTargetNode = new List<float> (graph.NumNodes());
 		//Init G cost and F cost and Cost value
 		for (int i = 0; i < graph.NumNodes(); i++) {
 			mGCosts.Add (0.0f);
 			mFCosts.Add(new Pair<int,float>(i,0.0f));
 			mShortestPathTree.Add(new GraphEdge());
 			mSearchFrontier.Add(new GraphEdge());
-			CostToTargetNode.Add(0.0f);
+			//CostToTargetNode.Add(0.0f);
 		}
 		mISource = source;
 		mITarget = target;
@@ -185,6 +185,7 @@ public class SearchAStar {
 	}
 	private List<GraphEdge> mShortestPathTree;
 
+    /*
 	public List<float> CostToTargetNode 
 	{
 		get {
@@ -196,7 +197,7 @@ public class SearchAStar {
 		}
 	}
 	private List<float> mCostToTargetNode;
-
+    */
 	private List<GraphEdge> mSearchFrontier;
 
     public int ISource
@@ -260,7 +261,10 @@ public class SearchAStar {
 
 		pq.Push (mFCosts [mISource]);
 
-		mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
+		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
+        mSearchFrontier[mISource].From = mISource;
+        mSearchFrontier[mISource].To = mISource;
+        mSearchFrontier[mISource].Cost = 0.0f;
 
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
@@ -341,8 +345,11 @@ public class SearchAStar {
 
 		pq.Push (mFCosts [mISource]);
 		
-		mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
-		
+		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
+        mSearchFrontier[mISource].From = mISource;
+        mSearchFrontier[mISource].To = mISource;
+        mSearchFrontier[mISource].Cost = 0.0f;
+
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
 			int nextclosestnode = pq.Pop().Key;
@@ -425,8 +432,11 @@ public class SearchAStar {
 		
 		pq.Push (mFCosts [mISource]);
 		
-		mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
-		
+		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
+        mSearchFrontier[mISource].From = mISource;
+        mSearchFrontier[mISource].To = mISource;
+        mSearchFrontier[mISource].Cost = 0.0f;
+
 		while (!pq.Empty()) {
 			//Get lowest cost node from the queue
 			int nextclosestnode = pq.Pop().Key;
