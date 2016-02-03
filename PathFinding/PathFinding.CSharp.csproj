@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E8C93418-0C21-CE65-825F-6C251434EBAC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Unity Web v3.5</TargetFrameworkProfile>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>Game:1</UnityProjectType>
+    <UnityBuildTarget>WebPlayer:6</UnityBuildTarget>
+    <UnityVersion>5.3.2f1</UnityVersion>
+    <RootNamespace></RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_2;UNITY_5_3;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBPLAYER;ENABLE_SUBSTANCE;WEBPLUG;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_MONO;DEVELOPMENT_BUILD;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;UNITY_5_3_2;UNITY_5_3;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBPLAYER;ENABLE_SUBSTANCE;WEBPLUG;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_MONO;DEVELOPMENT_BUILD;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="Boo.Lang" />
+    <Reference Include="UnityScript.Lang" />
+    <Reference Include="UnityEngine">
+      <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Script\Camera\CameraController.cs" />
+    <Compile Include="Assets\Script\Game\Building\Building.cs" />
+    <Compile Include="Assets\Script\Game\Building\BuildingAttackState.cs" />
+    <Compile Include="Assets\Script\Game\Building\BuildingBuildState.cs" />
+    <Compile Include="Assets\Script\Game\Building\BuildingIdleState.cs" />
+    <Compile Include="Assets\Script\Game\Building\BuildingState.cs" />
+    <Compile Include="Assets\Script\Game\Building\Drawer.cs" />
+    <Compile Include="Assets\Script\Game\Building\House.cs" />
+    <Compile Include="Assets\Script\Game\Building\Wall.cs" />
+    <Compile Include="Assets\Script\Game\Event\EventManager.cs" />
+    <Compile Include="Assets\Script\Game\GameManager.cs" />
+    <Compile Include="Assets\Script\Game\General\BuildingAttackRange.cs" />
+    <Compile Include="Assets\Script\Game\General\BuildingInformRange.cs" />
+    <Compile Include="Assets\Script\Game\General\HealthText.cs" />
+    <Compile Include="Assets\Script\Game\General\ObjectType.cs" />
+    <Compile Include="Assets\Script\Game\General\SoldierDetectRange.cs" />
+    <Compile Include="Assets\Script\Game\General\SpellDetectRange.cs" />
+    <Compile Include="Assets\Script\Game\ObjectPoolManager.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\Bullet.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\Hellephant.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\Soldier.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\SoldierAttackState.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\SoldierDeadState.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\SoldierFactory.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\SoldierMoveState.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\SoldierState.cs" />
+    <Compile Include="Assets\Script\Game\Soldier\ZomBunny.cs" />
+    <Compile Include="Assets\Script\Game\Spell\JumpSpell.cs" />
+    <Compile Include="Assets\Script\Game\Spell\Spell.cs" />
+    <Compile Include="Assets\Script\Game\Spell\SpellFactory.cs" />
+    <Compile Include="Assets\Script\Input\InputManager.cs" />
+    <Compile Include="Assets\Script\Map\AStar\GraphEdge.cs" />
+    <Compile Include="Assets\Script\Map\AStar\GraphNode.cs" />
+    <Compile Include="Assets\Script\Map\AStar\NavGraphNode.cs" />
+    <Compile Include="Assets\Script\Map\AStar\SparseGraph.cs" />
+    <Compile Include="Assets\Script\Map\Map.cs" />
+    <Compile Include="Assets\Script\Map\MapManager.cs" />
+    <Compile Include="Assets\Script\Map\PathFinder.cs" />
+    <Compile Include="Assets\Script\Map\SearchAStar.cs" />
+    <Compile Include="Assets\Script\Map\Seeker.cs" />
+    <Compile Include="Assets\Script\Map\TerrainNode.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Enemy\EnemyAttack.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Enemy\EnemyHealth.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Enemy\EnemyMovement.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Managers\EnemyManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Managers\GameOverManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Managers\ScoreManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Player\PlayerHealth.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\Scripts\Player\PlayerShooting.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\CrossPlatformInputManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\Joystick.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\MobileControlRig.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\PlatformSpecific\MobileInput.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\MobileInput\Scripts\VirtualInput.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Scripts\BloomOptimized.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Scripts\PostEffectsBase.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Scripts\ScreenSpaceAmbientOcclusion.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Scripts\TiltShift.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Scripts\VignetteAndChromaticAberration.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Audio\MixLevels.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Camera\CameraFollow.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Enemy\EnemyAttack.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Enemy\EnemyHealth.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Enemy\EnemyMovement.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Helpers\BeautyShot.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Helpers\RandomAnimationPoint.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Helpers\RandomParticlePoint.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Helpers\VolumeHandler.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Managers\EnemyManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Managers\GameOverManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Managers\PauseManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Managers\ScoreManager.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Player\PlayerHealth.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\Scripts\Player\PlayerShooting.cs" />
+    <Compile Include="Assets\Script\UI\BuildingUI.cs" />
+    <Compile Include="Assets\Script\UI\DrawerButton.cs" />
+    <Compile Include="Assets\Script\UI\HellephantButton.cs" />
+    <Compile Include="Assets\Script\UI\HouseButton.cs" />
+    <Compile Include="Assets\Script\UI\JumpSpellButton.cs" />
+    <Compile Include="Assets\Script\UI\UIManager.cs" />
+    <Compile Include="Assets\Script\UI\UpdateAStarInFo.cs" />
+    <Compile Include="Assets\Script\UI\WallButton.cs" />
+    <Compile Include="Assets\Script\UI\ZomBunnyButton.cs" />
+    <Compile Include="Assets\Script\Utility\FPSDisplay.cs" />
+    <Compile Include="Assets\Script\Utility\PriorityQueue.cs" />
+    <Compile Include="Assets\Script\Utility\TimerCounter.cs" />
+    <Compile Include="Assets\Script\Utility\Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Script\Resources\SurvivalShooter\Fonts\LuckiestGuy\LICENSE.txt" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ChromaticAberrationShader.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurves.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionCurvesSimple.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\ColorCorrectionSelective.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\VignettingShader.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBloom.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\SeparableBlur.shader" />
+    <None Include="Assets\Script\Resources\SurvivalShooter\_CompletedAssets\SampleAssets\Effects\ImageEffects\Shaders\_DepthOfField\TiltShiftHdrLensBlur.shader" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2010\UnityVS.CSharp.targets" />
+</Project>

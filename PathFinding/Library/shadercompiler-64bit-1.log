@@ -1,3 +1,155 @@
 Base path: D:/Software/Unity5/Editor/Data
-Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-62148
+Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-83376
 Cmd: getPlatforms
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1952 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2216 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2722 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2998 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1938 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1952 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2216 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2722 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2998 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1938 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1952 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2216 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2722 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2998 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1938 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  api=4 type=0 insize=530 outsize=2224 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=530 outsize=1899 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=7075 outsize=3871 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=3231 outsize=3287 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=3231 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=1163 outsize=3084 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=1163 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=526 outsize=3789 kw=_EMISSION _SPECGLOSSMAP ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=526 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=526 outsize=3504 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=526 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=530 outsize=3658 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=530 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=7186 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=7806 kw=DIRECTIONAL SHADOWS_SCREEN SHADOWS_NATIVE LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=8011 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON _ALPHATEST_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=8025 kw=DIRECTIONAL SHADOWS_SCREEN SHADOWS_NATIVE LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON _ALPHATEST_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=7206 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON _ALPHABLEND_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=7826 kw=DIRECTIONAL SHADOWS_SCREEN SHADOWS_NATIVE LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON _ALPHABLEND_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=9978 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON _NORMALMAP ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=886 outsize=9992 kw=DIRECTIONAL SHADOWS_SCREEN SHADOWS_NATIVE LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON _NORMALMAP ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=886 outsize=6 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON _ALPHATEST_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=530 outsize=3658 kw= ok=1
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1952 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2722 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2998 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1938 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  api=5 type=0 insize=6810 outsize=3625 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON VERTEXLIGHT_ON ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=6810 outsize=6 kw=DIRECTIONAL SHADOWS_SCREEN SHADOWS_NATIVE LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=5995 outsize=6 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_ON UNITY_HDR_ON ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=2996 outsize=2841 kw= ok=1
+Cmd: compileSnippet
+  api=5 type=1 insize=2996 outsize=6 kw= ok=1
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1952 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2216 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2722 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=2998 outsize=0 kw= ok=0
+Cmd: compileSnippet
+  error: 2 plat 5 at (0): Can't find include file frag_ao.cginc\nCompiling Vertex program
+  error: 2 plat 5 at (41): '' : Include callback failed\nCompiling Vertex program
+  api=5 type=0 insize=1938 outsize=0 kw= ok=0

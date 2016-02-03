@@ -29,8 +29,8 @@ public class SoldierMoveState : SoldierState {
 				}
 				else
 				{
-					mSoldier.Move ();
-				}
+                    mSoldier.Move ();
+                }
 			}
 			else
 			{

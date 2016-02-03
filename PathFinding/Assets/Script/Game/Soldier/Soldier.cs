@@ -645,8 +645,8 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			}
 
 
-			Vector3 dir = new Vector3();
-			Vector3 newposition = new Vector3();
+            Vector3 dir = new Vector3();
+            Vector3 newposition = new Vector3();
 
 			//Never reach the final point(to avoid soldier reach wall position), so give soldier at least 1 strick distance
 			if (mCurrentWayPoint < 0) {
