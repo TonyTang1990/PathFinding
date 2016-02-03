@@ -9,6 +9,6 @@ PhysicsManager:
   m_SleepThreshold: .00499999989
   m_DefaultContactOffset: .00999999978
   m_SolverIterationCount: 6
-  m_RaycastsHitTriggers: 0
+  m_RaycastsHitTriggers: 1
   m_EnableAdaptiveForce: 0
   m_LayerCollisionMatrix: c800ffffc800ffffc800ffffffffffffc800ffffc800ffffffffffffffffffffc800ffffc800ffffc800ffffc8a0ffffc800ffffc848ffffc8a0ffffc848ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff

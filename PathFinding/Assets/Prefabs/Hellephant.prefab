@@ -251,7 +251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNextWaypointDistance: .100000001
   mIgnoreWall: 0
-  mHCostPercentage: 1
+  mHCostPercentage: 2
   mBDrawMovementPath: 0
   mBDrawExplorePath: 0
   mExplorePathRemainTime: 2
