@@ -144,6 +144,10 @@ public class MapManager : MonoBehaviour {
 
 	public GameObject mNodeWeight;
 
+    public GameObject mGround;
+
+    private GameObject mGroundGameObject;
+
 	private int mRow = 1;
 	
 	private int mColumn = 1;
@@ -309,6 +313,8 @@ public class MapManager : MonoBehaviour {
 				nextindex++;
 			}
 		}
+
+        mGroundGameObject = Instantiate(mGround, new Vector3(mRow / 2 - 0.5f, 0.0f, mColumn / 2 - 0.5f), Quaternion.Euler(0.0f, 0.0f, 0.0f)) as GameObject;
 	}
 	
 	public void setCurrenctSelectedBuilding(int index)
@@ -648,9 +654,11 @@ public class MapManager : MonoBehaviour {
 
 		mNodeTerrainList[index].Weight += value;
 	
-		Transform nodeweight = mNodeTerrainListObject [index].transform.FindChild("Node_Weight"); 
-		nodeweight.gameObject.GetComponent<TextMesh> ().text = mNodeTerrainList[index].Weight.ToString ();
-		
+		//Transform nodeweight = mNodeTerrainListObject [index].transform.FindChild("Node_Weight"); 
+		//nodeweight.gameObject.GetComponent<TextMesh> ().text = mNodeTerrainList[index].Weight.ToString ();
+		//We use nodeweight as terrain tile directly now
+        mNodeTerrainListObject[index].GetComponent<TextMesh>().text = mNodeTerrainList[index].Weight.ToString();
+
 		//Update Edge info
 		mPathFinder.UpdateNodeEdgesInfo(index, value);
 	}

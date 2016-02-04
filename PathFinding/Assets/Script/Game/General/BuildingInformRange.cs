@@ -23,10 +23,8 @@ public class BuildingInformRange : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        if (other.CompareTag("Soldier"))
         {
-			return;
-		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 			if(objtype == ObjectType.EOT_SOLDIER)
 			{
@@ -42,10 +40,8 @@ public class BuildingInformRange : MonoBehaviour {
 	
 	void OnTriggerExit(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        if (other.CompareTag("Soldier"))
         {
-			return;
-		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;
 			if(objtype == ObjectType.EOT_SOLDIER)
 			{

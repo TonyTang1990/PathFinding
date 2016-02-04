@@ -57,10 +57,8 @@ public class SpellDetectRange : MonoBehaviour {
 	
 	void OnTriggerExit(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        if (other.CompareTag("Building") || other.CompareTag("Soldier"))
         {
-			return;
-		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;
 			if(objtype == mInterstedType && mInterstedType == ObjectType.EOT_SOLDIER)
 			{

@@ -23,10 +23,8 @@ public class SoldierDetectRange : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell") || other.CompareTag("Soldier"))
+        if (other.CompareTag("Soldier") || other.CompareTag("Building"))
         {
-			return;
-		} else {
 			//mRangeTargetList.RemoveAll(item => item == null);
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType>().GameType;//other.transform.parent.gameObject.GetComponent<GameObjectType> ().GameType;
 			if(objtype == ObjectType.EOT_BUILDING)
@@ -49,10 +47,8 @@ public class SoldierDetectRange : MonoBehaviour {
 	
 	void OnTriggerExit(Collider other)
 	{
-        if (other.CompareTag("TerrainTile") || other.CompareTag("AttackRange") || other.CompareTag("Bullet") || other.CompareTag("Spell"))
+        if (other.CompareTag("Soldier") || other.CompareTag("Building"))
         {
-			return;
-		} else {
 			ObjectType objtype = other.gameObject.GetComponent<GameObjectType> ().GameType;
 			if(objtype == ObjectType.EOT_BUILDING)
 			{
