@@ -268,8 +268,8 @@ MonoBehaviour:
   mNextWaypointDistance: .100000001
   mIgnoreWall: 0
   mHCostPercentage: 2
-  mBDrawMovementPath: 0
-  mBDrawExplorePath: 0
+  mBDrawMovementPath: 1
+  mBDrawExplorePath: 1
   mExplorePathRemainTime: 2
 --- !u!114 &11443200
 MonoBehaviour:

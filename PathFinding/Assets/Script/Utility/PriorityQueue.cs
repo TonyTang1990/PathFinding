@@ -30,6 +30,11 @@ public class PriorityQueue<T1, T2>
 	{
 		return (mHeap.Size() == 0);
 	}
+
+    public void Clear()
+    {
+        mHeap.Clear();
+    }
 	
 	public void Push(Pair<T1, T2> kvp)
 	{
@@ -100,6 +105,12 @@ public class Heap<T1, T2>
 		mCompareKey = Comparer<T1>.Default;
 		BuildingHeap();
 	}
+
+    public void Clear()
+    {
+        mList.Clear();
+        mCount = 0;
+    }
 	
 	public int Size()
 	{

@@ -142,7 +142,7 @@ public class Seeker : MonoBehaviour {
 		mPathFinder = FindObjectOfType (typeof(PathFinder)) as PathFinder;
 		Debug.Assert (mPathFinder != null);
 		mNavGraph = mPathFinder.NavGraph;
-        //mAstarSearch = new SearchAStar(mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+        mAstarSearch = new SearchAStar(mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
         Debug.Assert(mNavGraph != null);
 	}
 	
@@ -161,8 +161,8 @@ public class Seeker : MonoBehaviour {
 		TimerCounter.CreateInstance ().Restart ("AStarSearch");
 		
 		//SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
-        mAstarSearch = new SearchAStar(mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
-        //mAstarSearch.UpdateSearch();
+        //mAstarSearch = new SearchAStar(mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
+        mAstarSearch.UpdateSearch(mSourceCellIndex, mTargetCellIndex, mStrickDistance);
 
 		TimerCounter.CreateInstance ().End ();
 
@@ -263,13 +263,7 @@ public class Seeker : MonoBehaviour {
 		mTargetCellIndex = Utility.ConvertRCToIndex (targetrow, targetcolumn);
 		
 		mStrickDistance = strickdistance;
-        /*
-        mAstarSearch.ISource = mSourceCellIndex;
-
-        mAstarSearch.ITarget = mTargetCellIndex;
-
-        mAstarSearch.StrickDistance = mStrickDistance;
-		*/
+		
 		Utility.Log ("mSourceCellIndex = " + mSourceCellIndex);
 		
 		Utility.Log ("mTargetCellIndex = " + mTargetCellIndex);

@@ -21,6 +21,20 @@ public class GraphEdge {
 		mCost = cost;
 	}
 
+    public GraphEdge(GraphEdge e)
+    {
+        mFrom = e.From;
+        mTo = e.To;
+        mCost = e.Cost;
+    }
+
+    public void Reset()
+    {
+        mFrom = (int)E_NODE_INDEX.INVALID_NODE;
+        mTo = (int)E_NODE_INDEX.INVALID_NODE;
+        mCost = 0.0f;
+    }
+
 	public bool IsValidEdge()
 	{
 		return (mFrom != (int)E_NODE_INDEX.INVALID_NODE || mTo != (int)E_NODE_INDEX.INVALID_NODE);

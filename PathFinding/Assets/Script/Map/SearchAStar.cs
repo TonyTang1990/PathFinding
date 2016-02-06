@@ -21,18 +21,17 @@ public class SearchAStar {
 	                   ,float explorepathremaintime)
 	{
 		mGraph = graph;
+        mPQ = new PriorityQueue<int, float>((int)Mathf.Sqrt(mGraph.NumNodes()));
 		mGCosts = new List<float> (graph.NumNodes ());
 		mFCosts = new List<Pair<int,float>> (graph.NumNodes ());
 		mShortestPathTree = new List<GraphEdge> (graph.NumNodes());
 		mSearchFrontier = new List<GraphEdge> (graph.NumNodes());
-		//CostToTargetNode = new List<float> (graph.NumNodes());
 		//Init G cost and F cost and Cost value
 		for (int i = 0; i < graph.NumNodes(); i++) {
 			mGCosts.Add (0.0f);
 			mFCosts.Add(new Pair<int,float>(i,0.0f));
 			mShortestPathTree.Add(new GraphEdge());
 			mSearchFrontier.Add(new GraphEdge());
-			//CostToTargetNode.Add(0.0f);
 		}
 		mISource = source;
 		mITarget = target;
@@ -61,19 +60,52 @@ public class SearchAStar {
 
         mStrickDistance = strickdistance;
 
-        Search(mStrickDistance, mIsIgnoreWall);
+        //Search(mStrickDistance, mIsIgnoreWall);
 
-        GeneratePathToTargetInfo();
+        //GeneratePathToTargetInfo();
 	}
 
-    public void UpdateSearch()
+    public void UpdateSearch(int sourceindex, int targetindex, float strickdistance)
     {
         Assert.IsTrue(mISource >= 0 && mISource < mGraph.NumNodes());
         Assert.IsTrue(mITarget >= 0 && mITarget < mGraph.NumNodes());
 
+        AstarReset(sourceindex, targetindex, strickdistance);
+
         Search(mStrickDistance, mIsIgnoreWall);
 
         GeneratePathToTargetInfo();
+    }
+
+    private void AstarReset(int sourceindex, int targetindex, float strickdistance)
+    {
+        mISource = sourceindex;
+
+        mITarget = targetindex;
+
+        mOriginalTarget = targetindex;
+
+        mStrickDistance = strickdistance;
+
+        for (int i = 0; i < mGraph.NumNodes(); i++)
+        {
+            mGCosts[i] = 0.0f;
+            mFCosts[i].Value = 0.0f;
+            mShortestPathTree[i].Reset();
+            mSearchFrontier[i].Reset();
+        }
+
+        mNodesSearched = 0;
+
+        mEdgesSearched = 0;
+
+        mIsWallInPathToTarget = false;
+
+        mWallInPathToTargetIndex = -1;
+
+        mPathToTarget.Clear();
+
+        mMovementPathToTarget.Clear();
     }
 
 	public List<int> PathToTarget {
@@ -171,6 +203,8 @@ public class SearchAStar {
 	}
 
 	private SparseGraph<NavGraphNode,GraphEdge> mGraph;
+    
+    private PriorityQueue<int, float> mPQ;
 
 	private List<float> mGCosts;
 
@@ -226,6 +260,10 @@ public class SearchAStar {
 		get {
 			return mOriginalTarget;
 		}
+        set
+        {
+            mOriginalTarget = value;
+        }
 	}
 	private int mOriginalTarget;
 
@@ -256,19 +294,19 @@ public class SearchAStar {
 	//The A* search algorithm
 	private void Search()
 	{
-		float numbernodes = (float)mGraph.NumNodes();
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>((int)Mathf.Sqrt(numbernodes));
+        mPQ.Clear();
 
-		pq.Push (mFCosts [mISource]);
+        mPQ.Push(mFCosts[mISource]);
 
 		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
         mSearchFrontier[mISource].From = mISource;
         mSearchFrontier[mISource].To = mISource;
         mSearchFrontier[mISource].Cost = 0.0f;
 
-		while (!pq.Empty()) {
+        while (!mPQ.Empty())
+        {
 			//Get lowest cost node from the queue
-			int nextclosestnode = pq.Pop().Key;
+            int nextclosestnode = mPQ.Pop().Key;
 
 			mNodesSearched++;
 
@@ -301,7 +339,7 @@ public class SearchAStar {
 					mFCosts[edge.To].Value = gcost + hcost;
 					mGCosts[edge.To] = gcost;
 
-					pq.Push(mFCosts[edge.To]);
+                    mPQ.Push(mFCosts[edge.To]);
 
 					mSearchFrontier[edge.To] = edge;
 
@@ -325,7 +363,7 @@ public class SearchAStar {
 					//we should reoder the priority queue to make sure we pop up the lowest fcost node first
 					//compare the fcost will make sure we search the path in the right direction
 					//h cost is the key to search in the right direction
-					pq.ChangePriority(edge.To);
+                    mPQ.ChangePriority(edge.To);
 				
 					mSearchFrontier[edge.To] = edge;
 
@@ -338,21 +376,21 @@ public class SearchAStar {
 	//The A* search algorithm with strickdistance
 	private void Search(float strickdistance)
 	{
-		float numbernodes = (float)mGraph.NumNodes();
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>((int)Mathf.Sqrt(numbernodes));
-
 		float currentnodetotargetdistance = Mathf.Infinity;
 
-		pq.Push (mFCosts [mISource]);
+        mPQ.Clear();
+
+        mPQ.Push(mFCosts[mISource]);
 		
 		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
         mSearchFrontier[mISource].From = mISource;
         mSearchFrontier[mISource].To = mISource;
         mSearchFrontier[mISource].Cost = 0.0f;
 
-		while (!pq.Empty()) {
+        while (!mPQ.Empty())
+        {
 			//Get lowest cost node from the queue
-			int nextclosestnode = pq.Pop().Key;
+            int nextclosestnode = mPQ.Pop().Key;
 			
 			mNodesSearched++;
 			
@@ -388,7 +426,7 @@ public class SearchAStar {
                     mFCosts[edge.To].Value = gcost + hcost;
                     mGCosts[edge.To] = gcost;
 
-                    pq.Push(mFCosts[edge.To]);
+                    mPQ.Push(mFCosts[edge.To]);
 
                     mSearchFrontier[edge.To] = edge;
 
@@ -412,7 +450,7 @@ public class SearchAStar {
                     //we should reoder the priority queue to make sure we pop up the lowest fcost node first
                     //compare the fcost will make sure we search the path in the right direction
                     //h cost is the key to search in the right direction
-                    pq.ChangePriority(edge.To);
+                    mPQ.ChangePriority(edge.To);
 
                     mSearchFrontier[edge.To] = edge;
 
@@ -425,21 +463,21 @@ public class SearchAStar {
 	//The A* search algorithm with strickdistance with wall consideration
 	private void Search(float strickdistance, bool isignorewall)
 	{
-		float numbernodes = (float)mGraph.NumNodes();
-		PriorityQueue<int,float> pq = new PriorityQueue<int, float>((int)Mathf.Sqrt(numbernodes));
-		
 		float currentnodetotargetdistance = Mathf.Infinity;
-		
-		pq.Push (mFCosts [mISource]);
+
+        mPQ.Clear();
+
+        mPQ.Push(mFCosts[mISource]);
 		
 		//mSearchFrontier [mISource] = new GraphEdge (mISource, mISource, 0.0f);
         mSearchFrontier[mISource].From = mISource;
         mSearchFrontier[mISource].To = mISource;
         mSearchFrontier[mISource].Cost = 0.0f;
 
-		while (!pq.Empty()) {
+        while (!mPQ.Empty())
+        {
 			//Get lowest cost node from the queue
-			int nextclosestnode = pq.Pop().Key;
+            int nextclosestnode = mPQ.Pop().Key;
 			
 			mNodesSearched++;
 			
@@ -459,10 +497,14 @@ public class SearchAStar {
 			
 			//Now to test all the edges attached to this node
 			List<GraphEdge> edgelist = mGraph.EdgesList[nextclosestnode];
-			GraphEdge edge;
+			GraphEdge edge = new GraphEdge();
             for (int i = 0; i < edgelist.Count; i++ )
             {
-                edge = edgelist[i];
+                //Avoid pass refrence
+                //edge = new GraphEdge(edgelist[i]);
+                edge.From = edgelist[i].From;
+                edge.To = edgelist[i].To;
+                edge.Cost = edgelist[i].Cost;
                 //calculate the heuristic cost from this node to the target (H)
                 float hcost = Heuristic_Euclid.Calculate(mGraph, mITarget, edge.To) * mHCostPercentage;
 
@@ -500,7 +542,7 @@ public class SearchAStar {
                     mFCosts[edge.To].Value = gcost + hcost;
                     mGCosts[edge.To] = gcost;
 
-                    pq.Push(mFCosts[edge.To]);
+                    mPQ.Push(mFCosts[edge.To]);
 
                     mSearchFrontier[edge.To] = edge;
 
@@ -524,7 +566,7 @@ public class SearchAStar {
                     //we should reoder the priority queue to make sure we pop up the lowest fcost node first
                     //compare the fcost will make sure we search the path in the right direction
                     //h cost is the key to search in the right direction
-                    pq.ChangePriority(edge.To);
+                    mPQ.ChangePriority(edge.To);
 
                     mSearchFrontier[edge.To] = edge;
 
