@@ -209,14 +209,25 @@ public class Soldier : MonoBehaviour, GameObjectType {
 	private Vector3 mFinalMovePosition;
 
 	//A Star Search Info
+    /*
 	public SearchAStar ShortestPath {
 		get {
 			return mShortestPath;
 		}
 	}
 	private SearchAStar mShortestPath;
+    */
 
-	private List<Pair<int, SearchAStar>> mPathsInfo;
+    public SearchAStar.PathInfo ShortestPath
+    {
+        get
+        {
+            return mShortestPath;
+        }
+    }
+    private SearchAStar.PathInfo mShortestPath;
+
+    private List<Pair<int, SearchAStar.PathInfo>> mPathsInfo;
 
 	public int CurrentWayPoint {
 		get {
@@ -493,9 +504,6 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			return null;
 		}
 
-		//Reset mpathsInfo to null before we caculate for all paths again
-		mPathsInfo = null;
-	
 		//Create a new lastPaths array if necessary (can reuse the old one?)
 		int validbuildingnumbers = 0;
         IDictionaryEnumerator enu = mCurrentCalculatingPaths.GetEnumerator();
@@ -515,9 +523,18 @@ public class Soldier : MonoBehaviour, GameObjectType {
 			return null;
 		}
 
-		if (mPathsInfo == null) {
-			mPathsInfo = new List<Pair<int, SearchAStar>>(validbuildingnumbers);/*new SearchAStar[validbuildingnumbers];*/
-		}
+        if (mPathsInfo == null)
+        {
+            //mPathsInfo = new List<Pair<int, SearchAStar>>(validbuildingnumbers);/*new SearchAStar[validbuildingnumbers];*/
+
+            mPathsInfo = new List<Pair<int, SearchAStar.PathInfo>>(validbuildingnumbers);
+        }
+        else
+        {
+            //Reset mpathsInfo to null before we caculate for all paths again
+            //mPathsInfo = null;
+            mPathsInfo.Clear();
+        }
 
 		Building tempbd = null;
 		int pathindex = 0;
@@ -557,9 +574,9 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 					mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
 					mSeeker.CreatePathAStar();
-					SearchAStar path = mSeeker.mAstarSearch;
-					mPathsInfo.Add(new Pair<int, SearchAStar> (tempbd.mBI.mIndex,path));
-				}
+                    SearchAStar.PathInfo pathinfo = mSeeker.mAstarSearch.AStarPathInfo.DeepCopy();
+                    mPathsInfo.Add(new Pair<int, SearchAStar.PathInfo>(tempbd.mBI.mIndex, pathinfo));
+                }
 				pathindex++;
 			}
 		}
@@ -578,13 +595,13 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
 		int index = -1;
 		float distance = Mathf.Infinity;
-        Pair<int, SearchAStar> pair;
+        Pair<int, SearchAStar.PathInfo> pair;
 		for ( int i = 0; i < mPathsInfo.Count; i++) {
             pair = mPathsInfo[i];
-			if(pair.Value.GetCostToTarget() < distance)
+			if(/*pair.Value.GetCostToTarget()*/ pair.Value.CostToTarget < distance)
 			{
 				index = pair.Key;
-				distance = pair.Value.GetCostToTarget();
+                distance = /*pair.Value.GetCostToTarget()*/pair.Value.CostToTarget;
 				mShortestPath = pair.Value;
 			}
 		}

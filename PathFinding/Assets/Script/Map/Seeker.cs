@@ -12,6 +12,19 @@ public class Seeker : MonoBehaviour {
 	private PathFinder mPathFinder;
 
 	//this list will store any path returned from a graph search
+    public SearchAStar.PathInfo SeekerPathInfo
+    {
+        get
+        {
+            return mSeekerPathInfo;
+        }
+        set
+        {
+            mSeekerPathInfo = value;
+        }
+    }
+    private SearchAStar.PathInfo mSeekerPathInfo;
+    /*
 	private List<int> mPath;
 	
 	public List<Vector3> MovementPath {
@@ -30,7 +43,8 @@ public class Seeker : MonoBehaviour {
 		}
 	}
 	private float mCostToTarget;
-	
+	*/
+
 	//Holds the time taken for the currently used algorithm to complete
 	public float TimeTaken {
 		get {
@@ -41,26 +55,6 @@ public class Seeker : MonoBehaviour {
 		}
 	}
 	private float mTimeTaken;
-	
-	public int NodesSearched {
-		get {
-			return mNodesSearched;
-		}
-		set {
-			mNodesSearched = value;
-		}
-	}
-	private int mNodesSearched;
-	
-	public int EdgesSearched {
-		get {
-			return mEdgesSearched;
-		}
-		set {
-			mEdgesSearched = value;
-		}
-	}
-	private int mEdgesSearched;
 	
 	public int SourceCellIndex {
 		get {
@@ -115,25 +109,15 @@ public class Seeker : MonoBehaviour {
 
 	public SearchAStar mAstarSearch;
 
+    private List<GraphEdge> mSubTree;
+
 	void Awake()
 	{
 		mIsMoving = false;
 
-		mCostToTarget = 0;
-		mTimeTaken = 0;
-		mPath = new List<int> ();
-		mMovementPath = new List<Vector3> ();
-		mSubTree = new List<GraphEdge> ();
-		
-		//A Star Info
-		mTimeTaken = 0;
-		mNodesSearched = 0;
-		mEdgesSearched = 0;
+        mSeekerPathInfo = new SearchAStar.PathInfo();
 
-		mPath.Clear ();
-		mMovementPath.Clear ();
-		mSubTree.Clear ();
-		mTimeTaken = 0;
+        mTimeTaken = 0;
 
 	}
 
@@ -167,22 +151,14 @@ public class Seeker : MonoBehaviour {
 		TimerCounter.CreateInstance ().End ();
 
 		Utility.Log ("mAstarSearch.ITarget = " + mAstarSearch.ITarget);
-		Utility.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.IsWallInPathToTarget);
-		Utility.Log ("mAstarSearch.WallInPathToTargetIndex = " + mAstarSearch.WallInPathToTargetIndex);
+		Utility.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.AStarPathInfo.IsWallInPathToTarget);
+        Utility.Log("mAstarSearch.WallInPathToTargetIndex = " + mAstarSearch.AStarPathInfo.WallInPathToTargetIndex);
 
 		mTimeTaken = TimerCounter.CreateInstance ().TimeSpend;
-		
-		mPath = mAstarSearch.PathToTarget;
-		
-		mMovementPath = mAstarSearch.MovementPathToTarget;
-		
-		mSubTree = mAstarSearch.GetSPT ();
-		
-		mCostToTarget = mAstarSearch.GetCostToTarget ();
-		
-		mNodesSearched = mAstarSearch.NodesSearched;
-		
-		mEdgesSearched = mAstarSearch.EdgesSearched;
+
+        mSeekerPathInfo = mAstarSearch.AStarPathInfo;
+
+        mSubTree = mAstarSearch.GetSPT();
 
 		DrawMovementPath ();
 	}
@@ -206,7 +182,7 @@ public class Seeker : MonoBehaviour {
 	public void Move()
 	{
 		//mIsMoving = true;
-		mCurrentWayPoint = mMovementPath.Count - 1;
+		mCurrentWayPoint = mSeekerPathInfo.MovementPathToTarget.Count - 1;
 
 		DrawMovementPath ();
 	}
@@ -214,12 +190,14 @@ public class Seeker : MonoBehaviour {
 	private void DrawMovementPath()
 	{
 		if (mBDrawMovementPath) {
-			if (mSubTree != null && mPath.Count != 0) {
-				int nd = mPath [0];
-			
-				while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge()) {
-					Debug.DrawLine (mNavGraph.Nodes [mSubTree [nd].From].Position, mNavGraph.Nodes [nd].Position, Color.green, mCostToTarget / mSpeed);
-					nd = mSubTree [nd].From;
+            if (mSubTree != null && mSeekerPathInfo.PathToTarget.Count != 0)
+            {
+                int nd = mSeekerPathInfo.PathToTarget[0];
+
+                while ((nd != mSourceCellIndex) && (mSubTree[nd] != null) && mSubTree[nd].IsValidEdge())
+                {
+                    Debug.DrawLine(mNavGraph.Nodes[mSubTree[nd].From].Position, mNavGraph.Nodes[nd].Position, Color.green, mSeekerPathInfo.CostToTarget / mSpeed);
+                    nd = mSubTree[nd].From;
 				}
 			}
 		}
@@ -227,7 +205,7 @@ public class Seeker : MonoBehaviour {
 
 	private void RealMove()
 	{
-		if (mMovementPath == null) {
+		if (mSeekerPathInfo.MovementPathToTarget == null) {
 			//We have no path to move after yet
 			return;
 		}
@@ -237,16 +215,17 @@ public class Seeker : MonoBehaviour {
 			return;
 		}
 		//Direction to the next waypoint
-		Vector3 dir = (mMovementPath[mCurrentWayPoint] - transform.position).normalized;
-		
-		transform.LookAt (mMovementPath [mCurrentWayPoint]);
+        Vector3 dir = (mSeekerPathInfo.MovementPathToTarget[mCurrentWayPoint] - transform.position).normalized;
+
+        transform.LookAt(mSeekerPathInfo.MovementPathToTarget[mCurrentWayPoint]);
 
 		Vector3 newposition = transform.position + dir * mSpeed * Time.deltaTime;
 		transform.position = newposition;
 		
 		//Check if we are close enough to the next waypoint
 		//If we are, proceed to follow the next waypoint
-		if (Vector3.Distance (transform.position, mMovementPath[mCurrentWayPoint]) < mNextWaypointDistance) {
+        if (Vector3.Distance(transform.position, mSeekerPathInfo.MovementPathToTarget[mCurrentWayPoint]) < mNextWaypointDistance)
+        {
 			mCurrentWayPoint--;
 			return;
 		}

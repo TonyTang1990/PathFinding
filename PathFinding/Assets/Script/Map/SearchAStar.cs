@@ -6,6 +6,187 @@ using UnityEngine.Assertions;
 
 public class SearchAStar {
 
+    public class PathInfo
+    {
+        public PathInfo()
+        {
+            ResetPathInfo();
+        }
+
+        public PathInfo DeepCopy()
+        {
+            PathInfo pi = (PathInfo)this.MemberwiseClone();
+            pi.PathToTarget = new List<int>(mPathToTarget);
+            pi.MovementPathToTarget = new List<Vector3>(mMovementPathToTarget);
+
+            return pi;
+        }
+
+        public void ResetPathInfo()
+        {
+            mIsWallInPathToTarget = false;
+
+            mWallInPathToTargetIndex = -1;
+
+            if (mPathToTarget != null)
+            {
+                mPathToTarget.Clear();
+            }
+            else
+            {
+                mPathToTarget = new List<int>();
+            }
+
+            if (mMovementPathToTarget != null)
+            {
+                mMovementPathToTarget.Clear();
+            }
+            else
+            {
+                mMovementPathToTarget = new List<Vector3>();
+            }
+
+            mNodesSearched = 0;
+
+            mEdgesSearched = 0;
+
+            mCostToTarget = 0.0f;
+        }
+
+        public List<int> PathToTarget
+        {
+            get
+            {
+                return mPathToTarget;
+            }
+            set
+            {
+                mPathToTarget = value;
+            }
+        }
+        private List<int> mPathToTarget;
+
+        public List<Vector3> MovementPathToTarget
+        {
+            get
+            {
+                return mMovementPathToTarget;
+            }
+            set
+            {
+                mMovementPathToTarget = value;
+            }
+        }
+        private List<Vector3> mMovementPathToTarget;
+
+        public bool IsWallInPathToTarget
+        {
+            get
+            {
+                return mIsWallInPathToTarget;
+            }
+            set
+            {
+                mIsWallInPathToTarget = value;
+            }
+        }
+        private bool mIsWallInPathToTarget;
+
+        public int WallInPathToTargetIndex
+        {
+            get
+            {
+                return mWallInPathToTargetIndex;
+            }
+            set
+            {
+                mWallInPathToTargetIndex = value;
+            }
+        }
+        private int mWallInPathToTargetIndex;
+
+        public float CostToTarget
+        {
+            get
+            {
+                return mCostToTarget;
+            }
+            set
+            {
+                mCostToTarget = value;
+            }
+        }
+        private float mCostToTarget;
+
+        public int ITarget
+        {
+            set
+            {
+                mITarget = value;
+            }
+            get
+            {
+                return mITarget;
+            }
+        }
+        private int mITarget;
+
+        public int OriginalTarget
+        {
+            get
+            {
+                return mOriginalTarget;
+            }
+            set
+            {
+                mOriginalTarget = value;
+            }
+        }
+        private int mOriginalTarget;
+
+        public int NodesSearched
+        {
+            get
+            {
+                return mNodesSearched;
+            }
+            set
+            {
+                mNodesSearched = value;
+            }
+        }
+        private int mNodesSearched;
+
+        public int EdgesSearched
+        {
+            get
+            {
+                return mEdgesSearched;
+            }
+            set
+            {
+                mEdgesSearched = value;
+            }
+        }
+        private int mEdgesSearched;
+
+        //this list of edges is used to store any subtree returned from any of the graph algorithms
+        /*
+        public List<GraphEdge> SubTree
+        {
+            get
+            {
+                return mSubTree;
+            }
+            set
+            {
+                mSubTree = value;
+            }
+        }
+        private List<GraphEdge> mSubTree;
+        */
+    }
+
     private SearchAStar()
 	{
 
@@ -37,24 +218,14 @@ public class SearchAStar {
 		mITarget = target;
 		mOriginalTarget = target;
 		
-		mNodesSearched = 0;
-		
-		mEdgesSearched = 0;
-		
 		Assert.IsTrue (hcostpercentage >= 0);
 		mHCostPercentage = hcostpercentage;
 		
 		mBDrawExplorePath = drawexplorepath;
 		
 		mExplorePathRemainTime = explorepathremaintime;
-		
-		mPathToTarget = new List<int> ();
 
-		mMovementPathToTarget = new List<Vector3> ();
-
-		mIsWallInPathToTarget = false;
-
-		mWallInPathToTargetIndex = -1;
+        mAStarPathInfo = new PathInfo();	
 
 		mIsIgnoreWall = isignorewall;
 
@@ -95,55 +266,8 @@ public class SearchAStar {
             mSearchFrontier[i].Reset();
         }
 
-        mNodesSearched = 0;
-
-        mEdgesSearched = 0;
-
-        mIsWallInPathToTarget = false;
-
-        mWallInPathToTargetIndex = -1;
-
-        mPathToTarget.Clear();
-
-        mMovementPathToTarget.Clear();
+        mAStarPathInfo.ResetPathInfo();
     }
-
-	public List<int> PathToTarget {
-		get {
-			return mPathToTarget;
-		}
-	}
-	private List<int> mPathToTarget;
-
-	public List<Vector3> MovementPathToTarget {
-		get {
-			return mMovementPathToTarget;
-		}
-	}
-	private List<Vector3> mMovementPathToTarget;
-
-	public bool IsWallInPathToTarget {
-		get {
-			return mIsWallInPathToTarget;
-		}
-		set {
-			mIsWallInPathToTarget = value;
-		}
-	}
-	private bool mIsWallInPathToTarget;
-
-	public int WallInPathToTargetIndex
-	{
-		get
-		{
-			return mWallInPathToTargetIndex;
-		}
-		set
-		{
-			mWallInPathToTargetIndex = value;
-		}
-	}
-	private int mWallInPathToTargetIndex;
 
 	private bool mIsIgnoreWall;
 
@@ -156,10 +280,23 @@ public class SearchAStar {
     }
     private float mStrickDistance;
 
+    public PathInfo AStarPathInfo
+    {
+        get
+        {
+            return mAStarPathInfo;
+        }
+        set
+        {
+            mAStarPathInfo = value;
+        }
+    }
+    private PathInfo mAStarPathInfo;
+
 	private void GeneratePathToTargetInfo()
 	{
-		mPathToTarget.Clear ();
-		mMovementPathToTarget.Clear ();
+		mAStarPathInfo.PathToTarget.Clear ();
+        mAStarPathInfo.MovementPathToTarget.Clear();
 
 		if (mITarget < 0) {
 			return;
@@ -167,9 +304,9 @@ public class SearchAStar {
 
 		int nd = mITarget;
 
-		mPathToTarget.Add (nd);
+        mAStarPathInfo.PathToTarget.Add(nd);
 
-		mMovementPathToTarget.Add (mGraph.Nodes [nd].Position);
+        mAStarPathInfo.MovementPathToTarget.Add(mGraph.Nodes[nd].Position);
 
 		while ((nd != mISource) && (mShortestPathTree[nd] != null) && mShortestPathTree[nd].IsValidEdge()) 
 		{
@@ -179,17 +316,23 @@ public class SearchAStar {
 			{
 				if(mGraph.Nodes[nd].IsWall && !mGraph.Nodes[nd].IsJumpable)
 				{
-					mIsWallInPathToTarget = true;
-					mWallInPathToTargetIndex = nd;
+                    mAStarPathInfo.IsWallInPathToTarget = true;
+                    mAStarPathInfo.WallInPathToTargetIndex = nd;
 				}
 			}
 
 			nd = mShortestPathTree[nd].From;
 
-			mPathToTarget.Add(nd);
+            mAStarPathInfo.PathToTarget.Add(nd);
 
-			mMovementPathToTarget.Add(mGraph.Nodes[nd].Position);
+            mAStarPathInfo.MovementPathToTarget.Add(mGraph.Nodes[nd].Position);
 		}
+
+        mAStarPathInfo.CostToTarget = GetCostToTarget();
+
+        mAStarPathInfo.ITarget = mITarget;
+
+        mAStarPathInfo.OriginalTarget = mOriginalTarget;
 	}
 
 	public List<GraphEdge> GetSPT()
@@ -197,7 +340,7 @@ public class SearchAStar {
 		return mShortestPathTree;
 	}
 
-	public float GetCostToTarget()
+	private float GetCostToTarget()
 	{
 		return mGCosts[mITarget];
 	}
@@ -267,24 +410,6 @@ public class SearchAStar {
 	}
 	private int mOriginalTarget;
 
-	public int NodesSearched
-	{
-		get
-		{
-			return mNodesSearched;
-		}
-	}
-	private int mNodesSearched;
-
-	public int EdgesSearched
-	{
-		get
-		{
-			return mEdgesSearched;
-		}
-	}
-	private int mEdgesSearched;
-
 	private float mHCostPercentage;
 
 	private bool mBDrawExplorePath;
@@ -308,7 +433,7 @@ public class SearchAStar {
 			//Get lowest cost node from the queue
             int nextclosestnode = mPQ.Pop().Key;
 
-			mNodesSearched++;
+            mAStarPathInfo.NodesSearched++;
 
 			//move this node from the frontier to the spanning tree
 			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
@@ -343,7 +468,7 @@ public class SearchAStar {
 
 					mSearchFrontier[edge.To] = edge;
 
-					mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
 
 					if(mBDrawExplorePath)
 					{
@@ -367,7 +492,7 @@ public class SearchAStar {
 				
 					mSearchFrontier[edge.To] = edge;
 
-					mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
 				}
 			}
 		}
@@ -391,8 +516,8 @@ public class SearchAStar {
         {
 			//Get lowest cost node from the queue
             int nextclosestnode = mPQ.Pop().Key;
-			
-			mNodesSearched++;
+
+            mAStarPathInfo.NodesSearched++;
 			
 			//move this node from the frontier to the spanning tree
 			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
@@ -430,7 +555,7 @@ public class SearchAStar {
 
                     mSearchFrontier[edge.To] = edge;
 
-                    mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
 
                     if (mBDrawExplorePath)
                     {
@@ -454,7 +579,7 @@ public class SearchAStar {
 
                     mSearchFrontier[edge.To] = edge;
 
-                    mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
                 }
             }
 		}
@@ -478,8 +603,8 @@ public class SearchAStar {
         {
 			//Get lowest cost node from the queue
             int nextclosestnode = mPQ.Pop().Key;
-			
-			mNodesSearched++;
+
+            mAStarPathInfo.NodesSearched++;
 			
 			//move this node from the frontier to the spanning tree
 			if(mSearchFrontier[nextclosestnode] != null && mSearchFrontier[nextclosestnode].IsValidEdge())
@@ -546,7 +671,7 @@ public class SearchAStar {
 
                     mSearchFrontier[edge.To] = edge;
 
-                    mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
 
                     if (mBDrawExplorePath)
                     {
@@ -570,7 +695,7 @@ public class SearchAStar {
 
                     mSearchFrontier[edge.To] = edge;
 
-                    mEdgesSearched++;
+                    mAStarPathInfo.EdgesSearched++;
                 }
             }
 		}

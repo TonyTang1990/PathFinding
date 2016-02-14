@@ -24,8 +24,8 @@ public class UpdateAStarInFo : MonoBehaviour {
 	public void UpdateSearchInfo()
 	{
 		mSearchTimeText.text = GameManager.mGameInstance.AttackingSoldierSeeker.TimeTaken.ToString();
-		mNodesSearchedText.text = GameManager.mGameInstance.AttackingSoldierSeeker.NodesSearched.ToString();
-		mEdgesSearchedText.text = GameManager.mGameInstance.AttackingSoldierSeeker.EdgesSearched.ToString();
-		mDistance.text = GameManager.mGameInstance.AttackingSoldierSeeker.CostToTarget.ToString();
+		mNodesSearchedText.text = GameManager.mGameInstance.AttackingSoldierSeeker.SeekerPathInfo.NodesSearched.ToString();
+        mEdgesSearchedText.text = GameManager.mGameInstance.AttackingSoldierSeeker.SeekerPathInfo.EdgesSearched.ToString();
+        mDistance.text = GameManager.mGameInstance.AttackingSoldierSeeker.SeekerPathInfo.CostToTarget.ToString();
 	}
 }
