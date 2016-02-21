@@ -7,9 +7,9 @@ using UnityEngine.Assertions;
 [Serializable]
 public enum SoldierType
 {
-	E_HELLEPHANT = 0,
-	E_ZOMBUNNY = 1,
-	E_DEFAULT
+    E_HELLEPHANT = 0,
+    E_ZOMBUNNY = 1,
+    E_DEFAULT
 }
 
 /*
@@ -25,190 +25,224 @@ public enum SoldierState
 [Serializable]
 public enum PreferAttackType
 {
-	E_NULLATTACABLE = 0,
-	E_ATTACKABLE = 1,
-	E_ALL
+    E_NULLATTACABLE = 0,
+    E_ATTACKABLE = 1,
+    E_ALL
 }
 
 [Serializable]
-public class Soldier : MonoBehaviour, GameObjectType {
+public class Soldier : MonoBehaviour, GameObjectType
+{
 
-	//public SoldierType mST;
-	
-	//public SoldierState mSS;
+    //public SoldierType mST;
 
-	public float mSpeed;
+    //public SoldierState mSS;
 
-	public PreferAttackType mPreferAttackType;
+    public float mSpeed;
 
-	public float mAttackInterval;
-	
-	public float mAttackDistance;
+    public PreferAttackType mPreferAttackType;
 
-	public float mSHP;
+    public float mAttackInterval;
+
+    public float mAttackDistance;
+
+    public float mSHP;
 
     public bool mUpdateHP = false;
-	
-	public GameObject mBullet;
 
-	protected Vector3 mBulletSpawnPoint;
+    public GameObject mBullet;
 
-	public float DistanceToTarget {
-		get {
-			return mDistanceToTarget;
-		}
-		set {
-			mDistanceToTarget = value;
-		}
-	}
-	private float mDistanceToTarget = 0.0f;
+    protected Vector3 mBulletSpawnPoint;
 
-	public float AttackTimer {
-		get {
-			return mAttackTimer;
-		}
-		set {
-			mAttackTimer = value;
-		}
-	}
-	protected float mAttackTimer = 0.0f;
+    public float DistanceToTarget
+    {
+        get
+        {
+            return mDistanceToTarget;
+        }
+        set
+        {
+            mDistanceToTarget = value;
+        }
+    }
+    private float mDistanceToTarget = 0.0f;
 
-	public Building AttackTarget {
-		get {
-			return mAttackingObject;
-		}
-		set {
-			mAttackingObject = value;
-		}
-	}
-	protected Building mAttackingObject;
+    public float AttackTimer
+    {
+        get
+        {
+            return mAttackTimer;
+        }
+        set
+        {
+            mAttackTimer = value;
+        }
+    }
+    protected float mAttackTimer = 0.0f;
 
-	public Building OldAttackObject {
-		get {
-			return mOldAttackingObject;
-		}
-	}
-	protected Building mOldAttackingObject;
+    public Building AttackTarget
+    {
+        get
+        {
+            return mAttackingObject;
+        }
+        set
+        {
+            mAttackingObject = value;
+        }
+    }
+    protected Building mAttackingObject;
 
-	public Hashtable CurrentCalculatingPaths {
-		get {
-			return mCurrentCalculatingPaths;
-		}
-		set {
-			mCurrentCalculatingPaths = value;
-		}
-	}
-	private Hashtable mCurrentCalculatingPaths = null;
+    public Building OldAttackObject
+    {
+        get
+        {
+            return mOldAttackingObject;
+        }
+    }
+    protected Building mOldAttackingObject;
 
-	public Building ShortestPathTarget
-	{
-		get
-		{
-			return mShortestPathObject;
-		}
-		set
-		{
-			mShortestPathObject = value;
-		}
-	}
-	private Building mShortestPathObject;
+    public Hashtable CurrentCalculatingPaths
+    {
+        get
+        {
+            return mCurrentCalculatingPaths;
+        }
+        set
+        {
+            mCurrentCalculatingPaths = value;
+        }
+    }
+    private Hashtable mCurrentCalculatingPaths = null;
 
-	private Building mOriginalPathObject;
+    public Building ShortestPathTarget
+    {
+        get
+        {
+            return mShortestPathObject;
+        }
+        set
+        {
+            mShortestPathObject = value;
+        }
+    }
+    private Building mShortestPathObject;
 
-	public Vector3[] AttackablePostions
-	{
-		get
-		{
-			return mAttackablePositions;
-		}
-	}
-	private Vector3[] mAttackablePositions; 
+    private Building mOriginalPathObject;
 
-	public Animator Anim {
-		get {
-			return mAnim;
-		}
-	}
-	protected Animator mAnim;
+    public Vector3[] AttackablePostions
+    {
+        get
+        {
+            return mAttackablePositions;
+        }
+    }
+    private Vector3[] mAttackablePositions;
 
-	public SoldierState SCurrentState {
-		set {
-			if(mSCurrentState != null)
-			{
-				mSCurrentState.ExitState();
-			}
-			mSCurrentState = value;
-			mSCurrentState.EnterState();
-		}
-	}
-	[HideInInspector] private SoldierState mSCurrentState;
+    public Animator Anim
+    {
+        get
+        {
+            return mAnim;
+        }
+    }
+    protected Animator mAnim;
 
-	[HideInInspector] public SoldierAttackState mSAttackState;
+    public SoldierState SCurrentState
+    {
+        set
+        {
+            if (mSCurrentState != null)
+            {
+                mSCurrentState.ExitState();
+            }
+            mSCurrentState = value;
+            mSCurrentState.EnterState();
+        }
+    }
+    [HideInInspector]
+    private SoldierState mSCurrentState;
 
-	[HideInInspector] public SoldierDeadState mSDeadState;
+    [HideInInspector]
+    public SoldierAttackState mSAttackState;
 
-	[HideInInspector] public SoldierMoveState mSMoveState;
+    [HideInInspector]
+    public SoldierDeadState mSDeadState;
 
-	public bool IsDead{
-		get
-		{
-			return mIsDead;
-		}
-		set
-		{
-			mIsDead = value;
-		}
-	}
-	protected bool mIsDead = false;
+    [HideInInspector]
+    public SoldierMoveState mSMoveState;
 
-	private TextMesh mHPText;
+    public bool IsDead
+    {
+        get
+        {
+            return mIsDead;
+        }
+        set
+        {
+            mIsDead = value;
+        }
+    }
+    protected bool mIsDead = false;
 
-	public Seeker Seeker {
-		get {
-			return mSeeker;
-		}
-	}
-	protected Seeker mSeeker;
+    private TextMesh mHPText;
 
-	public List<Vector3> AStarPath {
-		get {
-			return mAStarPath;
-		}
-	}
-	protected List<Vector3> mAStarPath;
+    public Seeker Seeker
+    {
+        get
+        {
+            return mSeeker;
+        }
+    }
+    protected Seeker mSeeker;
 
-	public List<int> AStarPathIndexList {
-		get {
-			return mAStarPathIndexList;
-		}
-	}
-	private List<int> mAStarPathIndexList;
+    public List<Vector3> AStarPath
+    {
+        get
+        {
+            return mAStarPath;
+        }
+    }
+    protected List<Vector3> mAStarPath;
 
-	public float ShortestTargetPathLength {
-		get {
-			return mShortestTargetPathLength;
-		}
-		set
-		{
-			mShortestTargetPathLength = value;
-		}
-	}
-	private float mShortestTargetPathLength;
+    public List<int> AStarPathIndexList
+    {
+        get
+        {
+            return mAStarPathIndexList;
+        }
+    }
+    private List<int> mAStarPathIndexList;
 
-	public float NearestTargetPathLength {
-		get {
-			return mNearestTargetPathLength;
-		}
-		set
-		{
-			mNearestTargetPathLength = value;
-		}
-	}
-	private float mNearestTargetPathLength = Mathf.Infinity;
+    public float ShortestTargetPathLength
+    {
+        get
+        {
+            return mShortestTargetPathLength;
+        }
+        set
+        {
+            mShortestTargetPathLength = value;
+        }
+    }
+    private float mShortestTargetPathLength;
 
-	private Vector3 mFinalMovePosition;
+    public float NearestTargetPathLength
+    {
+        get
+        {
+            return mNearestTargetPathLength;
+        }
+        set
+        {
+            mNearestTargetPathLength = value;
+        }
+    }
+    private float mNearestTargetPathLength = Mathf.Infinity;
 
-	//A Star Search Info
+    private Vector3 mFinalMovePosition;
+
+    //A Star Search Info
     /*
 	public SearchAStar ShortestPath {
 		get {
@@ -229,114 +263,130 @@ public class Soldier : MonoBehaviour, GameObjectType {
 
     private List<Pair<int, SearchAStar.PathInfo>> mPathsInfo;
 
-	public int CurrentWayPoint {
-		get {
-			return mCurrentWayPoint;
-		}
-	}
-	protected int mCurrentWayPoint = 0;
+    public int CurrentWayPoint
+    {
+        get
+        {
+            return mCurrentWayPoint;
+        }
+    }
+    protected int mCurrentWayPoint = 0;
 
-	public float mNextWaypointDistance = 0.2f;
+    public float mNextWaypointDistance = 0.2f;
 
-	public float NearestTargetDistance {
-		get {
-			return mNearestTargetDistance;
-		}
-		set {
-			mNearestTargetDistance = value;
-		}
-	}
-	private float mNearestTargetDistance = 0.0f;
+    public float NearestTargetDistance
+    {
+        get
+        {
+            return mNearestTargetDistance;
+        }
+        set
+        {
+            mNearestTargetDistance = value;
+        }
+    }
+    private float mNearestTargetDistance = 0.0f;
 
-	public float NearestReachableTargetDIstance
-	{
-		get
-		{
-			return mNearestReachableTargetDistance;
-		}
-		set
-		{
-			mNearestReachableTargetDistance = value;
-		}
-	}
-	private float mNearestReachableTargetDistance = 0.0f;
+    public float NearestReachableTargetDIstance
+    {
+        get
+        {
+            return mNearestReachableTargetDistance;
+        }
+        set
+        {
+            mNearestReachableTargetDistance = value;
+        }
+    }
+    private float mNearestReachableTargetDistance = 0.0f;
 
-	public ObjectType GameType
-	{
-		get
-		{
-			return mGameType;
-		}
-		set
-		{
-			mGameType = value;
-		}
-	}
-	private ObjectType mGameType;
+    public ObjectType GameType
+    {
+        get
+        {
+            return mGameType;
+        }
+        set
+        {
+            mGameType = value;
+        }
+    }
+    private ObjectType mGameType;
 
-	private GameObject mDetectionRangeCollider;
-	
-	private SoldierDetectRange mDetectionRange;
+    private GameObject mDetectionRangeCollider;
 
-	public float mDetectionDistance;
+    private SoldierDetectRange mDetectionRange;
 
-	private bool mBMakeNewDecision = false;
+    public float mDetectionDistance;
 
-	public virtual void Awake()
-	{
-		Utility.Log("Soldier's Position = " + gameObject.transform.position);
+    private bool mBMakeNewDecision = false;
 
-		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
-		if (mHPText == null) {
-			Utility.Log("mHPText == null");
-		}
-		mHPText.text = "HP: " + mSHP;
+    private Vector3 mDir;
 
-		mAnim = GetComponent<Animator>();
+    private Vector3 mNewposition;
 
-		mSeeker = GetComponent<Seeker> ();
+    public virtual void Awake()
+    {
+        Utility.Log("Soldier's Position = " + gameObject.transform.position);
 
-		mSAttackState = new SoldierAttackState (this);
+        mHPText = gameObject.transform.Find("HealthText").gameObject.GetComponent<TextMesh>();
+        if (mHPText == null)
+        {
+            Utility.Log("mHPText == null");
+        }
+        mHPText.text = "HP: " + mSHP;
 
-		mSMoveState = new SoldierMoveState (this);
+        mAnim = GetComponent<Animator>();
 
-		mSDeadState = new SoldierDeadState (this);
+        mSeeker = GetComponent<Seeker>();
 
-		mAttackablePositions = new Vector3[8];
-	
-		mGameType = ObjectType.EOT_SOLDIER;
-		Utility.Log ("Soldier::Awake() mGameType = " + mGameType);
+        mSAttackState = new SoldierAttackState(this);
 
-		mDetectionRangeCollider = gameObject.transform.Find ("AttackRangeCollider").gameObject;
-		mDetectionRangeCollider.GetComponent<SphereCollider> ().radius = mDetectionDistance;
-		Utility.Log ("DetectionDistance = " + mDetectionDistance);
-		mDetectionRange = mDetectionRangeCollider.GetComponent<SoldierDetectRange> ();
+        mSMoveState = new SoldierMoveState(this);
 
-		mAStarPath = null;
+        mSDeadState = new SoldierDeadState(this);
 
-		mAStarPathIndexList = null;
+        mAttackablePositions = new Vector3[8];
 
-		mFinalMovePosition = new Vector3();
+        mGameType = ObjectType.EOT_SOLDIER;
+        Utility.Log("Soldier::Awake() mGameType = " + mGameType);
 
-		mShortestPathObject = null;
+        mDetectionRangeCollider = gameObject.transform.Find("AttackRangeCollider").gameObject;
+        mDetectionRangeCollider.GetComponent<SphereCollider>().radius = mDetectionDistance;
+        Utility.Log("DetectionDistance = " + mDetectionDistance);
+        mDetectionRange = mDetectionRangeCollider.GetComponent<SoldierDetectRange>();
 
-		mOriginalPathObject = null;
-	}
+        mAStarPath = null;
 
-	public void Start()
-	{
-		mSCurrentState = mSMoveState;
+        mAStarPathIndexList = null;
 
-		StartCoroutine (RemoveDestroyedObjectInRange());
-	}
+        mFinalMovePosition = new Vector3();
 
-	public virtual void Update ()
-	{
+        mShortestPathObject = null;
+
+        mPathsInfo = new List<Pair<int, SearchAStar.PathInfo>>(5);
+
+        mOriginalPathObject = null;
+
+        mDir = new Vector3();
+        
+        mNewposition = new Vector3();
+    }
+
+    public void Start()
+    {
+        mSCurrentState = mSMoveState;
+
+        StartCoroutine(RemoveDestroyedObjectInRange());
+    }
+
+    public virtual void Update()
+    {
         if (gameObject)
         {
-			mSCurrentState.UpdateState();
-		}
-	}
+            mSCurrentState.UpdateState();
+        }
+    }
 
     public virtual void FixedUpdate()
     {
@@ -347,165 +397,176 @@ public class Soldier : MonoBehaviour, GameObjectType {
         }
     }
 
-	public virtual void UpdateChildPosition()
-	{		
-		mBulletSpawnPoint = gameObject.transform.Find ("BulletSpawnPoint").gameObject.transform.position;
-	}
+    public virtual void UpdateChildPosition()
+    {
+        mBulletSpawnPoint = gameObject.transform.Find("BulletSpawnPoint").gameObject.transform.position;
+    }
 
-	public void TakeDamage (float damage)
-	{
-		if (mSHP > damage) {
-			mSHP -= damage;
-		} else {
-			mSHP = 0;
-			mIsDead = true;
-		}
+    public void TakeDamage(float damage)
+    {
+        if (mSHP > damage)
+        {
+            mSHP -= damage;
+        }
+        else
+        {
+            mSHP = 0;
+            mIsDead = true;
+        }
         mUpdateHP = true;
     }
 
-	//AniamtionEvent call
-	public void StartSinking ()
-	{
-		Invoke ("DestroyItself",3.0f);
-	}
+    //AniamtionEvent call
+    public void StartSinking()
+    {
+        Invoke("DestroyItself", 3.0f);
+    }
 
-	public virtual void DestroyItself()
-	{
-		Destroy (gameObject);
-	}
+    public virtual void DestroyItself()
+    {
+        Destroy(gameObject);
+    }
 
-	private bool ShouldChangeAttackTarget()
-	{
-		if(mBMakeNewDecision)
-		{
-			mBMakeNewDecision = false;
-			return !mBMakeNewDecision;
-		}
-		else
-		{
-			if(mOriginalPathObject != null && mOriginalPathObject.mBI.IsDestroyed)
-			{
-				return true;
-			}
-			else
-			{
-				if (mAttackingObject != null)
-				{
-					if (!mAttackingObject.mBI.IsDestroyed) {
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				} else {
-					return true;
-				}
-			}
-		}
-	}
+    private bool ShouldChangeAttackTarget()
+    {
+        if (mBMakeNewDecision)
+        {
+            mBMakeNewDecision = false;
+            return !mBMakeNewDecision;
+        }
+        else
+        {
+            if (mOriginalPathObject != null && mOriginalPathObject.mBI.IsDestroyed)
+            {
+                return true;
+            }
+            else
+            {
+                if (mAttackingObject != null)
+                {
+                    if (!mAttackingObject.mBI.IsDestroyed)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+    }
 
-	private Building ObtainAttackObjectInDetectionRange()
-	{
-		return FindShortestPathObject(mDetectionRange.RangeTargetList);
-	}
+    private Building ObtainAttackObjectInDetectionRange()
+    {
+        return FindShortestPathObject(mDetectionRange.RangeTargetList);
+    }
 
-	public void MakeDecision()
-	{
-		if (gameObject != null) {
-			mOldAttackingObject = mAttackingObject;
-			if(ShouldChangeAttackTarget())
-			{
-				Utility.Log ("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
-				mAttackingObject = ObtainAttackObjectInDetectionRange();
+    public void MakeDecision()
+    {
+        if (gameObject != null)
+        {
+            mOldAttackingObject = mAttackingObject;
+            if (ShouldChangeAttackTarget())
+            {
+                Utility.Log("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
+                mAttackingObject = ObtainAttackObjectInDetectionRange();
 
-				//Otherwise chose one as attack target in whole map
-				if(mAttackingObject == null)
-				{
-					Utility.Log("Chose Target From Whole Map");
-					mAttackingObject= MapManager.MMInstance.ObtainAttackObject (this);
-				}
+                //Otherwise chose one as attack target in whole map
+                if (mAttackingObject == null)
+                {
+                    Utility.Log("Chose Target From Whole Map");
+                    mAttackingObject = MapManager.MMInstance.ObtainAttackObject(this);
+                }
 
-				if(mAttackingObject != mOldAttackingObject && mAttackingObject!=null)
-				{
-					//Change the first point to gameobject location to avoid soldier move away from target
-					mAStarPath = mShortestPath.MovementPathToTarget;
+                if (mAttackingObject != mOldAttackingObject && mAttackingObject != null)
+                {
+                    //Change the first point to gameobject location to avoid soldier move away from target
+                    mAStarPath = mShortestPath.MovementPathToTarget;
 
-					mAStarPathIndexList = mShortestPath.PathToTarget;
+                    mAStarPathIndexList = mShortestPath.PathToTarget;
 
-					mCurrentWayPoint = mAStarPath.Count - 1;
+                    mCurrentWayPoint = mAStarPath.Count - 1;
 
-					mAStarPath[mCurrentWayPoint] = transform.position;
+                    mAStarPath[mCurrentWayPoint] = transform.position;
 
-					//if the attacking object is Wall,
-					//we let soldier listenning for wall break event to make new decision once has wall breaked
-					/*
-					 * Inform all soldiers that is listenning to WALL_BREAK will cause fps drop
-					 * Only inform soldiers that are in valid wall notification range
-					if(mAttackingObject.mBI.getBuildingType() == BuildingType.E_WALL)
-					{
-						EventManager.mEMInstance.StartListening("WALL_BREAK",WallBreakDelegate);
-					}
-					else
-					{
-						EventManager.mEMInstance.StopListening("WALL_BREAK",WallBreakDelegate);
-					}
-					*/
-				}
-			}
-		}
-	}
+                    //if the attacking object is Wall,
+                    //we let soldier listenning for wall break event to make new decision once has wall breaked
+                    /*
+                     * Inform all soldiers that is listenning to WALL_BREAK will cause fps drop
+                     * Only inform soldiers that are in valid wall notification range
+                    if(mAttackingObject.mBI.getBuildingType() == BuildingType.E_WALL)
+                    {
+                        EventManager.mEMInstance.StartListening("WALL_BREAK",WallBreakDelegate);
+                    }
+                    else
+                    {
+                        EventManager.mEMInstance.StopListening("WALL_BREAK",WallBreakDelegate);
+                    }
+                    */
+                }
+            }
+        }
+    }
 
-	private IEnumerator RemoveDestroyedObjectInRange()
-	{
-		//if there are any object has been destroyed in detect range, we let soldier made decision again
-		//This takes O(n) times, so we do not do this frequently
-		while (true) {
-			if(gameObject != null && !IsDead)
-			{
-				Building temp = null;
-				List<int> indextoremove = new List<int> ();
+    private IEnumerator RemoveDestroyedObjectInRange()
+    {
+        //if there are any object has been destroyed in detect range, we let soldier made decision again
+        //This takes O(n) times, so we do not do this frequently
+        while (true)
+        {
+            if (gameObject != null && !IsDead)
+            {
+                Building temp = null;
+                List<int> indextoremove = new List<int>();
                 IDictionaryEnumerator enu = mDetectionRange.RangeTargetList.GetEnumerator();
                 DictionaryEntry entry;
 
-				while (enu.MoveNext()) {
+                while (enu.MoveNext())
+                {
                     entry = (DictionaryEntry)enu.Current;
                     temp = entry.Value as Building;
-					if (temp.mBI.IsDestroyed) {
-						indextoremove.Add (temp.mBI.mIndex);
-					}
-				}
+                    if (temp.mBI.IsDestroyed)
+                    {
+                        indextoremove.Add(temp.mBI.mIndex);
+                    }
+                }
 
                 for (int index = 0; index < indextoremove.Count; index++)
                 {
                     mDetectionRange.RangeTargetList.Remove(index);
-				}	
-				yield return new WaitForSeconds(30.0f);
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
+                }
+                yield return new WaitForSeconds(30.0f);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 
-	public void WallBreakDelegate()
+    public void WallBreakDelegate()
     {
-		Utility.Log ("WallBreakDelegate() called");
-		mBMakeNewDecision = true;
-	}
+        Utility.Log("WallBreakDelegate() called");
+        mBMakeNewDecision = true;
+    }
 
-	public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
-	{
-		mCurrentCalculatingPaths = calculatingpaths;
-		Utility.Log ("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
+    public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
+    {
+        mCurrentCalculatingPaths = calculatingpaths;
+        Utility.Log("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
 
-		if (mCurrentCalculatingPaths.Count == 0) {
-			return null;
-		}
+        if (mCurrentCalculatingPaths.Count == 0)
+        {
+            return null;
+        }
 
-		//Create a new lastPaths array if necessary (can reuse the old one?)
-		int validbuildingnumbers = 0;
+        //Create a new lastPaths array if necessary (can reuse the old one?)
+        int validbuildingnumbers = 0;
         IDictionaryEnumerator enu = mCurrentCalculatingPaths.GetEnumerator();
         DictionaryEntry entry;
         Building nwbd;
@@ -513,223 +574,220 @@ public class Soldier : MonoBehaviour, GameObjectType {
         {
             entry = (DictionaryEntry)enu.Current;
             nwbd = entry.Value as Building;
-			if(nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
-			{
-				validbuildingnumbers++;
-			}
-		}
-
-		if (validbuildingnumbers == 0) {
-			return null;
-		}
-
-        if (mPathsInfo == null)
-        {
-            //mPathsInfo = new List<Pair<int, SearchAStar>>(validbuildingnumbers);/*new SearchAStar[validbuildingnumbers];*/
-
-            mPathsInfo = new List<Pair<int, SearchAStar.PathInfo>>(validbuildingnumbers);
+            if (nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
+            {
+                validbuildingnumbers++;
+            }
         }
-        else
+
+        if (validbuildingnumbers == 0)
         {
-            //Reset mpathsInfo to null before we caculate for all paths again
-            //mPathsInfo = null;
+            return null;
+        }
+
+        if (mPathsInfo != null)
+        {
             mPathsInfo.Clear();
         }
 
-		Building tempbd = null;
-		int pathindex = 0;
-		Vector2 soldierindex;
-		Vector2 bdindex;
+        Building tempbd = null;
+        int pathindex = 0;
+        Vector2 soldierindex = new Vector2();
+        Vector2 bdindex = new Vector2();
 
         enu = mCurrentCalculatingPaths.GetEnumerator();
-		while (enu.MoveNext()) {
+        while (enu.MoveNext())
+        {
             entry = (DictionaryEntry)enu.Current;
-			Building bd = entry.Value as Building;
-			if( bd.mBI.mBT == BuildingType.E_WALL)
-			{
-				//Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
-				continue;
-			}
-			else
-			{
-				Utility.Log ("FindShortestPathObject() called");
-				tempbd = bd;
-				if(tempbd.mBI.IsDestroyed!=true)
-				{
-					//If soldier has movement path, we use it last movememnt node as his position
-					//to avoid inaccuracy position conversion
-					if(mAStarPath != null)
-					{
-						soldierindex = Utility.ConvertFloatPositionToRC(mFinalMovePosition);
-					}
-					else
-					{
-						soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
-					}
+            Building bd = entry.Value as Building;
+            if (bd.mBI.mBT == BuildingType.E_WALL)
+            {
+                //Debug.Log("IsDestroyed = " + bd.mBI.IsDestroyed);
+                continue;
+            }
+            else
+            {
+                Utility.Log("FindShortestPathObject() called");
+                tempbd = bd;
+                if (tempbd.mBI.IsDestroyed != true)
+                {
+                    //If soldier has movement path, we use it last movememnt node as his position
+                    //to avoid inaccuracy position conversion
+                    if (mAStarPath != null)
+                    {
+                        //soldierindex = Utility.ConvertFloatPositionToRC(mFinalMovePosition);
+                        Utility.ConvertFloatPositionToRC(mFinalMovePosition,ref soldierindex);
+                    }
+                    else
+                    {
+                        //soldierindex = Utility.ConvertFloatPositionToRC(transform.position);
+                        Utility.ConvertFloatPositionToRC(transform.position,ref soldierindex);
+                    }
 
-					//soldierindex = 
-					bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
-					Utility.Log ("soldierindex = " + soldierindex);
-					Utility.Log ("bdindex = " + bdindex);
+                    //soldierindex = 
+                    //bdindex = Utility.ConvertIndexToRC(tempbd.mBI.mIndex); /*Utility.ConvertFloatPositionToRC(tempbd.transform.position)*/;
+                    Utility.ConvertIndexToRC(tempbd.mBI.mIndex,ref bdindex);
+                    Utility.Log("soldierindex = " + soldierindex);
+                    Utility.Log("bdindex = " + bdindex);
 
-					mSeeker.UpdateSearchInfo((int)(soldierindex.x),(int)(soldierindex.y),(int)(bdindex.x),(int)(bdindex.y),mAttackDistance);
-					mSeeker.CreatePathAStar();
+                    mSeeker.UpdateSearchInfo((int)(soldierindex.x), (int)(soldierindex.y), (int)(bdindex.x), (int)(bdindex.y), mAttackDistance);
+                    mSeeker.CreatePathAStar();
                     SearchAStar.PathInfo pathinfo = mSeeker.mAstarSearch.AStarPathInfo.DeepCopy();
                     mPathsInfo.Add(new Pair<int, SearchAStar.PathInfo>(tempbd.mBI.mIndex, pathinfo));
                 }
-				pathindex++;
-			}
-		}
+                pathindex++;
+            }
+        }
 
-		mShortestPathObject = FindShortestPathTarget ();
+        mShortestPathObject = FindShortestPathTarget();
 
+        //mCurrentCalculatingPaths = null;
 
-		mCurrentCalculatingPaths = null;
+        return mShortestPathObject;
+    }
 
-		return mShortestPathObject;
-	}
+    private Building FindShortestPathTarget()
+    {
+        /*mShortestPath = null;*/
 
-	private Building FindShortestPathTarget()
-	{
-		mShortestPath = null;
-
-		int index = -1;
-		float distance = Mathf.Infinity;
+        int index = -1;
+        float distance = Mathf.Infinity;
         Pair<int, SearchAStar.PathInfo> pair;
-		for ( int i = 0; i < mPathsInfo.Count; i++) {
+        for (int i = 0; i < mPathsInfo.Count; i++)
+        {
             pair = mPathsInfo[i];
-			if(/*pair.Value.GetCostToTarget()*/ pair.Value.CostToTarget < distance)
-			{
-				index = pair.Key;
+            if (/*pair.Value.GetCostToTarget()*/ pair.Value.CostToTarget < distance)
+            {
+                index = pair.Key;
                 distance = /*pair.Value.GetCostToTarget()*/pair.Value.CostToTarget;
-				mShortestPath = pair.Value;
-			}
-		}
+                mShortestPath = pair.Value;
+            }
+        }
 
-		if (mShortestPath != null && mShortestPath.IsWallInPathToTarget) {
-			Utility.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
-			mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
-			mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
-		}
-		else
-		{
-			mShortestPathObject = mCurrentCalculatingPaths[index] as Building;
-			mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
-		}
+        if (/*mShortestPath != null &&*/ mShortestPath.IsWallInPathToTarget)
+        {
+            Utility.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
+            mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
+            mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
+        }
+        else
+        {
+            mShortestPathObject = mCurrentCalculatingPaths[index] as Building;
+            mOriginalPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.OriginalTarget] as Building;
+        }
 
-		return mShortestPathObject;
-	}
-	
-	public bool IsTargetInAttackRange()
-	{
-		if (mAttackingObject != null) 
-		{
-			mDistanceToTarget = Vector3.Distance (transform.position, MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position /*mAttackingObject.mBI.Position*/);
-			if (mDistanceToTarget > mAttackDistance) 
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		} 
-		else
-		{
-			return false;
-		}
-	}
+        return mShortestPathObject;
+    }
 
-	public void Attack()
-	{
-		mAttackTimer += Time.deltaTime;
-		if (mAttackTimer >= mAttackInterval) {
-			mAttackTimer = 0.0f;
-			//GameObject bl = MonoBehaviour.Instantiate (mBullet, mBulletSpawnPoint, Quaternion.identity) as GameObject;
+    public bool IsTargetInAttackRange()
+    {
+        if (mAttackingObject != null)
+        {
+            mDistanceToTarget = Vector3.Distance(transform.position, MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position /*mAttackingObject.mBI.Position*/);
+            if (mDistanceToTarget > mAttackDistance)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void Attack()
+    {
+        mAttackTimer += Time.deltaTime;
+        if (mAttackTimer >= mAttackInterval)
+        {
+            mAttackTimer = 0.0f;
+            //GameObject bl = MonoBehaviour.Instantiate (mBullet, mBulletSpawnPoint, Quaternion.identity) as GameObject;
             GameObject bl = ObjectPoolManager.mObjectPoolManagerInstance.GetSoldierBulletObject();
             bl.transform.position = mBulletSpawnPoint;
-            bl.GetComponent<Bullet> ().AttackTarget = mAttackingObject;
-		}
-	}
+            bl.GetComponent<Bullet>().AttackTarget = mAttackingObject;
+        }
+    }
 
-	public void Move()
-	{
-		if (mAttackingObject != null) 
-		{
-			if (mAStarPath == null) {
-				//We have no path to move after yet
-				return;
-			}
+    public void Move()
+    {
+        if (mAttackingObject != null)
+        {
+            if (mAStarPath == null)
+            {
+                //We have no path to move after yet
+                return;
+            }
 
+            //Never reach the final point(to avoid soldier reach wall position), so give soldier at least 1 strick distance
+            if (mCurrentWayPoint < 0)
+            {
+                //Move forward to target object to make sure it under soldier attack range
+                //Direction to the next waypoint
+                mDir = (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position - transform.position).normalized;
+                mDir.y = 0.0f;
 
-            Vector3 dir = new Vector3();
-            Vector3 newposition = new Vector3();
+                transform.LookAt(MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
 
-			//Never reach the final point(to avoid soldier reach wall position), so give soldier at least 1 strick distance
-			if (mCurrentWayPoint < 0) {
-				//Move forward to target object to make sure it under soldier attack range
-				//Direction to the next waypoint
-				dir = (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position - transform.position).normalized;
-				dir.y = 0.0f;
-				
-				transform.LookAt (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
+                //Here we set speed to 0.5f to avoid soldier move too far from destination node
+                mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
+                transform.position = mNewposition;
 
-				//Here we set speed to 0.5f to avoid soldier move too far from destination node
-				newposition = transform.position + dir * 0.2f * Time.deltaTime;
-				transform.position = newposition;
+                Utility.Log("End Of Path Reached");
 
-				Utility.Log ("End Of Path Reached");
+                //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+                //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
+                Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[0]);
 
-				//Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
-				//We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
-				Vector2 soldierindex = Utility.ConvertFloatPositionToRC( mAStarPath[0]);
-				
-				int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
-				
-				if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
-				{
-					mFinalMovePosition = mFinalMovePosition;
-				}
-				else
-				{
-					mFinalMovePosition = mAStarPath[0];
-				}
+                int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
 
-				return;
-			}
-			else
-			{
-				//Direction to the next waypoint
-				dir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
-				dir.y = 0.0f;
-				
-				transform.LookAt (mAStarPath [mCurrentWayPoint]);
-				
-				newposition = transform.position + dir * mSpeed * Time.deltaTime;
-				transform.position = newposition;
+                if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                {
+                    mFinalMovePosition = mFinalMovePosition;
+                }
+                else
+                {
+                    mFinalMovePosition = mAStarPath[0];
+                }
 
-				//Check if we are close enough to the next waypoint
-				if (Vector3.Distance (transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance) {
+                return;
+            }
+            else
+            {
+                //Direction to the next waypoint
+                mDir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
+                mDir.y = 0.0f;
 
-					//Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
-					//We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
-					Vector2 soldierindex = Utility.ConvertFloatPositionToRC( mAStarPath[mCurrentWayPoint]);
+                transform.LookAt(mAStarPath[mCurrentWayPoint]);
 
-					int index = Utility.ConvertRCToIndex((int)(soldierindex.x),(int)(soldierindex.y));
+                mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
+                transform.position = mNewposition;
 
-					if(MapManager.MMInstance.NodeTerrainList[index].IsWall)
-					{
-						mFinalMovePosition = mFinalMovePosition;
-					}
-					else
-					{
-						mFinalMovePosition = mAStarPath[mCurrentWayPoint];
-					}
-					mCurrentWayPoint--;
-					return;
-				}
-			}
-		}
-	}
+                //Check if we are close enough to the next waypoint
+                if (Vector3.Distance(transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance)
+                {
+
+                    //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+                    //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
+                    Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[mCurrentWayPoint]);
+
+                    int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
+
+                    if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                    {
+                        mFinalMovePosition = mFinalMovePosition;
+                    }
+                    else
+                    {
+                        mFinalMovePosition = mAStarPath[mCurrentWayPoint];
+                    }
+                    mCurrentWayPoint--;
+                    return;
+                }
+            }
+        }
+    }
 }
-

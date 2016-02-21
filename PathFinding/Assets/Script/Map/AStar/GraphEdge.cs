@@ -3,23 +3,24 @@ using System.Collections;
 
 enum E_NODE_INDEX
 {
-	INVALID_NODE = -1
+    INVALID_NODE = -1
 }
 
-public class GraphEdge {
-	public GraphEdge()
-	{
-		mFrom = (int)E_NODE_INDEX.INVALID_NODE;
-		mTo = (int)E_NODE_INDEX.INVALID_NODE;
-		mCost = 0.0f;
-	}
+public class GraphEdge
+{
+    public GraphEdge()
+    {
+        mFrom = (int)E_NODE_INDEX.INVALID_NODE;
+        mTo = (int)E_NODE_INDEX.INVALID_NODE;
+        mCost = 0.0f;
+    }
 
-	public GraphEdge(int from, int to, float cost)
-	{
-		mFrom = from;
-		mTo = to;
-		mCost = cost;
-	}
+    public GraphEdge(int from, int to, float cost)
+    {
+        mFrom = from;
+        mTo = to;
+        mCost = cost;
+    }
 
     public GraphEdge(GraphEdge e)
     {
@@ -35,44 +36,57 @@ public class GraphEdge {
         mCost = 0.0f;
     }
 
-	public bool IsValidEdge()
-	{
-		return (mFrom != (int)E_NODE_INDEX.INVALID_NODE || mTo != (int)E_NODE_INDEX.INVALID_NODE);
-	}
+    public void ValueCopy(GraphEdge edge)
+    {
+        mFrom = edge.From;
+        mTo = edge.To;
+        mCost = edge.Cost;
+    }
 
-	public int From {
-		get {
-			return mFrom;
-		}
-		set {
-			Debug.Assert (value >= 0,"mFrom must great or equal to 0");
-			mFrom = value;
-		}
-	}
-	private int mFrom;
+    public bool IsValidEdge()
+    {
+        return (mFrom != (int)E_NODE_INDEX.INVALID_NODE || mTo != (int)E_NODE_INDEX.INVALID_NODE);
+    }
 
-	public int To {
-		get {
-			return mTo;
-		}
-		set {
-			Debug.Assert (value >= 0, "mTo must great or equal to 0");
-			mTo = value;
-		}
-	}
-	private int mTo;
+    public int From
+    {
+        get
+        {
+            return mFrom;
+        }
+        set
+        {
+            Debug.Assert(value >= 0, "mFrom must great or equal to 0");
+            mFrom = value;
+        }
+    }
+    private int mFrom;
 
-	public float Cost
-	{
-		get
-		{
-			return mCost;
-		}
-		set
-		{
-			Debug.Assert (value >= 0, "mCost must great or equal to 0");
-			mCost = value;
-		}
-	}
-	private float mCost;
+    public int To
+    {
+        get
+        {
+            return mTo;
+        }
+        set
+        {
+            Debug.Assert(value >= 0, "mTo must great or equal to 0");
+            mTo = value;
+        }
+    }
+    private int mTo;
+
+    public float Cost
+    {
+        get
+        {
+            return mCost;
+        }
+        set
+        {
+            Debug.Assert(value >= 0, "mCost must great or equal to 0");
+            mCost = value;
+        }
+    }
+    private float mCost;
 }

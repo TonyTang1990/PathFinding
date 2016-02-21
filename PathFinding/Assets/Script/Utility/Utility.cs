@@ -45,6 +45,16 @@ public class Utility {
 		return new Vector2 (row, column);
 	}
 
+    public static void ConvertIndexToRC(int index, ref Vector2 outpos)
+    {
+        //int row = index / MapManager.MMInstance.PathFinder.mColumn + 1;
+        //int column = index % MapManager.MMInstance.PathFinder.mColumn + 1;
+        int row = index / MapManager.MMInstance.PathFinder.mColumn + 1;
+        int column = index % MapManager.MMInstance.PathFinder.mRow + 1;
+        outpos.x = row;
+        outpos.y = column;
+    }
+
 	public static int ConvertFloatPositionToIndex(Vector3 pos)
 	{
 		int index = 0;
@@ -68,6 +78,13 @@ public class Utility {
 		return rc;
 	}
 
+    public static void ConvertFloatPositionToRC(Vector3 pos, ref Vector2 outpos)
+    {
+        int row = (int)(pos.x) + 1;
+        int column = (int)(pos.z) + 1;
+        outpos.x = row;
+        outpos.y = column;
+    }
 	
 	public static bool IsValidTerrainToMoveBuilding(int index)
 	{
