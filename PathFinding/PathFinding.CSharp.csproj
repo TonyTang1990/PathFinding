@@ -66,12 +66,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Camera\CameraController.cs" />
@@ -87,8 +81,8 @@
     <Compile Include="Assets\Script\Game\Event\EventManager.cs" />
     <Compile Include="Assets\Script\Game\GameManager.cs" />
     <Compile Include="Assets\Script\Game\General\BuildingAttackRange.cs" />
-    <Compile Include="Assets\Script\Game\General\BuildingInformRange.cs" />
     <Compile Include="Assets\Script\Game\General\HealthText.cs" />
+    <Compile Include="Assets\Script\Game\General\InformRange.cs" />
     <Compile Include="Assets\Script\Game\General\ObjectType.cs" />
     <Compile Include="Assets\Script\Game\General\SoldierDetectRange.cs" />
     <Compile Include="Assets\Script\Game\General\SpellDetectRange.cs" />

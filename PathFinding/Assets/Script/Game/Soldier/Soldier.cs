@@ -412,6 +412,11 @@ public class Soldier : MonoBehaviour, GameObjectType
         {
             mSHP = 0;
             mIsDead = true;
+            //Remove attacker list for building before Soldier die
+            if (mAttackingObject != null)
+            {
+                mAttackingObject.RemoveAttacker(this);
+            }
         }
         mUpdateHP = true;
     }
@@ -429,6 +434,11 @@ public class Soldier : MonoBehaviour, GameObjectType
 
     private bool ShouldChangeAttackTarget()
     {
+        if (IsLocatedAtWallPosition())
+        {
+            return false;
+        }
+
         if (mBMakeNewDecision)
         {
             mBMakeNewDecision = false;
@@ -461,6 +471,22 @@ public class Soldier : MonoBehaviour, GameObjectType
         }
     }
 
+    private bool IsLocatedAtWallPosition()
+    {
+        Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mFinalMovePosition);
+
+        int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
+
+        if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private Building ObtainAttackObjectInDetectionRange()
     {
         return FindShortestPathObject(mDetectionRange.RangeTargetList);
@@ -473,6 +499,10 @@ public class Soldier : MonoBehaviour, GameObjectType
             mOldAttackingObject = mAttackingObject;
             if (ShouldChangeAttackTarget())
             {
+                if (mOldAttackingObject != null)
+                {
+                    mOldAttackingObject.RemoveAttacker(this);
+                }
                 Utility.Log("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
                 mAttackingObject = ObtainAttackObjectInDetectionRange();
 
@@ -493,6 +523,9 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mCurrentWayPoint = mAStarPath.Count - 1;
 
                     mAStarPath[mCurrentWayPoint] = transform.position;
+
+                    //Append soldier to attackerlist for building
+                    mAttackingObject.AppendAttacker(this);
 
                     //if the attacking object is Wall,
                     //we let soldier listenning for wall break event to make new decision once has wall breaked
@@ -552,6 +585,12 @@ public class Soldier : MonoBehaviour, GameObjectType
     public void WallBreakDelegate()
     {
         Utility.Log("WallBreakDelegate() called");
+        mBMakeNewDecision = true;
+    }
+
+    public void JumpSpellDelegate()
+    {
+        Utility.Log("JumpSpellDelegate() called");
         mBMakeNewDecision = true;
     }
 
@@ -725,6 +764,12 @@ public class Soldier : MonoBehaviour, GameObjectType
             //Never reach the final point(to avoid soldier reach wall position), so give soldier at least 1 strick distance
             if (mCurrentWayPoint < 0)
             {
+                //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+                //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
+                Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[0]);
+
+                int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
+
                 //Move forward to target object to make sure it under soldier attack range
                 //Direction to the next waypoint
                 mDir = (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position - transform.position).normalized;
@@ -732,17 +777,41 @@ public class Soldier : MonoBehaviour, GameObjectType
 
                 transform.LookAt(MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
 
+                Wall wa;
+                if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                {
+                    float distance = 0.0f;
+                    distance = Vector3.Distance(transform.position, mAStarPath[mCurrentWayPoint]);
+                    wa = MapManager.MMInstance.BuildingsInfoInGame[index] as Wall;
+                    if (wa != null && wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
+                    {
+                        transform.position = transform.position;
+                    }
+                    else
+                    {
+                        //Avoid walk through the wall directly
+                        if (!wa.CanJump() && AttackTarget != wa)
+                        {
+                            transform.position = transform.position;
+                            mBMakeNewDecision = true;
+                            return;
+                        }
+                        //Here we set speed to 0.5f to avoid soldier move too far from destination node
+                        mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
+                        transform.position = mNewposition;
+                    }
+                }
+                else
+                {
+                    //Here we set speed to 0.5f to avoid soldier move too far from destination node
+                    mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
+                    transform.position = mNewposition;
+                }
                 //Here we set speed to 0.5f to avoid soldier move too far from destination node
-                mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
-                transform.position = mNewposition;
+                //mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
+                //transform.position = mNewposition;
 
                 Utility.Log("End Of Path Reached");
-
-                //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
-                //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
-                Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[0]);
-
-                int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
 
                 if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
                 {
@@ -757,25 +826,50 @@ public class Soldier : MonoBehaviour, GameObjectType
             }
             else
             {
+                //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
+                //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
+                Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[mCurrentWayPoint]);
+
+                int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
+
                 //Direction to the next waypoint
                 mDir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
                 mDir.y = 0.0f;
 
                 transform.LookAt(mAStarPath[mCurrentWayPoint]);
 
-                mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
-                transform.position = mNewposition;
+                Wall wa;
+                if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                {
+                    float distance = 0.0f;
+                    distance = Vector3.Distance(transform.position, mAStarPath[mCurrentWayPoint]);
+                    wa = MapManager.MMInstance.BuildingsInfoInGame[index] as Wall;
+                    if (wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
+                    {
+                        transform.position = transform.position;
+                    }
+                    else
+                    {
+                        //Avoid walk through the wall directly
+                        if (wa != null && !wa.CanJump() && AttackTarget != wa)
+                        {
+                            transform.position = transform.position;
+                            mBMakeNewDecision = true;
+                            return;
+                        }
+                        mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
+                        transform.position = mNewposition;
+                    }
+                }
+                else
+                {
+                    mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
+                    transform.position = mNewposition;
+                }
 
                 //Check if we are close enough to the next waypoint
                 if (Vector3.Distance(transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance)
                 {
-
-                    //Due to we set mAStarPath[mCurrentWayPoint] = transform.position;
-                    //We must make sure mAStarPath[mCurrentWayPoint].Position is not located at wall position
-                    Vector2 soldierindex = Utility.ConvertFloatPositionToRC(mAStarPath[mCurrentWayPoint]);
-
-                    int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
-
                     if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
                     {
                         mFinalMovePosition = mFinalMovePosition;

@@ -9,6 +9,9 @@ public class Drawer : Building {
 		mBAttackState = new BuildingAttackState (this);
 		mBIdleState = new BuildingIdleState (this);
 		mBBuildingState = new BuildingBuildState (this);
+
+        mName = "Drawer" + GetInstanceID();
+        //Debug.Log("mName = " + mName);
 	}
 	
 	public override void Start()

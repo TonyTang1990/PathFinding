@@ -137,6 +137,24 @@ public class Building : MonoBehaviour, GameObjectType {
 	}
 	private ObjectType mGameType;
 
+    public Dictionary<int, Soldier> AttackerList
+    {
+        get
+        {
+            return mAttackerList;
+        }
+    }
+    private Dictionary<int, Soldier> mAttackerList;
+
+    public String Name
+    {
+        get
+        {
+            return mName;
+        }
+    }
+    protected String mName = "Building";
+
 	public virtual void Awake()
 	{
 		mHPText = gameObject.transform.Find ("HealthText").gameObject.GetComponent<TextMesh> ();
@@ -155,8 +173,9 @@ public class Building : MonoBehaviour, GameObjectType {
 		
 		mBI.IsBuildedCompleted = false;
 		
-		Assert.IsTrue (mWeight >= 0);
+        mAttackerList = new Dictionary<int, Soldier>(20);
 
+		Assert.IsTrue (mWeight >= 0);
 	}
 
 	public virtual void Start()
@@ -297,6 +316,25 @@ public class Building : MonoBehaviour, GameObjectType {
 		}
 		return bottomleftindex;
 	}
+
+
+    public void AppendAttacker(Soldier so)
+    {
+        int soid = so.gameObject.GetInstanceID();
+        if(!mAttackerList.ContainsKey(soid))
+        {
+            mAttackerList.Add(soid,so);
+        }
+    }
+
+    public void RemoveAttacker(Soldier so)
+    {
+        int soid = so.gameObject.GetInstanceID();
+        if(mAttackerList.ContainsKey(soid))
+        {
+            mAttackerList.Remove(soid);
+        }
+    }
 
 	/*
 	void OnTriggerEnter(Collider other) {

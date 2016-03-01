@@ -1,11 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Wall : Building {
 
-	private BuildingInformRange mInformRange;
+	private InformRange mInformRange;
 
 	private GameObject mInformRangeCollider;
+
+    public bool Jumpable
+    {
+        get
+        {
+            return mJumpable;
+        }
+        set
+        {
+            mJumpable = value;
+        }
+    }
+    private bool mJumpable = false;
+
+    public JumpSpell LatestJumpSpell
+    {
+        get
+        {
+            return mLatestJumpSpell;
+        }
+        set
+        {
+            mLatestJumpSpell = value;
+        }
+    }
+    private JumpSpell mLatestJumpSpell;
 
 	public override void Awake()
 	{
@@ -15,7 +42,10 @@ public class Wall : Building {
 		mBBuildingState = new BuildingBuildState (this);
 
 		mInformRangeCollider = gameObject.transform.Find ("InformRangeCollider").gameObject;
-		mInformRange = mInformRangeCollider.GetComponent<BuildingInformRange> ();
+        mInformRange = mInformRangeCollider.GetComponent<InformRange>();
+
+        mName = "Wall" + GetInstanceID();
+        //Debug.Log("mName = " + mName);
 	}
 	
 	public override void Start()
@@ -60,17 +90,34 @@ public class Wall : Building {
 
 	private void InformAllSoldiersInRange()
 	{
-        Soldier so;
+        Building bd;
         IDictionaryEnumerator enu = mInformRange.RangeTargetList.GetEnumerator();
         DictionaryEntry entry;
-		while(enu.MoveNext()) {
+        Soldier so;
+        while (enu.MoveNext())
+        {
             entry = (DictionaryEntry)enu.Current;
-            so = entry.Value as Soldier;
-			if(!so.IsDead && so.AttackTarget.mBI.getBuildingType() == BuildingType.E_WALL)
-			{
-				so.WallBreakDelegate();
-			}
-		}
+            bd = entry.Value as Building;
+            if (bd != null)
+            {
+                foreach (KeyValuePair<int, Soldier> kvp in bd.AttackerList)
+                {
+                    so = kvp.Value as Soldier;
+                    so.WallBreakDelegate();
+                }
+            }
+        }
+        //Soldier so;
+        //IDictionaryEnumerator enu = mInformRange.RangeTargetList.GetEnumerator();
+        //DictionaryEntry entry;
+		//while(enu.MoveNext()) {
+            //entry = (DictionaryEntry)enu.Current;
+            //so = entry.Value as Soldier;
+			//if(!so.IsDead /*&& so.AttackTarget.mBI.getBuildingType() == BuildingType.E_WALL*/)
+			//{
+				//so.WallBreakDelegate();
+			//}
+		//}
 	}
 
 	public override void ActiveBuildingUI(bool isactive)
@@ -87,4 +134,14 @@ public class Wall : Building {
 	{
 		
 	}
+
+    public bool CanJump()
+    {
+        return mJumpable;
+    }
+
+    public void UpdateJumpSpellWorking(JumpSpell js)
+    {
+        mLatestJumpSpell = js;
+    }
 }

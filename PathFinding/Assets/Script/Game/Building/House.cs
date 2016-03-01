@@ -74,6 +74,9 @@ public class House : Building {
 		mAttackRangeCollider = gameObject.transform.Find ("AttackRangeCollider").gameObject;
 		mAttackRangeCollider.GetComponent<SphereCollider> ().radius = mAttackDistance / gameObject.transform.lossyScale.x;
 		mAttackRange = mAttackRangeCollider.GetComponent<BuildingAttackRange> ();
+
+        mName = "House" + GetInstanceID();
+        //Debug.Log("mName = " + mName);
 	}
 
 	public override void Start()
@@ -176,7 +179,7 @@ public class House : Building {
 		}
 	}
 
-	public override bool IsTargetAvalibleToAttack()
+    public override bool IsTargetAvalibleToAttack()
 	{
 		if (mAttackingObject != null && !mAttackingObject.IsDead) {
 			return IsTargetInAttackRange();

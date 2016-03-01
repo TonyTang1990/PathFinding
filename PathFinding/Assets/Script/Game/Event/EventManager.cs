@@ -49,6 +49,23 @@ public class EventManager : MonoBehaviour {
 		}
 	}
 
+    public bool HasListening(string eventname)
+    {
+        if (mEMInstance == null)
+        {
+            return false;
+        }
+        UnityEvent thisevent = null;
+        if (mEMInstance.mEventDictionary.TryGetValue(eventname, out thisevent))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 	public void TriggerEvent(string eventname)
 	{
 		UnityEvent thisevent = null;
