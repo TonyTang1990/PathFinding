@@ -325,6 +325,8 @@ public class Soldier : MonoBehaviour, GameObjectType
 
     private Vector3 mNewposition;
 
+    private int mListeningWallInstanceID = 0;
+
     public virtual void Awake()
     {
         Utility.Log("Soldier's Position = " + gameObject.transform.position);
@@ -496,9 +498,9 @@ public class Soldier : MonoBehaviour, GameObjectType
     {
         if (gameObject != null)
         {
-            mOldAttackingObject = mAttackingObject;
             if (ShouldChangeAttackTarget())
             {
+                mOldAttackingObject = mAttackingObject;
                 if (mOldAttackingObject != null)
                 {
                     mOldAttackingObject.RemoveAttacker(this);
@@ -513,7 +515,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mAttackingObject = MapManager.MMInstance.ObtainAttackObject(this);
                 }
 
-                if (mAttackingObject != mOldAttackingObject && mAttackingObject != null)
+                if (/*mAttackingObject != mOldAttackingObject &&*/ mAttackingObject != null)
                 {
                     //Change the first point to gameobject location to avoid soldier move away from target
                     mAStarPath = mShortestPath.MovementPathToTarget;
@@ -594,6 +596,22 @@ public class Soldier : MonoBehaviour, GameObjectType
         mBMakeNewDecision = true;
     }
 
+    public void WallBreakEvent()
+    {
+        EventManager.mEMInstance.StopListening(mListeningWallInstanceID + "JumpableSpellDisappear", JumpSpellDisappearEvent);
+        EventManager.mEMInstance.StopListening(mListeningWallInstanceID + "Break", WallBreakDelegate);
+    }
+
+    public void JumpSpellDisappearEvent()
+    {
+        EventManager.mEMInstance.StopListening(mListeningWallInstanceID + "JumpableSpellDisappear", JumpSpellDisappearEvent);
+        
+        if (EventManager.mEMInstance.HasListening(mListeningWallInstanceID + "Break"))
+        {
+            EventManager.mEMInstance.StopListening(mListeningWallInstanceID + "Break", WallBreakDelegate);
+        }
+    }
+
     public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
     {
         mCurrentCalculatingPaths = calculatingpaths;
@@ -672,6 +690,14 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mSeeker.UpdateSearchInfo((int)(soldierindex.x), (int)(soldierindex.y), (int)(bdindex.x), (int)(bdindex.y), mAttackDistance);
                     mSeeker.CreatePathAStar();
                     SearchAStar.PathInfo pathinfo = mSeeker.mAstarSearch.AStarPathInfo.DeepCopy();
+                    Wall wa;
+                    if (pathinfo.IsWallInPathToTarget)
+                    {
+                        wa = MapManager.MMInstance.BuildingsInfoInGame[pathinfo.WallInPathToTargetIndex] as Wall;
+                        mListeningWallInstanceID = wa.gameObject.GetInstanceID();
+                        EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "JumpableSpellDisappear", JumpSpellDisappearEvent);
+                        EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "Break", WallBreakEvent);
+                    }
                     mPathsInfo.Add(new Pair<int, SearchAStar.PathInfo>(tempbd.mBI.mIndex, pathinfo));
                 }
                 pathindex++;
@@ -786,16 +812,10 @@ public class Soldier : MonoBehaviour, GameObjectType
                     if (wa != null && wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
                     {
                         transform.position = transform.position;
+                        //Invoke("JumpSpellDelegate", wa.LatestJumpSpell.TimeRemain + 0.2f);
                     }
                     else
                     {
-                        //Avoid walk through the wall directly
-                        if (!wa.CanJump() && AttackTarget != wa)
-                        {
-                            transform.position = transform.position;
-                            mBMakeNewDecision = true;
-                            return;
-                        }
                         //Here we set speed to 0.5f to avoid soldier move too far from destination node
                         mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
                         transform.position = mNewposition;
@@ -813,7 +833,7 @@ public class Soldier : MonoBehaviour, GameObjectType
 
                 Utility.Log("End Of Path Reached");
 
-                if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                if (MapManager.MMInstance.NodeTerrainList[index].IsWall && !MapManager.MMInstance.NodeTerrainList[index].IsJumpable)
                 {
                     mFinalMovePosition = mFinalMovePosition;
                 }
@@ -847,16 +867,10 @@ public class Soldier : MonoBehaviour, GameObjectType
                     if (wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
                     {
                         transform.position = transform.position;
+                        //Invoke("JumpSpellDelegate", wa.LatestJumpSpell.TimeRemain + 0.2f);
                     }
                     else
                     {
-                        //Avoid walk through the wall directly
-                        if (wa != null && !wa.CanJump() && AttackTarget != wa)
-                        {
-                            transform.position = transform.position;
-                            mBMakeNewDecision = true;
-                            return;
-                        }
                         mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
                         transform.position = mNewposition;
                     }
@@ -870,7 +884,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                 //Check if we are close enough to the next waypoint
                 if (Vector3.Distance(transform.position, mAStarPath[mCurrentWayPoint]) < mNextWaypointDistance)
                 {
-                    if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
+                    if (MapManager.MMInstance.NodeTerrainList[index].IsWall && !MapManager.MMInstance.NodeTerrainList[index].IsJumpable)
                     {
                         mFinalMovePosition = mFinalMovePosition;
                     }

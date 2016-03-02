@@ -80,7 +80,7 @@ public class InformRange : MonoBehaviour {
             {
                 Building bd = other.gameObject.GetComponent<Building>();
             
-                if (mRangeTargetList.Contains(bd) == true)
+                if (mRangeTargetList.Contains(bd.mBI.mIndex) == true)
                 {
                     mRangeTargetList.Remove(bd.mBI.mIndex);
                     Utility.Log("Soldier mRanTargetList.Remove(bd) bd.name = " + bd.name);

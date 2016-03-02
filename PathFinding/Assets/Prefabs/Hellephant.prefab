@@ -287,7 +287,7 @@ MonoBehaviour:
   mSpeed: 1
   mPreferAttackType: 0
   mAttackInterval: 3
-  mAttackDistance: 1
+  mAttackDistance: 1.5
   mSHP: 50
   mUpdateHP: 0
   mBullet: {fileID: 197372, guid: c0cb62fc9ce26ea4d9095149340dcec6, type: 2}

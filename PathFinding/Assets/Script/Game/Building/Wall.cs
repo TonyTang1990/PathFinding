@@ -17,6 +17,10 @@ public class Wall : Building {
         set
         {
             mJumpable = value;
+            if (mJumpable == false)
+            {
+                EventManager.mEMInstance.TriggerEvent(gameObject.GetInstanceID() + "JumpableSpellDisappear");
+            }
         }
     }
     private bool mJumpable = false;
@@ -85,6 +89,8 @@ public class Wall : Building {
 			//Once wall is breaked, we dispatch WALL_BREAK Event to soldier
 			//EventManager.mEMInstance.TriggerEvent("WALL_BREAK");
 			InformAllSoldiersInRange();
+
+            EventManager.mEMInstance.TriggerEvent(gameObject.GetInstanceID() + "Break");
 		}
 	}
 
