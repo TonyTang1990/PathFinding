@@ -610,6 +610,8 @@ public class Soldier : MonoBehaviour, GameObjectType
         {
             EventManager.mEMInstance.StopListening(mListeningWallInstanceID + "Break", WallBreakDelegate);
         }
+
+        JumpSpellDelegate();
     }
 
     public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
@@ -690,14 +692,6 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mSeeker.UpdateSearchInfo((int)(soldierindex.x), (int)(soldierindex.y), (int)(bdindex.x), (int)(bdindex.y), mAttackDistance);
                     mSeeker.CreatePathAStar();
                     SearchAStar.PathInfo pathinfo = mSeeker.mAstarSearch.AStarPathInfo.DeepCopy();
-                    Wall wa;
-                    if (pathinfo.IsWallInPathToTarget)
-                    {
-                        wa = MapManager.MMInstance.BuildingsInfoInGame[pathinfo.WallInPathToTargetIndex] as Wall;
-                        mListeningWallInstanceID = wa.gameObject.GetInstanceID();
-                        EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "JumpableSpellDisappear", JumpSpellDisappearEvent);
-                        EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "Break", WallBreakEvent);
-                    }
                     mPathsInfo.Add(new Pair<int, SearchAStar.PathInfo>(tempbd.mBI.mIndex, pathinfo));
                 }
                 pathindex++;
@@ -729,7 +723,16 @@ public class Soldier : MonoBehaviour, GameObjectType
             }
         }
 
-        if (/*mShortestPath != null &&*/ mShortestPath.IsWallInPathToTarget)
+        Wall wa;
+        if (mShortestPath.IsWallInPathToTarget && (MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Wall).Jumpable)
+        {
+            wa = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Wall;
+            mListeningWallInstanceID = wa.gameObject.GetInstanceID();
+            EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "JumpableSpellDisappear", JumpSpellDisappearEvent);
+            EventManager.mEMInstance.StartListening(mListeningWallInstanceID + "Break", WallBreakEvent);
+        }
+
+        if (/*mShortestPath != null &&*/ mShortestPath.IsWallInPathToTarget && !((MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Wall).Jumpable))
         {
             Utility.Log("mShortestPath.mWallInPathToTargetIndex = " + mShortestPath.WallInPathToTargetIndex);
             mShortestPathObject = MapManager.MMInstance.BuildingsInfoInGame[mShortestPath.WallInPathToTargetIndex] as Building;
@@ -748,6 +751,11 @@ public class Soldier : MonoBehaviour, GameObjectType
     {
         if (mAttackingObject != null)
         {
+            if (IsLocatedAtWallPosition())
+            {
+                return false;
+            }
+
             mDistanceToTarget = Vector3.Distance(transform.position, MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position /*mAttackingObject.mBI.Position*/);
             if (mDistanceToTarget > mAttackDistance)
             {

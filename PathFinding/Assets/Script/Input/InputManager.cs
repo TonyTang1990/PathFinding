@@ -34,35 +34,47 @@ public class InputManager : MonoBehaviour {
 				if (Input.GetMouseButtonDown (0)) {
 					Utility.Log ("Left Mouse Clicked");
 
-					if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject ()) {
-						mInputTimer = 0.0f;
-						Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-						RaycastHit hit;
-						if (Physics.Raycast (ray, out hit, Mathf.Infinity, LayerMask.GetMask ("Terrain"))) {
-							if (hit.collider) {
-								if (MapManager.MMInstance.isSoldierSelected) {
-									Utility.Log ("hit.point = " + hit.point);
-									MapManager.MMInstance.DeploySoldier (hit.point);
-								}
-								else if(MapManager.MMInstance.isSpellSelected)
-								{
-									Debug.Log("hit.point = " + hit.point);
-									Vector3 hp = hit.point;
-									hp.y += 1.0f;
-									hit.point = hp;
-									MapManager.MMInstance.DeploySpell(hit.point);
-								}
-								else {
-									Utility.Log ("hit.collider.name = " + hit.collider.name);
-									MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode> ();
-									UIManager.UIMInstance.ShowNWAdjustPanel ();
-								}
-							}
-						} else {
-							MapManager.MMInstance.CurrentSelectedNode = null;
-							UIManager.UIMInstance.HideNWAdustPanel ();
-						}
-					}
+                    if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                    {
+                        mInputTimer = 0.0f;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hit;
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
+                        {
+                            if (hit.collider)
+                            {
+                                Debug.Log("hit.collider.name = " + hit.collider.name);
+                                if (MapManager.MMInstance.isSoldierSelected)
+                                {
+                                    Utility.Log("hit.point = " + hit.point);
+                                    MapManager.MMInstance.DeploySoldier(hit.point);
+                                }
+                                else if (MapManager.MMInstance.isSpellSelected)
+                                {
+                                    Debug.Log("hit.point = " + hit.point);
+                                    Vector3 hp = hit.point;
+                                    hp.y += 1.0f;
+                                    hit.point = hp;
+                                    MapManager.MMInstance.DeploySpell(hit.point);
+                                }
+                                else
+                                {
+                                    Utility.Log("hit.collider.name = " + hit.collider.name);
+                                    MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode>();
+                                    UIManager.UIMInstance.ShowNWAdjustPanel();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MapManager.MMInstance.CurrentSelectedNode = null;
+                            UIManager.UIMInstance.HideNWAdustPanel();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("IsPointerOverGameObject() == TRUE");
+                    }
 				}
 			}
 			else if(Application.platform == RuntimePlatform.Android)

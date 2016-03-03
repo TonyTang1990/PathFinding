@@ -36,6 +36,9 @@ public class JumpSpell : Spell {
             wa = MapManager.MMInstance.BuildingsInfoInGame[wallindex] as Wall;
             wa.Jumpable = true;
             wa.UpdateJumpSpellWorking(this);
+
+            //Modify Terrain Node info too to make sure the NodeWeightPanel info correct
+            MapManager.MMInstance.NodeTerrainList[wallindex].IsJumpable = true;
 		}
 		Invoke ("RecoverWallJumpableStatus", mLifeTime);
 
@@ -59,10 +62,13 @@ public class JumpSpell : Spell {
             wa = MapManager.MMInstance.BuildingsInfoInGame[wallindex] as Wall;
             wa.Jumpable = false;
             wa.UpdateJumpSpellWorking(null);
+
+            //Modify Terrain Node info too to make sure the NodeWeightPanel info correct
+            MapManager.MMInstance.NodeTerrainList[wallindex].IsJumpable = false;
             //We only need to inform the soldier that contains the wall(jumpable state changed) in their AstarPath
 		}
 
-        InformationForJumpSpell();
+        //InformationForJumpSpell();
         
         Destroy(gameObject);
 	}

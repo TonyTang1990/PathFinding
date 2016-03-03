@@ -318,7 +318,8 @@ public class SearchAStar
 
             if (!mIsIgnoreWall)
             {
-                if (mGraph.Nodes[nd].IsWall && !mGraph.Nodes[nd].IsJumpable)
+                //No matter the wall in path is jumpable or not, we should record it as useful information
+                if (mGraph.Nodes[nd].IsWall /*&& !mGraph.Nodes[nd].IsJumpable*/)
                 {
                     mAStarPathInfo.IsWallInPathToTarget = true;
                     mAStarPathInfo.WallInPathToTargetIndex = nd;
