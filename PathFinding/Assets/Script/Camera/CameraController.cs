@@ -58,24 +58,6 @@ public class CameraController : MonoBehaviour {
         mPreTwoFingersDistance = 0.0f;
     }
 
-	//用于判断是否放大
-	private bool isEnlarge(Vector2 oP1, Vector2 oP2, Vector2 nP1, Vector2 nP2)
-	{
-		//函数传入上一次触摸两点的位置与本次触摸两点的位置计算出用户的手势
-		float leng1 = Mathf.Sqrt((oP1.x - oP2.x) * (oP1.x - oP2.x) + (oP1.y - oP2.y) * (oP1.y - oP2.y));
-		float leng2 = Mathf.Sqrt((nP1.x - nP2.x) * (nP1.x - nP2.x) + (nP1.y - nP2.y) * (nP1.y - nP2.y));
-		if (leng1 < leng2)
-		{
-			//放大手势
-			return true;
-		}
-		else
-		{
-			//缩小手势
-			return false;
-		}
-	}
-
 	private void CameraMove()
 	{
         if (Input.touchCount == 1)
