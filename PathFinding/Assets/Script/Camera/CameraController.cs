@@ -26,11 +26,17 @@ public class CameraController : MonoBehaviour {
 
 	private Vector2 mScreenPos;
 
-    private Vector2 mPreTouchPos;
-
     private Vector2 mPreMoveDirection;
 
-    private Vector2 mCurrentTouchPos;
+    private Vector2[] mPreTouchFingerPos;
+
+    private Vector2[] mCurrentTouchFingerPos;
+
+    private Vector2[] mTouchFingerDeltaPos;
+
+    private float mCurrentTwoFingersDistance;
+
+    private float mPreTwoFingersDistance;
 
 	public float mValidInputDeltaTime = 0.5f;
 	
@@ -44,9 +50,12 @@ public class CameraController : MonoBehaviour {
 		mOFinger2Postion = new Vector2 ();
 		mIsForward = 1;
 		mScreenPos = new Vector2 ();
-        mPreTouchPos = new Vector2();
-        mCurrentTouchPos = new Vector2();
         mPreMoveDirection = new Vector2();
+        mCurrentTouchFingerPos = new Vector2[2];
+        mPreTouchFingerPos = new Vector2[2];
+        mTouchFingerDeltaPos = new Vector2[2];
+        mCurrentTwoFingersDistance = 0.0f;
+        mPreTwoFingersDistance = 0.0f;
     }
 
 	//用于判断是否放大
@@ -69,33 +78,114 @@ public class CameraController : MonoBehaviour {
 
 	private void CameraMove()
 	{
-		if(Input.touches[0].phase == TouchPhase.Began)
-		{
-            mCurrentTouchPos = Input.touches[0].position;
-            mPreTouchPos = Input.touches[0].position;
-		}
-		else if(Input.touches[0].phase == TouchPhase.Moved)
-		{
-			//Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
+        if (Input.touchCount == 1)
+        {
+            if (Input.touches[0].phase == TouchPhase.Began)
+            {
+                mCurrentTouchFingerPos[0] = Input.touches[0].position;
+                mPreTouchFingerPos[0] = Input.touches[0].position;
+                mTouchFingerDeltaPos[0] = Vector2.zero;
+            }
+            else if (Input.touches[0].phase == TouchPhase.Moved)
+            {
+                //Vector3 movement = transform.rotation * new Vector3 (Input.touches[0].deltaPosition.x * mMoveSpeed * Time.deltaTime, 0.0f, Input.touches[0].deltaPosition.y * mMoveSpeed * Time.deltaTime);
 
-            mPreTouchPos = mCurrentTouchPos;
-            mCurrentTouchPos = Input.touches[0].position;
+                mPreTouchFingerPos[0] = mCurrentTouchFingerPos[0];
+                mCurrentTouchFingerPos[0] = Input.touches[0].position;
+                mTouchFingerDeltaPos[0] = Input.touches[0].deltaPosition;
 
-            Vector2 offposition = mCurrentTouchPos - mPreTouchPos;
+                Vector2 offposition = Input.touches[0].deltaPosition;
+                //Low down the screen touch move
+                offposition /= 5;
+                MoveCamera(offposition);
+            }
+            else if (Input.touches[0].phase == TouchPhase.Ended)
+            {
+                mCurrentTouchFingerPos[0] = Vector2.zero;
+                mPreTouchFingerPos[0] = Vector2.zero;
+                mTouchFingerDeltaPos[0] = Vector2.zero;
+            }
+        }
+        else if (Input.touchCount == 2)
+        {
+            for(int i = 0; i < 2; i++)
+            {
+                if (Input.touches[i].phase == TouchPhase.Began)
+                {
+                    mCurrentTouchFingerPos[i] = Input.touches[0].position;
+                    mPreTouchFingerPos[i] = Input.touches[0].position;
+                    mTouchFingerDeltaPos[i] = Vector2.zero;
+                    if (i == 1)
+                    {
+                        mPreTwoFingersDistance = mCurrentTwoFingersDistance;
+                        mCurrentTwoFingersDistance = Vector2.Distance(mCurrentTouchFingerPos[0], mCurrentTouchFingerPos[1]);
+                    }
+                }
+                else if (Input.touches[i].phase == TouchPhase.Moved)
+                {
+                    mPreTouchFingerPos[i] = mCurrentTouchFingerPos[i];
+                    mCurrentTouchFingerPos[i] = Input.touches[i].position;
+                    mTouchFingerDeltaPos[i] = Input.touches[i].deltaPosition;
+                    if (i == 1)
+                    {
+                        mPreTwoFingersDistance = mCurrentTwoFingersDistance;
+                        mCurrentTwoFingersDistance = Vector2.Distance(mCurrentTouchFingerPos[0], mCurrentTouchFingerPos[1]);
+                    }
+                }
+                else if (Input.touches[i].phase == TouchPhase.Ended)
+                {
+                    mCurrentTouchFingerPos[i] = Vector2.zero;
+                    mPreTouchFingerPos[i] = Vector2.zero;
+                    mTouchFingerDeltaPos[i] = Vector2.zero;
+                    mCurrentTwoFingersDistance = 0.0f;
+                    mPreTwoFingersDistance = 0.0f;
+                    return;
+                }
+            }
 
-            Debug.Log("offposition.x = " + offposition.x);
-            Debug.Log("offposition.y = " + offposition.y);
+            //Caculate for camera move and zoom
+            Vector2 offposition = mTouchFingerDeltaPos[0] + mTouchFingerDeltaPos[1];
+            //Slow down camera move speed
+            offposition /= 10;
+            MoveCamera(offposition);
 
-            Vector3 movement = transform.rotation * new Vector3(offposition.x * mMoveSpeed * Time.deltaTime, 0.0f, offposition.y * mMoveSpeed * Time.deltaTime);
+            float distanceoffset = 0.0f;
+            distanceoffset = mCurrentTwoFingersDistance - mPreTwoFingersDistance;
+            //Slow down the zoom speed
+            distanceoffset = Mathf.Abs(distanceoffset) / 4;
+            if (mCurrentTwoFingersDistance > mPreTwoFingersDistance && mPreTwoFingersDistance != 0.0f)
+            {
+                Camera.main.orthographicSize -= mZoomSpeed * distanceoffset * Time.deltaTime;
+            }
+            else if (mCurrentTwoFingersDistance <= mPreTwoFingersDistance && mPreTwoFingersDistance != 0.0f)
+            {
+                Camera.main.orthographicSize += mZoomSpeed * distanceoffset * Time.deltaTime;
+            }
 
-            transform.position += movement;
-			float clampx;
-			float clampz;
-			clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
-			clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
-			transform.position = new Vector3 (clampx, transform.position.y, clampz);
-		}
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, mOrthographicMinSize, mOrthographicMaxSize);
+        }
 	}
+
+    private void MoveCamera(Vector2 offposition)
+    {
+        if (offposition.magnitude != 0.0f)
+        {
+            //Slow down the movement of screen touch
+            float moveHorizontal = offposition.x * mMoveSpeed * Time.deltaTime;
+            float moveVertical = offposition.y * Camera.main.aspect * mMoveSpeed * Time.deltaTime;
+
+            Vector3 movement = transform.rotation * new Vector3(moveHorizontal, 0.0f, moveVertical);
+            //Slow down screen touch move if the orthographicSize is smaller
+            movement = -movement * Camera.main.orthographicSize / mOrthographicMaxSize;
+            movement.y = 0.0f;
+            transform.position += movement;
+            float clampx;
+            float clampz;
+            clampx = Mathf.Clamp(transform.position.x, mCameraMinX, mCameraMaxX);
+            clampz = Mathf.Clamp(transform.position.z, mCameraMinZ, mCameraMaxZ);
+            transform.position = new Vector3(clampx, transform.position.y, clampz);
+        }
+    }
 
 	void Update()
 	{
@@ -113,10 +203,10 @@ public class CameraController : MonoBehaviour {
 		
 			float moveHorizontal = Input.GetAxis ("Horizontal") * mMoveSpeed * Time.deltaTime;
 			float moveVertical = Input.GetAxis ("Vertical") * mMoveSpeed * Time.deltaTime;
-			
+
 			Vector3 movement = transform.rotation * new Vector3 (moveHorizontal, 0.0f, moveVertical);
 			movement.y = 0.0f;
-			
+
 			transform.position += movement;
 			float clampx;
 			float clampz;
@@ -164,63 +254,7 @@ public class CameraController : MonoBehaviour {
 				}
 				else if(Input.touchCount == 2)
 				{
-					/*
-					Vector2 fposition1 = new Vector2();
-					Vector2 fposition2 = new Vector2();
-
-					Vector2 deltadis1 = new Vector2();
-					Vector2 deltadis2 = new Vector2();
-
-					for(int i = 0; i < 2; i++)
-					{
-						Touch touch = Input.touches[i];
-						if(touch.phase == TouchPhase.Ended)
-						{
-							break;
-						}
-						if(touch.phase == TouchPhase.Moved)
-						{
-							if(i == 0)
-							{
-								fposition1 = touch.position;
-								deltadis1 = touch.deltaPosition;
-							}
-							else
-							{
-								fposition2 = touch.position;
-								deltadis2 = touch.deltaPosition;
-
-								if(isEnlarge(mOFinger1Position, mOFinger2Postion, fposition1, fposition2))
-								{
-									mIsForward = 1;
-								}
-								else
-								{
-									mIsForward = -1;
-								}
-							}
-
-							//Record old finger position
-							mOFinger1Position = fposition1;
-							mOFinger2Postion = fposition2;
-						}
-
-						//Move camera and zoom in or out
-						Vector2 centerpoint = (fposition1 + fposition2) / 2;
-						Vector3 movement = transform.rotation * new Vector3 (centerpoint.x, 0.0f, centerpoint.y);
-						
-						transform.position += movement;
-						float clampx;
-						float clampz;
-						clampx = Mathf.Clamp (transform.position.x, mCameraMinX, mCameraMaxX);
-						clampz = Mathf.Clamp (transform.position.z, mCameraMinZ, mCameraMaxZ);
-						transform.position = new Vector3 (clampx, transform.position.y, clampz);
-
-						Camera.main.orthographicSize += mIsForward * mZoomSpeed * Time.deltaTime;
-
-						Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, mOrthographicMinSize, mOrthographicMaxSize);
-					}
-					*/
+                    CameraMove();
 				}
 			}
 		    else

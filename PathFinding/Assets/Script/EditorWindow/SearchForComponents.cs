@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
     using UnityEngine;  
     using UnityEditor;  
     using System.Collections;  
@@ -463,3 +464,4 @@
             return result.ToArray();  
         }  
     }  
+#endif
