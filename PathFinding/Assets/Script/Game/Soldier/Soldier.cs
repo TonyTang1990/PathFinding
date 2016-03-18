@@ -861,11 +861,9 @@ public class Soldier : MonoBehaviour, GameObjectType
                 int index = Utility.ConvertRCToIndex((int)(soldierindex.x), (int)(soldierindex.y));
 
                 //Direction to the next waypoint
-                mDir = (mAStarPath[mCurrentWayPoint] - transform.position).normalized;
+                mDir = (mAStarPath[mCurrentWayPoint] - transform.position);
                 mDir.y = 0.0f;
-
-                transform.LookAt(mAStarPath[mCurrentWayPoint]);
-
+                mDir = mDir.normalized;
                 Wall wa;
                 if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
                 {
@@ -886,6 +884,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                 else
                 {
                     mNewposition = transform.position + mDir * mSpeed * Time.deltaTime;
+
                     transform.position = mNewposition;
                 }
 
@@ -901,6 +900,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                         mFinalMovePosition = mAStarPath[mCurrentWayPoint];
                     }
                     mCurrentWayPoint--;
+                    transform.LookAt(new Vector3(mAStarPath[mCurrentWayPoint].x, transform.position.y, mAStarPath[mCurrentWayPoint].z),transform.up);
                     return;
                 }
             }

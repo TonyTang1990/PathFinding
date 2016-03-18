@@ -57,6 +57,8 @@ public class SoldierAttackState : SoldierState {
 
 	public void ToMoveState()
 	{
+        mSoldier.transform.LookAt(new Vector3(mSoldier.AttackTarget.transform.position.x, mSoldier.transform.position.y, mSoldier.AttackTarget.transform.position.z));
+               
 		mSoldier.Anim.SetBool("SoldierMoving",true);
 		mSoldier.SCurrentState = mSoldier.mSMoveState;
 	}

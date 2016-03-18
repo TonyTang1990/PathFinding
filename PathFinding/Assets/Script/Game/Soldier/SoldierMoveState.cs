@@ -48,7 +48,7 @@ public class SoldierMoveState : SoldierState {
 
 	public void ToAttackState()
 	{
-		mSoldier.transform.LookAt (mSoldier.AttackTarget.transform);
+        mSoldier.transform.LookAt(new Vector3(mSoldier.AttackTarget.transform.position.x, mSoldier.transform.position.y, mSoldier.AttackTarget.transform.position.z));
 
 		mSoldier.AttackTimer = mSoldier.mAttackInterval;
 		mSoldier.Anim.SetBool("SoldierMoving",false);
