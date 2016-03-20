@@ -102,7 +102,9 @@ public class Soldier : MonoBehaviour, GameObjectType
     }
     protected Building mOldAttackingObject;
 
-    public Hashtable CurrentCalculatingPaths
+    private bool mBSearchForPreffered = true;
+
+    public Dictionary<int, Building> CurrentCalculatingPaths
     {
         get
         {
@@ -113,7 +115,7 @@ public class Soldier : MonoBehaviour, GameObjectType
             mCurrentCalculatingPaths = value;
         }
     }
-    private Hashtable mCurrentCalculatingPaths = null;
+    private Dictionary<int, Building> mCurrentCalculatingPaths = null;
 
     public Building ShortestPathTarget
     {
@@ -379,7 +381,7 @@ public class Soldier : MonoBehaviour, GameObjectType
     {
         mSCurrentState = mSMoveState;
 
-        StartCoroutine(RemoveDestroyedObjectInRange());
+        //StartCoroutine(RemoveDestroyedObjectInRange());
     }
 
     public virtual void Update()
@@ -413,6 +415,10 @@ public class Soldier : MonoBehaviour, GameObjectType
         else
         {
             mSHP = 0;
+            if(mIsDead != true)
+            {
+                mDetectionRange.RemoveAllListenersForBuildingInRange();
+            }
             mIsDead = true;
             //Remove attacker list for building before Soldier die
             if (mAttackingObject != null)
@@ -506,11 +512,55 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mOldAttackingObject.RemoveAttacker(this);
                 }
                 Utility.Log("mDetectionRange.RangeTargetList.Count = " + mDetectionRange.RangeTargetList.Count);
-                mAttackingObject = ObtainAttackObjectInDetectionRange();
 
-                //Otherwise chose one as attack target in whole map
-                if (mAttackingObject == null)
+                if (MapManager.MMInstance.AttackableAliveBuildingNumber <= 0 && MapManager.MMInstance.NotAttackableAliveBuildingNumber <= 0)
                 {
+                    mAttackingObject = null;
+                    return;
+                }
+
+                bool hasprefferinmap = false;
+                bool hasprefferinrange = false;
+                if (mPreferAttackType == PreferAttackType.E_ATTACKABLE)
+                {
+                    if (MapManager.MMInstance.AttackableAliveBuildingNumber > 0)
+                    {
+                        hasprefferinmap = true;
+                        if (mDetectionRange.AttackableAliveAliveBuildingNumber > 0)
+                        {
+                            hasprefferinrange = true;
+                        }
+                    }
+                }
+                else if (mPreferAttackType == PreferAttackType.E_ALL)
+                {
+                    if (MapManager.MMInstance.AttackableAliveBuildingNumber > 0 || MapManager.MMInstance.NotAttackableAliveBuildingNumber > 0)
+                    {
+                        hasprefferinmap = true;
+                        if (mDetectionRange.AttackableAliveAliveBuildingNumber > 0 || mDetectionRange.NotAttackableAliveBuildingNumber > 0)
+                        {
+                            hasprefferinrange = true;
+                        }
+                    }
+                }
+
+                if (hasprefferinmap && hasprefferinrange)
+                {
+                    mBSearchForPreffered = true;
+                    mAttackingObject = ObtainAttackObjectInDetectionRange();
+                }
+                else if (hasprefferinmap && !hasprefferinrange)
+                {
+                    mBSearchForPreffered = true;
+                    //Otherwise chose one as attack target in whole map
+                    Utility.Log("Chose Target From Whole Map");
+                    mAttackingObject = MapManager.MMInstance.ObtainAttackObject(this);
+                }
+                else
+                {
+                    //No preffer attacking building left
+                    mBSearchForPreffered = false;
+                    //Otherwise chose one as attack target in whole map
                     Utility.Log("Chose Target From Whole Map");
                     mAttackingObject = MapManager.MMInstance.ObtainAttackObject(this);
                 }
@@ -614,7 +664,7 @@ public class Soldier : MonoBehaviour, GameObjectType
         JumpSpellDelegate();
     }
 
-    public Building FindShortestPathObject(/*List<Building>*/ Hashtable calculatingpaths)
+    public Building FindShortestPathObject(/*List<Building>*/ /*Hashtable*/Dictionary<int,Building> calculatingpaths)
     {
         mCurrentCalculatingPaths = calculatingpaths;
         Utility.Log("mCurrentCalculatingPaths.Count = " + mCurrentCalculatingPaths.Count);
@@ -626,23 +676,25 @@ public class Soldier : MonoBehaviour, GameObjectType
 
         //Create a new lastPaths array if necessary (can reuse the old one?)
         int validbuildingnumbers = 0;
-        IDictionaryEnumerator enu = mCurrentCalculatingPaths.GetEnumerator();
-        DictionaryEntry entry;
+        Dictionary<int,Building>.Enumerator enu = mCurrentCalculatingPaths.GetEnumerator();
+        KeyValuePair<int,Building> entry;
+        /*
         Building nwbd;
         while (enu.MoveNext())
         {
-            entry = (DictionaryEntry)enu.Current;
+            entry = (KeyValuePair<int, Building>)enu.Current;
             nwbd = entry.Value as Building;
             if (nwbd.mBI.IsDestroyed != true && nwbd.mBI.getBuildingType() != BuildingType.E_WALL)
             {
                 validbuildingnumbers++;
             }
         }
-
+        
         if (validbuildingnumbers == 0)
         {
             return null;
         }
+        */
 
         if (mPathsInfo != null)
         {
@@ -657,7 +709,7 @@ public class Soldier : MonoBehaviour, GameObjectType
         enu = mCurrentCalculatingPaths.GetEnumerator();
         while (enu.MoveNext())
         {
-            entry = (DictionaryEntry)enu.Current;
+            entry = (KeyValuePair<int, Building>)enu.Current;
             Building bd = entry.Value as Building;
             if (bd.mBI.mBT == BuildingType.E_WALL)
             {
@@ -668,6 +720,14 @@ public class Soldier : MonoBehaviour, GameObjectType
             {
                 Utility.Log("FindShortestPathObject() called");
                 tempbd = bd;
+                if (mBSearchForPreffered)
+                {
+                    if(!IsBuildingPrefferedType(bd.mAttackable))
+                    {
+                        continue;
+                    }
+                }
+
                 if (tempbd.mBI.IsDestroyed != true)
                 {
                     //If soldier has movement path, we use it last movememnt node as his position
@@ -705,6 +765,21 @@ public class Soldier : MonoBehaviour, GameObjectType
         return mShortestPathObject;
     }
 
+    private bool IsBuildingPrefferedType(bool attackable)
+    {
+        if(mPreferAttackType == PreferAttackType.E_ATTACKABLE && attackable)
+        {
+            return true;
+        }
+        else if(mPreferAttackType == PreferAttackType.E_ALL)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private Building FindShortestPathTarget()
     {
         /*mShortestPath = null;*/
@@ -900,7 +975,10 @@ public class Soldier : MonoBehaviour, GameObjectType
                         mFinalMovePosition = mAStarPath[mCurrentWayPoint];
                     }
                     mCurrentWayPoint--;
-                    transform.LookAt(new Vector3(mAStarPath[mCurrentWayPoint].x, transform.position.y, mAStarPath[mCurrentWayPoint].z),transform.up);
+                    if(mCurrentWayPoint >= 0)
+                    { 
+                        transform.LookAt(new Vector3(mAStarPath[mCurrentWayPoint].x, transform.position.y, mAStarPath[mCurrentWayPoint].z),transform.up);
+                    }
                     return;
                 }
             }

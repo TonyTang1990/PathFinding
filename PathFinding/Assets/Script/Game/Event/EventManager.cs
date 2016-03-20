@@ -3,9 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
+public class MyIntEvent : UnityEvent<int>
+{
+
+}
+
 public class EventManager : MonoBehaviour {
 
 	private Dictionary<string, UnityEvent> mEventDictionary;
+
+    private Dictionary<string, MyIntEvent> mIntEventDictionary;
 
 	public static EventManager mEMInstance = null;
 
@@ -24,6 +31,10 @@ public class EventManager : MonoBehaviour {
 		if (mEventDictionary == null) {
 			mEventDictionary = new Dictionary<string, UnityEvent>();
 		}
+        if (mIntEventDictionary == null)
+        {
+            mIntEventDictionary = new Dictionary<string, MyIntEvent>();
+        }
 	}
 
 	public void StartListening(string eventname, UnityAction listener)
@@ -49,6 +60,34 @@ public class EventManager : MonoBehaviour {
 		}
 	}
 
+    public void StartListening(string eventname, UnityAction<int> listener)
+    {
+        MyIntEvent evt = null;
+        if (mEMInstance.mIntEventDictionary.TryGetValue(eventname, out evt))
+        {
+            evt.AddListener(listener);
+        }
+        else
+        {
+            evt = new MyIntEvent();
+            evt.AddListener(listener);
+            mEMInstance.mIntEventDictionary.Add(eventname, evt);
+        }
+    }
+
+    public void StopListening(string eventname, UnityAction<int> listener)
+    {
+        if (mEMInstance == null)
+        {
+            return;
+        }
+        MyIntEvent thisevent = null;
+        if (mEMInstance.mIntEventDictionary.TryGetValue(eventname, out thisevent))
+        {
+            thisevent.RemoveListener(listener);
+        }
+    }
+
     public bool HasListening(string eventname)
     {
         if (mEMInstance == null)
@@ -56,21 +95,43 @@ public class EventManager : MonoBehaviour {
             return false;
         }
         UnityEvent thisevent = null;
+        MyIntEvent intevent = null;
         if (mEMInstance.mEventDictionary.TryGetValue(eventname, out thisevent))
         {
-            return true;
+            if(thisevent != null)
+            {
+                return true;
+            }
         }
-        else
+
+        if (mEMInstance.mIntEventDictionary.TryGetValue(eventname, out intevent))
         {
-            return false;
+            if (intevent != null)
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 
-	public void TriggerEvent(string eventname)
+	public void TriggerEvent(string eventname, int p = 0)
 	{
 		UnityEvent thisevent = null;
 		if (mEMInstance.mEventDictionary.TryGetValue (eventname, out thisevent)) {
-			thisevent.Invoke();
+			if(thisevent != null)
+            {
+                thisevent.Invoke();
+            }
 		}
+
+        MyIntEvent intevent = null;
+        if (mEMInstance.mIntEventDictionary.TryGetValue(eventname, out intevent))
+        {
+            if (intevent != null)
+            {
+                intevent.Invoke(p);
+            }
+        }
 	}
 }

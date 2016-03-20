@@ -207,7 +207,11 @@ public class Building : MonoBehaviour, GameObjectType {
 		} else {
 			Utility.Log("IsDestroyed == true");
 			mBI.mBHP = 0;
-			mBI.IsDestroyed = true;
+            if(mBI.IsDestroyed != true)
+            {
+                EventManager.mEMInstance.TriggerEvent(GetInstanceID() + "Break", mBI.mIndex);
+            }
+            mBI.IsDestroyed = true;
 			gameObject.SetActive(false);
 		}
         mUpdateHP = true;

@@ -32,13 +32,40 @@ public class MapManager : MonoBehaviour {
 	}
 	private List<Building> mBuldingsInfoInGame;
 	*/
+    /* Use Dictionary instead of Hashtable(void value type box and unbox)
 	public Hashtable BuildingsInfoInGame {
 		get {
 			return mBuildingsInfoInGame;
 		}
 	}
 	private Hashtable mBuildingsInfoInGame;
+    */
+    public Dictionary<int, Building> BuildingsInfoInGame
+    {
+        get
+        {
+            return mBuildingsInfoInGame;
+        }
+    }
+    private Dictionary<int, Building> mBuildingsInfoInGame;
 
+    public int AttackableAliveBuildingNumber
+    {
+        get
+        {
+            return mAttackableAliveBuildingNumber;
+        }
+    }
+    private int mAttackableAliveBuildingNumber;
+
+    public int NotAttackableAliveBuildingNumber
+    {
+        get
+        {
+            return mNotAttackableAliveBuildingNumber;
+        }
+    }
+    private int mNotAttackableAliveBuildingNumber;
 
 	private List<GameObject> mSoldiersInGame;
 	
@@ -166,6 +193,10 @@ public class MapManager : MonoBehaviour {
 		mBuldingsInGame = new List<GameObject>();
 		//mBuldingsInfoInGame = new List<Building> ();
 
+        mAttackableAliveBuildingNumber = 0;
+
+        mNotAttackableAliveBuildingNumber = 0;
+
 		mSoldiersInGame = new List<GameObject> ();
 		mSoldiersScriptInGame = new List<Soldier>();
 
@@ -249,8 +280,9 @@ public class MapManager : MonoBehaviour {
 		Building bding;
 		List<int> weightnodeindexs;
 		Vector3 position;
-		mBuildingsInfoInGame = new Hashtable (mMap.getBuildings ().Count * 2, 0.6f);
-		foreach( BuildingInfo bdi in mMap.getBuildings())
+		//mBuildingsInfoInGame = new Hashtable (mMap.getBuildings ().Count * 2, 0.6f);
+        mBuildingsInfoInGame = new Dictionary<int, Building>();
+        foreach( BuildingInfo bdi in mMap.getBuildings())
 		{
 			Utility.Log("bdi.getBuildingType() = " + bdi.getBuildingType());
 			Utility.Log(string.Format("bd.getPosition().x = {0} .y = {1} .z = {2}", bdi.Position.x, bdi.Position.y, bdi.Position.z));
@@ -264,6 +296,19 @@ public class MapManager : MonoBehaviour {
 			Utility.Log("bding.mBI.mIndex = " + bding.mBI.mIndex);
 			mBuldingsInGame.Add(bd);
 			mBuildingsInfoInGame.Add(bding.mBI.mIndex,bding/*bd.GetComponent<Building>()*/);
+            if(bding.mBI.getBuildingType() != BuildingType.E_WALL)
+            { 
+                if(bding.mAttackable)
+                {
+                    mAttackableAliveBuildingNumber++;
+                }
+                else
+                {
+                    mNotAttackableAliveBuildingNumber++;
+                }
+                //Listenering on Building destroy
+                EventManager.mEMInstance.StartListening(bding.GetInstanceID() + "Break", BuildingDestroyedDelegate); 
+            }
 
 			weightnodeindexs = bding.GetWeightNodeIndex();
 
@@ -285,6 +330,10 @@ public class MapManager : MonoBehaviour {
 
 			Utility.Log("bdi.Position" + bdi.Position);
 		}
+
+        Utility.Log("After MapSetup()");
+        Utility.Log("mAttackableAliveBuildingNumber = " + mAttackableAliveBuildingNumber);
+        Utility.Log("mNotAttackableAliveBuildingNumber = " + mNotAttackableAliveBuildingNumber);
 	}
 
 	private void LoadNodeWeights()
@@ -484,6 +533,20 @@ public class MapManager : MonoBehaviour {
 			
 			mBuildingsInfoInGame.Add(mSelectedBuilding.mBI.mIndex,mSelectedBuilding);
 
+            if (mSelectedBuilding.mBI.getBuildingType() != BuildingType.E_WALL)
+            {
+                if (mSelectedBuilding.mAttackable)
+                {
+                    mAttackableAliveBuildingNumber++;
+                }
+                else
+                {
+                    mNotAttackableAliveBuildingNumber++;
+                }
+                //Listening on Building destroy
+                EventManager.mEMInstance.StartListening(mSelectedBuilding.GetInstanceID() + "Break", BuildingDestroyedDelegate); 
+            }
+
 			//Update Node weight
 			List<int> weightnodeindexs = mSelectedBuilding.GetWeightNodeIndex();
 			
@@ -511,6 +574,10 @@ public class MapManager : MonoBehaviour {
 			
 			SaveMap ();
 		}
+
+        Utility.Log("After BuildBuilding()");
+        Utility.Log("mAttackableAliveBuildingNumber = " + mAttackableAliveBuildingNumber);
+        Utility.Log("mNotAttackableAliveBuildingNumber = " + mNotAttackableAliveBuildingNumber);
 	}
 
 	public void RemoveBuilding(GameObject removebuilding)
@@ -528,13 +595,27 @@ public class MapManager : MonoBehaviour {
 						mMap.setMapOccupiedInfo ((int)bottleleftrc.x + i - 1, (int)bottleleftrc.y + j - 1, false);
 					}
 				}
-			
+
+                if (building.mBI.getBuildingType() != BuildingType.E_WALL)
+                {
+                    if (building.mAttackable)
+                    {
+                        mAttackableAliveBuildingNumber--;
+                    }
+                    else
+                    {
+                        mNotAttackableAliveBuildingNumber--;
+                    }
+                    //Listening on Building destroy
+                    EventManager.mEMInstance.StopListening(building.GetInstanceID() + "Break", BuildingDestroyedDelegate);
+                }
+
 				mMap.removeBuilding (building.mBI);
 			
 				mBuldingsInGame.Remove (removebuilding);
 			
 				mBuildingsInfoInGame.Remove (building.mBI.mIndex);
-			
+
 				//Update Node weight
 				List<int> weightnodeindexs = building.GetWeightNodeIndex ();
 			
@@ -712,4 +793,29 @@ public class MapManager : MonoBehaviour {
 	{
 		mPathFinder.UpdateNodeWallJumpableStatus(wallindex, iswalljumpable);
 	}
+
+    void BuildingDestroyedDelegate(int buildingindex)
+    {
+        Utility.Log(string.Format("MapManager.BuildingDestroyedDelegate({0}", buildingindex));
+        if (mBuildingsInfoInGame.ContainsKey(buildingindex) == true)
+        {
+            Building bd = null;
+            if (mBuildingsInfoInGame.TryGetValue(buildingindex, out bd))
+            {
+                if (bd.mAttackable)
+                {
+                    mAttackableAliveBuildingNumber--;
+                }
+                else
+                {
+                    mNotAttackableAliveBuildingNumber--;
+                }
+                mBuildingsInfoInGame.Remove(buildingindex);
+            }
+            Utility.Log("After MapManager.BuildingDestroyedDelegate()");
+            Utility.Log("bd.GetInstanceID() = " + bd.GetInstanceID());
+            Utility.Log("mAttackableAliveBuildingNumber = " + mAttackableAliveBuildingNumber);
+            Utility.Log("mNotAttackableAliveBuildingNumber = " + mNotAttackableAliveBuildingNumber);
+        }
+    }
 }
