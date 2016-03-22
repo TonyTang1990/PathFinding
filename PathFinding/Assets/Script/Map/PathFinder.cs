@@ -48,12 +48,12 @@ public class PathFinder : MonoBehaviour {
 		mTotalNodes = 0;
 		mTotalEdges = 0;
 		
-		TimerCounter.CreateInstance().Restart("CreateGraph");
+		//TimerCounter.CreateInstance().Restart("CreateGraph");
 		CreateGraph ();
-		TimerCounter.CreateInstance ().End ();
+		//TimerCounter.CreateInstance ().End ();
 	}
 
-	public void CreateGraph(/*int row, int column, float nodedistance, List<NavGraphNode> nodelist*/)
+	public void CreateGraph()
 	{
 		mNavGraph = new SparseGraph<NavGraphNode, GraphEdge> (mRow * mColumn);
 		

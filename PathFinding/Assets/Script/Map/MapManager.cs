@@ -188,7 +188,7 @@ public class MapManager : MonoBehaviour {
 		}
 
 		mMapSavePath = Application.persistentDataPath + "/mapInfo.dat";
-		Utility.Log ("mMapSavePath = " + mMapSavePath);
+		Debug.Log ("mMapSavePath = " + mMapSavePath);
 		
 		mBuldingsInGame = new List<GameObject>();
 		//mBuldingsInfoInGame = new List<Building> ();

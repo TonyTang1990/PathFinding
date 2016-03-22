@@ -43,7 +43,7 @@ public class InputManager : MonoBehaviour {
                         {
                             if (hit.collider)
                             {
-                                Debug.Log("hit.collider.name = " + hit.collider.name);
+                                Utility.Log("hit.collider.name = " + hit.collider.name);
                                 if (MapManager.MMInstance.isSoldierSelected)
                                 {
                                     Utility.Log("hit.point = " + hit.point);

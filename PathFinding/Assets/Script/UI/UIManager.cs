@@ -68,6 +68,12 @@ public class UIManager : MonoBehaviour {
 		mUpdateAStarInfo.UpdateSearchInfo ();
 	}
 
+    public void UpdateAstarInfoForSoidler(SearchAStar.PathInfo pathinfo)
+    {
+        mUpdateAStarInfo.UpdateToalNodesAndEdgesForSoldier();
+        mUpdateAStarInfo.UpdateSearchInfoForSoldier(pathinfo);
+    }
+
 	public void SearchClick()
 	{
 		int sourcerow = 0;

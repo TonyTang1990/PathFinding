@@ -142,13 +142,13 @@ public class Seeker : MonoBehaviour {
 
 	public void CreatePathAStar()
 	{
-		TimerCounter.CreateInstance ().Restart ("AStarSearch");
+		//TimerCounter.CreateInstance ().Restart ("AStarSearch");
 		
 		//SearchAStar astarsearch = new SearchAStar (mNavGraph, mSourceCellIndex, mTargetCellIndex, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
         //mAstarSearch = new SearchAStar(mNavGraph, mSourceCellIndex, mTargetCellIndex, mIgnoreWall, mStrickDistance, mHCostPercentage, mBDrawExplorePath, mExplorePathRemainTime);
         mAstarSearch.UpdateSearch(mSourceCellIndex, mTargetCellIndex, mStrickDistance);
 
-		TimerCounter.CreateInstance ().End ();
+		//TimerCounter.CreateInstance ().End ();
 
 		Utility.Log ("mAstarSearch.ITarget = " + mAstarSearch.ITarget);
 		Utility.Log ("mAstarSearch.IsWallInPathToTarget = " + mAstarSearch.AStarPathInfo.IsWallInPathToTarget);

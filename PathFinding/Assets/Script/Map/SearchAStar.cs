@@ -126,6 +126,18 @@ public class SearchAStar
         }
         private int mEdgesSearched;
 
+        public float TimeTaken
+        {
+            get
+            {
+                return mTimeTaken;
+            }
+            set
+            {
+                mTimeTaken = value;
+            }
+        }
+        private float mTimeTaken;
         //this list of edges is used to store any subtree returned from any of the graph algorithms
         /*
         public List<GraphEdge> SubTree
@@ -186,6 +198,8 @@ public class SearchAStar
             mEdgesSearched = 0;
 
             mCostToTarget = 0.0f;
+
+            mTimeTaken = 0.0f;
         }
     }
 
@@ -246,7 +260,9 @@ public class SearchAStar
 
         AstarReset(sourceindex, targetindex, strickdistance);
 
+        TimerCounter.CreateInstance().Start("Search");
         Search(mStrickDistance, mIsIgnoreWall);
+        TimerCounter.CreateInstance().End();
 
         GeneratePathToTargetInfo();
     }
@@ -338,6 +354,8 @@ public class SearchAStar
         mAStarPathInfo.ITarget = mITarget;
 
         mAStarPathInfo.OriginalTarget = mOriginalTarget;
+
+        mAStarPathInfo.TimeTaken = TimerCounter.CreateInstance().TimeSpend;
     }
 
     public List<GraphEdge> GetSPT()

@@ -753,6 +753,8 @@ public class Soldier : MonoBehaviour, GameObjectType
                     mSeeker.CreatePathAStar();
                     SearchAStar.PathInfo pathinfo = mSeeker.mAstarSearch.AStarPathInfo.DeepCopy();
                     mPathsInfo.Add(new Pair<int, SearchAStar.PathInfo>(tempbd.mBI.mIndex, pathinfo));
+
+                    UIManager.UIMInstance.UpdateAstarInfoForSoidler(pathinfo);
                 }
                 pathindex++;
             }
@@ -884,7 +886,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                 mDir = (MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position - transform.position).normalized;
                 mDir.y = 0.0f;
 
-                transform.LookAt(MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position);
+                transform.LookAt(new Vector3(MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position.x,transform.position.y, MapManager.MMInstance.NodeTerrainList[mAttackingObject.mBI.mIndex].Position.z),Vector3.up);
 
                 Wall wa;
                 if (MapManager.MMInstance.NodeTerrainList[index].IsWall)
@@ -895,24 +897,20 @@ public class Soldier : MonoBehaviour, GameObjectType
                     if (wa != null && wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
                     {
                         transform.position = transform.position;
-                        //Invoke("JumpSpellDelegate", wa.LatestJumpSpell.TimeRemain + 0.2f);
                     }
                     else
                     {
-                        //Here we set speed to 0.5f to avoid soldier move too far from destination node
+                        //Here we set speed to 0.2f to avoid soldier move too far from destination node
                         mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
                         transform.position = mNewposition;
                     }
                 }
                 else
                 {
-                    //Here we set speed to 0.5f to avoid soldier move too far from destination node
+                    //Here we set speed to 0.2f to avoid soldier move too far from destination node
                     mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
                     transform.position = mNewposition;
                 }
-                //Here we set speed to 0.5f to avoid soldier move too far from destination node
-                //mNewposition = transform.position + mDir * 0.2f * Time.deltaTime;
-                //transform.position = mNewposition;
 
                 Utility.Log("End Of Path Reached");
 
@@ -948,7 +946,6 @@ public class Soldier : MonoBehaviour, GameObjectType
                     if (wa.LatestJumpSpell != null && wa.LatestJumpSpell.TimeRemain * mSpeed / 2 < distance)
                     {
                         transform.position = transform.position;
-                        //Invoke("JumpSpellDelegate", wa.LatestJumpSpell.TimeRemain + 0.2f);
                     }
                     else
                     {
@@ -976,7 +973,7 @@ public class Soldier : MonoBehaviour, GameObjectType
                     }
                     mCurrentWayPoint--;
                     if(mCurrentWayPoint >= 0)
-                    { 
+                    {
                         transform.LookAt(new Vector3(mAStarPath[mCurrentWayPoint].x, transform.position.y, mAStarPath[mCurrentWayPoint].z),transform.up);
                     }
                     return;
