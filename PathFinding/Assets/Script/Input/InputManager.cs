@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour {
                                 }
                                 else if (MapManager.MMInstance.isSpellSelected)
                                 {
-                                    Debug.Log("hit.point = " + hit.point);
+                                    Utility.Log("hit.point = " + hit.point);
                                     Vector3 hp = hit.point;
                                     hp.y += 1.0f;
                                     hit.point = hp;
@@ -94,7 +94,17 @@ public class InputManager : MonoBehaviour {
 									{
 										Utility.Log ("hit.point = " + hit.point);
 										MapManager.MMInstance.DeploySoldier (hit.point);
-									} else {
+									}
+                                    else if (MapManager.MMInstance.isSpellSelected)
+                                    {
+                                        Utility.Log("hit.point = " + hit.point);
+                                        Vector3 hp = hit.point;
+                                        hp.y += 1.0f;
+                                        hit.point = hp;
+                                        MapManager.MMInstance.DeploySpell(hit.point);
+                                    }
+                                    else
+                                    {
 										Utility.Log ("hit.collider.name = " + hit.collider.name);
 										MapManager.MMInstance.CurrentSelectedNode = hit.collider.gameObject.GetComponent<TerrainNode> ();
 										UIManager.UIMInstance.ShowNWAdjustPanel ();
