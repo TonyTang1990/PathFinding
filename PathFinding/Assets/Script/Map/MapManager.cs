@@ -8,6 +8,8 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using System;
+
 public class MapManager : MonoBehaviour {
 
 	public static MapManager MMInstance = null;
@@ -201,6 +203,11 @@ public class MapManager : MonoBehaviour {
 		mSoldiersScriptInGame = new List<Soldier>();
 
 		mPathFinder = gameObject.GetComponent<PathFinder> ();
+
+        //Serialization value types that are defined by ourself will cause JIT exception on IOS
+        //On IOS, JIT will create class automatecally for value types that are defined by ourself
+        //Code below will force using reflection instead of JIT to create new class
+        Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
 	}
 
 	void Start()
@@ -413,7 +420,7 @@ public class MapManager : MonoBehaviour {
 						}
 					}
 				}
-				else if(Application.platform == RuntimePlatform.Android)
+                else if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
 				{
 					if(Input.touchCount == 1)
 					{

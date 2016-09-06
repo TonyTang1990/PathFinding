@@ -77,7 +77,7 @@ public class InputManager : MonoBehaviour {
                     }
 				}
 			}
-			else if(Application.platform == RuntimePlatform.Android)
+            else if (Application.platform == RuntimePlatform.Android ||  Application.platform == RuntimePlatform.IPhonePlayer)
 			{
 				if (Input.touchCount == 1) {
 					Utility.Log ("One finger touch");
